@@ -83,23 +83,23 @@ public struct VOAccount {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/api/v2/accounts")!
+        URL(string: "\(baseURL)/v2/accounts")!
     }
 
     public func urlForSendPasswordEmail() -> URL {
-        URL(string: "\(baseURL)/api/v2/accounts/send_reset_password_email")!
+        URL(string: "\(baseURL)/v2/accounts/send_reset_password_email")!
     }
 
     public func urlForResetPassword() -> URL {
-        URL(string: "\(baseURL)/api/v2/accounts/reset_password")!
+        URL(string: "\(baseURL)/v2/accounts/reset_password")!
     }
 
     public func urlForConfirmEmail() -> URL {
-        URL(string: "\(baseURL)/api/v2/accounts/confirm_email")!
+        URL(string: "\(baseURL)/v2/accounts/confirm_email")!
     }
 
     public func urlForPasswordRequirements() -> URL {
-        URL(string: "\(baseURL)/api/v2/accounts/password_requirements")!
+        URL(string: "\(baseURL)/v2/accounts/password_requirements")!
     }
 
     // MARK: - Payloads
