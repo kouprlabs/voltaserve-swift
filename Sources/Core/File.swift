@@ -25,7 +25,7 @@ struct File {
 
     func fetchPath(_ id: String) async throws -> [Entity] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForPath(id)).responseData { response in
+            AF.request(urlForPath(id), headers: headersWithAuthorization(accessToken)).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: [Entity].self)
             }
         }
@@ -33,7 +33,7 @@ struct File {
 
     func fetchCount(id: String) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForCount(id)).responseData { response in
+            AF.request(urlForCount(id), headers: headersWithAuthorization(accessToken)).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Int.self)
             }
         }
@@ -41,7 +41,11 @@ struct File {
 
     func fetchList(_ id: String, options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForList(id: id, options: options), method: .post).responseData { response in
+            AF.request(
+                urlForList(id: id, options: options),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: List.self)
             }
         }
@@ -137,7 +141,8 @@ struct File {
                 urlForPatchName(id),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
@@ -146,7 +151,11 @@ struct File {
 
     func delete(id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForID(id), method: .delete).responseData { response in
+            AF.request(
+                urlForID(id),
+                method: .delete,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -158,7 +167,8 @@ struct File {
                 url(),
                 method: .delete,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -167,7 +177,11 @@ struct File {
 
     func move(_ id: String, to targetID: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForMove(id, to: targetID), method: .post).responseData { response in
+            AF.request(
+                urlForMove(id, to: targetID),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -179,7 +193,8 @@ struct File {
                 urlForMove(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -188,7 +203,11 @@ struct File {
 
     func copy(_ id: String, to targetID: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForCopy(id, to: targetID), method: .post).responseData { response in
+            AF.request(
+                urlForCopy(id, to: targetID),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -200,7 +219,8 @@ struct File {
                 urlForCopy(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -213,7 +233,8 @@ struct File {
                 urlForGrantUserPermission(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -226,7 +247,8 @@ struct File {
                 urlForRevokeUserPermission(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -239,7 +261,8 @@ struct File {
                 urlForGrantGroupPermission(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -252,7 +275,8 @@ struct File {
                 urlForRevokeGroupPermission(),
                 method: .post,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
@@ -331,7 +355,7 @@ struct File {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
             URLQueryItem(name: "type", value: options.type.rawValue),
-            URLQueryItem(name: "workspace_id", value: options.workspaceID),
+            URLQueryItem(name: "workspace_id", value: options.workspaceID)
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(URLQueryItem(name: "parent_id", value: parentID))

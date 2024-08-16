@@ -53,7 +53,7 @@ func handleEmptyResponse(continuation: CheckedContinuation<Void, any Error>, res
     }
 }
 
-func handleErrorResponse<T>(continuation: CheckedContinuation<T, any Error>, data: Data) {
+func handleErrorResponse(continuation: CheckedContinuation<some Any, any Error>, data: Data) {
     do {
         let result = try JSONDecoder().decode(ErrorResponse.self, from: data)
         continuation.resume(throwing: result)
