@@ -87,32 +87,10 @@ public struct VOGroup {
     }
 
     public func urlForList(options: ListOptions) -> URL {
-        var urlComponents = URLComponents()
-        if let query = options.query {
-            if let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                urlComponents.queryItems?.append(URLQueryItem(name: "query", value: base64Query))
-            }
-        }
-        if let organizationID = options.organizationId {
-            urlComponents.queryItems?.append(URLQueryItem(name: "organization_id", value: organizationID))
-        }
-        if let size = options.size {
-            urlComponents.queryItems?.append(URLQueryItem(name: "size", value: String(size)))
-        }
-        if let page = options.page {
-            urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
-        }
-        if let sortBy = options.sortBy {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_by", value: sortBy.rawValue))
-        }
-        if let sortOrder = options.sortOrder {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_order", value: sortOrder.rawValue))
-        }
-        let query = urlComponents.url?.query
-        if let query {
-            return URL(string: "\(baseURL)/v2/groups?\(query)")!
+        if let query = options.urlQuery {
+            URL(string: "\(url())?\(query)")!
         } else {
-            return URL(string: "\(baseURL)/v2/groups")!
+            url()
         }
     }
 
@@ -124,11 +102,45 @@ public struct VOGroup {
 
     public struct ListOptions: Codable {
         public let query: String?
-        public let organizationId: String?
+        public let organizationID: String?
         public let size: Int?
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let organizationID {
+                items.append(.init(name: "organization_id", value: organizationID))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case query
+            case organizationID = "organizationId"
+            case size
+            case page
+            case sortBy
+            case sortOrder
+        }
     }
 
     public enum SortBy: String, Codable, CustomStringConvertible {
@@ -156,7 +168,13 @@ public struct VOGroup {
     public struct CreateOptions: Codable {
         public let name: String
         public let image: String?
-        public let organizationId: String
+        public let organizationID: String
+
+        enum CodingKeys: String, CodingKey {
+            case name
+            case image
+            case organizationID = "organizationId"
+        }
     }
 
     public struct PatchNameOptions: Codable {
@@ -164,11 +182,19 @@ public struct VOGroup {
     }
 
     public struct AddMemberOptions: Codable {
-        public let userId: String
+        public let userID: String
+
+        enum CodingKeys: String, CodingKey {
+            case userID = "userId"
+        }
     }
 
     public struct RemoveMemberOptions: Codable {
-        public let userId: String
+        public let userID: String
+
+        enum CodingKeys: String, CodingKey {
+            case userID = "userId"
+        }
     }
 
     // MARK: - Types

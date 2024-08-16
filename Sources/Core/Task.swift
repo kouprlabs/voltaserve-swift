@@ -50,9 +50,20 @@ public struct VOTask {
         public let error: String?
         public let percentage: Int?
         public let isIndeterminate: Bool
-        public let userId: String
+        public let userID: String
         public let status: Status
         public let payload: Payload?
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case name
+            case error
+            case percentage
+            case isIndeterminate
+            case userID = "userId"
+            case status
+            case payload
+        }
     }
 
     public enum Status: String, Codable {

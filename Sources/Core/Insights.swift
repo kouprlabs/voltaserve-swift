@@ -17,7 +17,7 @@ struct VOInsights {
 
     // MARK: - Requests
 
-    public func create(_ id: String, options: CreateOptions) async throws {
+    public func create(_ id: String, options _: CreateOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForFile(id),
@@ -66,41 +66,30 @@ struct VOInsights {
         URL(string: "\(baseURL)/v2/insights/\(id)/info")!
     }
 
+    public func urlForEntities(_ id: String) -> URL {
+        URL(string: "\(baseURL)/v2/insights/\(id)/entities")!
+    }
+
     public func urlForLanguages() -> URL {
         URL(string: "\(baseURL)/v2/insights/languages")!
     }
 
     public func urlForListEntities(_ id: String, options: ListEntitiesOptions) -> URL {
-        var urlComponents = URLComponents()
-        if let query = options.query {
-            if let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                urlComponents.queryItems?.append(URLQueryItem(name: "query", value: base64Query))
-            }
-        }
-        if let size = options.size {
-            urlComponents.queryItems?.append(URLQueryItem(name: "size", value: String(size)))
-        }
-        if let page = options.page {
-            urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
-        }
-        if let sortBy = options.sortBy {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_by", value: sortBy.rawValue))
-        }
-        if let sortOrder = options.sortOrder {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_order", value: sortOrder.rawValue))
-        }
-        let query = urlComponents.url?.query
-        if let query {
-            return URL(string: "\(baseURL)/v2/insights/\(id)/entities?\(query)")!
+        if let query = options.urlQuery {
+            URL(string: "\(urlForEntities(id))?\(query)")!
         } else {
-            return URL(string: "\(baseURL)/v2/insights/\(id)/entities")!
+            urlForEntities(id)
         }
     }
 
     // MARK: - Payloads
 
     struct CreateOptions: Codable {
-        public let languageId: String
+        public let languageID: String
+
+        enum CodingKeys: String, CodingKey {
+            case languageID = "languageId"
+        }
     }
 
     public struct ListEntitiesOptions: Codable {
@@ -109,6 +98,28 @@ struct VOInsights {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
     }
 
     public enum SortBy: String, Codable {

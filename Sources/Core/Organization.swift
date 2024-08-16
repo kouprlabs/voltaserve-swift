@@ -48,7 +48,7 @@ public struct VOOrganization {
         }
     }
 
-    public func create(_ options: CreateOptions) async throws -> Entity {
+    public func create(_: CreateOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 url(),
@@ -60,7 +60,7 @@ public struct VOOrganization {
         }
     }
 
-    public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
+    public func patchName(_ id: String, options _: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForID(id),
@@ -119,29 +119,10 @@ public struct VOOrganization {
     }
 
     public func urlForList(options: ListOptions) -> URL {
-        var urlComponents = URLComponents()
-        if let query = options.query {
-            if let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                urlComponents.queryItems?.append(URLQueryItem(name: "query", value: base64Query))
-            }
-        }
-        if let size = options.size {
-            urlComponents.queryItems?.append(URLQueryItem(name: "size", value: String(size)))
-        }
-        if let page = options.page {
-            urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
-        }
-        if let sortBy = options.sortBy {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_by", value: sortBy.rawValue))
-        }
-        if let sortOrder = options.sortOrder {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_order", value: sortOrder.rawValue))
-        }
-        let query = urlComponents.url?.query
-        if let query {
-            return URL(string: "\(baseURL)/v2/organizations?\(query)")!
+        if let query = options.urlQuery {
+            URL(string: "\(url())?\(query)")!
         } else {
-            return URL(string: "\(baseURL)/v2/organizations")!
+            url()
         }
     }
 
@@ -169,7 +150,11 @@ public struct VOOrganization {
     }
 
     public struct RemoveMemberOptions: Codable {
-        public let userId: String
+        public let userID: String
+
+        enum CodingKeys: String, CodingKey {
+            case userID = "userId"
+        }
     }
 
     public struct ListOptions: Codable {
@@ -178,6 +163,28 @@ public struct VOOrganization {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
     }
 
     public enum SortBy: String, Codable, CustomStringConvertible {

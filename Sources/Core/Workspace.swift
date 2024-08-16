@@ -49,10 +49,21 @@ public struct VOWorkspace {
         public let name: String
         public let permission: VOPermission.Value
         public let storageCapacity: Int
-        public let rootId: String
+        public let rootID: String
         public let organization: VOOrganization.Entity
         public let createTime: String
         public let updateTime: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case name
+            case permission
+            case storageCapacity
+            case rootID = "rootId"
+            case organization
+            case createTime
+            case updateTime
+        }
     }
 
     public struct List: Codable {

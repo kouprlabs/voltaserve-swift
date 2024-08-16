@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 public struct VOSnapshot {
@@ -16,11 +17,127 @@ public struct VOSnapshot {
 
     // MARK: - Requests
 
+    public func fetchList(options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func activate(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForActivate(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func detach(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForDetach(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
     // MARK: - URLs
+
+    public func url() -> URL {
+        URL(string: "\(baseURL)/v2/snapshots")!
+    }
+
+    public func urlForList(_ options: ListOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url())?\(query)")!
+        } else {
+            url()
+        }
+    }
+
+    public func urlForActivate(_ id: String) -> URL {
+        URL(string: "\(baseURL)/v2/snapshots/\(id)/activate")!
+    }
+
+    public func urlForDetach(_ id: String) -> URL {
+        URL(string: "\(baseURL)/v2/snapshots/\(id)/detach")!
+    }
 
     // MARK: - Payloads
 
-    public enum SortBy: Codable, CustomStringConvertible {
+    public struct ListOptions: Codable {
+        public let fileID: String
+        public let query: String?
+        public let organizationID: String?
+        public let size: Int?
+        public let page: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = [.init(name: "file_id", value: fileID)]
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let organizationID {
+                items.append(.init(name: "organization_id", value: organizationID))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case fileID = "fileId"
+            case query
+            case organizationID = "organizationId"
+            case size
+            case page
+            case sortBy
+            case sortOrder
+        }
+    }
+
+    public struct ActivateOptions: Codable {
+        public let fileID: String
+
+        enum CodingKeys: String, CodingKey {
+            case fileID = "fileId"
+        }
+    }
+
+    public struct DetachOptions: Codable {
+        public let fileID: String
+
+        enum CodingKeys: String, CodingKey {
+            case fileID = "fileId"
+        }
+    }
+
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case version
         case dateCreated
         case dateModified

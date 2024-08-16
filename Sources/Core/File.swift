@@ -327,32 +327,10 @@ public struct VOFile {
     }
 
     public func urlForList(id: String, options: ListOptions) -> URL {
-        var urlComponents = URLComponents()
-        if let page = options.page {
-            urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
-        }
-        if let size = options.size {
-            urlComponents.queryItems?.append(URLQueryItem(name: "size", value: String(size)))
-        }
-        if let sortBy = options.sortBy {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_by", value: sortBy.rawValue))
-        }
-        if let sortOrder = options.sortOrder {
-            urlComponents.queryItems?.append(URLQueryItem(name: "sort_order", value: sortOrder.rawValue))
-        }
-        if let type = options.type {
-            urlComponents.queryItems?.append(URLQueryItem(name: "type", value: type.rawValue))
-        }
-        if let query = options.query {
-            if let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                urlComponents.queryItems?.append(URLQueryItem(name: "query", value: base64Query))
-            }
-        }
-        let query = urlComponents.url?.query
-        if let query {
-            return URL(string: "\(baseURL)/v2/files/\(id)?\(query)")!
+        if let query = options.urlQuery {
+            URL(string: "\(urlForID(id))?\(query)")!
         } else {
-            return URL(string: "\(baseURL)/v2/files/\(id)")!
+            urlForID(id)
         }
     }
 
@@ -430,6 +408,31 @@ public struct VOFile {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
         public let query: Query?
+
+        var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            if let type {
+                items.append(.init(name: "type", value: type.rawValue))
+            }
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
     }
 
     public enum SortBy: String, Codable, CustomStringConvertible {
@@ -467,6 +470,14 @@ public struct VOFile {
         public let name: String?
         public let data: Data?
         public let onProgress: ((Double) -> Void)?
+
+        enum CodingKeys: String, CodingKey {
+            case type
+            case workspaceID = "workspaceId"
+            case parentID = "parentId"
+            case name
+            case data
+        }
     }
 
     public struct PatchNameOptions: Codable {
@@ -478,30 +489,57 @@ public struct VOFile {
     }
 
     public struct MoveOptions: Codable {
-        public let sourceIds: [String]
-        public let targetId: String
+        public let sourceIDs: [String]
+        public let targetID: String
+
+        enum CodingKeys: String, CodingKey {
+            case sourceIDs = "sourceIds"
+            case targetID = "targetId"
+        }
     }
 
     public struct GrantUserPermissionOptions: Codable {
         public let ids: [String]
-        public let userId: String
+        public let userID: String
         public let permission: String
+
+        enum CodingKeys: String, CodingKey {
+            case ids
+            case userID = "userId"
+            case permission
+        }
     }
 
     public struct RevokeUserPermissionOptions: Codable {
         public let ids: [String]
-        public let userId: String
+        public let userID: String
+
+        enum CodingKeys: String, CodingKey {
+            case ids
+            case userID = "userId"
+        }
     }
 
     public struct GrantGroupPermissionOptions: Codable {
         public let ids: [String]
-        public let groupId: String
+        public let groupID: String
         public let permission: String
+
+        enum CodingKeys: String, CodingKey {
+            case ids
+            case groupID = "groupId"
+            case permission
+        }
     }
 
     public struct RevokeGroupPermissionOptions: Codable {
         public let ids: [String]
-        public let groupId: String
+        public let groupID: String
+
+        enum CodingKeys: String, CodingKey {
+            case ids
+            case groupID = "groupId"
+        }
     }
 
     // MARK: - Types
@@ -519,15 +557,28 @@ public struct VOFile {
 
     public struct Entity: Codable {
         public let id: String
-        public let workspaceId: String
+        public let workspaceID: String
         public let name: String
         public let type: FileType
-        public let parentId: String
+        public let parentID: String
         public let permission: PermissionType
         public let isShared: Bool
         public let snapshot: VOSnapshot.Entity?
         public let createTime: String
         public let updateTime: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case workspaceID = "workspaceId"
+            case name
+            case type
+            case parentID = "parentId"
+            case permission
+            case isShared
+            case snapshot
+            case createTime
+            case updateTime
+        }
     }
 
     public struct List: Codable {
