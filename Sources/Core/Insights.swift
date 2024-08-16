@@ -10,7 +10,24 @@ struct VOInsights {
     let baseURL: String
     let accessToken: String
 
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
+
     // MARK: - Requests
+
+    public func create(_ id: String, options: CreateOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForFile(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
 
     public func fetchInfo(_ id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
@@ -82,11 +99,11 @@ struct VOInsights {
 
     // MARK: - Payloads
 
-    struct CreateOptions {
+    struct CreateOptions: Codable {
         public let languageId: String
     }
 
-    public struct ListEntitiesOptions {
+    public struct ListEntitiesOptions: Codable {
         public let query: String?
         public let size: Int?
         public let page: Int?
@@ -105,11 +122,6 @@ struct VOInsights {
     }
 
     // MARK: - Types
-
-    public init(baseURL: String, accessToken: String) {
-        self.baseURL = baseURL
-        self.accessToken = accessToken
-    }
 
     public struct Language: Codable {
         public let id: String
