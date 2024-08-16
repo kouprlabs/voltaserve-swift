@@ -20,8 +20,6 @@ public struct VOUser {
 
     // MARK: - Payloads
 
-    // MARK: - Types
-
     public enum SortBy: Codable, CustomStringConvertible {
         case email
         case fullName
@@ -40,6 +38,8 @@ public struct VOUser {
         case asc
         case desc
     }
+
+    // MARK: - Types
 
     public struct Entity: Codable {
         public let id: String

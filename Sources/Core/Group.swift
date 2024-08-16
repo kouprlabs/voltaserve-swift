@@ -131,6 +131,28 @@ public struct VOGroup {
         public let sortOrder: SortOrder?
     }
 
+    public enum SortBy: String, Codable, CustomStringConvertible {
+        case name
+        case dateCreated
+        case dateModified
+
+        public var description: String {
+            switch self {
+            case .name:
+                "name"
+            case .dateCreated:
+                "date_created"
+            case .dateModified:
+                "date_modified"
+            }
+        }
+    }
+
+    public enum SortOrder: String, Codable {
+        case asc
+        case desc
+    }
+
     public struct CreateOptions: Codable {
         public let name: String
         public let image: String?
@@ -159,28 +181,6 @@ public struct VOGroup {
     }
 
     // MARK: - Types
-
-    public enum SortBy: String, Codable, CustomStringConvertible {
-        case name
-        case dateCreated
-        case dateModified
-
-        public var description: String {
-            switch self {
-            case .name:
-                "name"
-            case .dateCreated:
-                "date_created"
-            case .dateModified:
-                "date_modified"
-            }
-        }
-    }
-
-    public enum SortOrder: String, Codable {
-        case asc
-        case desc
-    }
 
     public struct Entity: Codable {
         public let id: String

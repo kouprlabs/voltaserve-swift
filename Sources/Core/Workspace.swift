@@ -20,8 +20,6 @@ public struct VOWorkspace {
 
     // MARK: - Payloads
 
-    // MARK: - Types
-
     public enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
@@ -43,6 +41,8 @@ public struct VOWorkspace {
         case asc
         case desc
     }
+
+    // MARK: - Types
 
     public struct Entity: Codable {
         public let id: String

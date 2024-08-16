@@ -432,6 +432,34 @@ public struct VOFile {
         public let query: Query?
     }
 
+    public enum SortBy: String, Codable, CustomStringConvertible {
+        case name
+        case kind
+        case size
+        case dateCreated
+        case dateModified
+
+        public var description: String {
+            switch self {
+            case .name:
+                "name"
+            case .kind:
+                "kind"
+            case .size:
+                "size"
+            case .dateCreated:
+                "date_created"
+            case .dateModified:
+                "date_modified"
+            }
+        }
+    }
+
+    public enum SortOrder: String, Codable {
+        case asc
+        case desc
+    }
+
     public struct CreateOptions {
         public let type: FileType
         public let workspaceID: String
@@ -481,34 +509,6 @@ public struct VOFile {
     public enum FileType: String, Codable {
         case file
         case folder
-    }
-
-    public enum SortBy: String, Codable, CustomStringConvertible {
-        case name
-        case kind
-        case size
-        case dateCreated
-        case dateModified
-
-        public var description: String {
-            switch self {
-            case .name:
-                "name"
-            case .kind:
-                "kind"
-            case .size:
-                "size"
-            case .dateCreated:
-                "date_created"
-            case .dateModified:
-                "date_modified"
-            }
-        }
-    }
-
-    public enum SortOrder: String, Codable {
-        case asc
-        case desc
     }
 
     public enum PermissionType: String, Codable {

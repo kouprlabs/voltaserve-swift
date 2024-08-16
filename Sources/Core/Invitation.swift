@@ -20,8 +20,6 @@ struct VOInvitation {
 
     // MARK: - Payloads
 
-    // MARK: - Types
-
     public enum SortBy: Codable, CustomStringConvertible {
         case email
         case dateCreated
@@ -43,6 +41,8 @@ struct VOInvitation {
         case asc
         case desc
     }
+
+    // MARK: - Types
 
     public enum InvitationStatus: String, Codable {
         case pending

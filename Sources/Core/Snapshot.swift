@@ -20,8 +20,6 @@ public struct VOSnapshot {
 
     // MARK: - Payloads
 
-    // MARK: - Types
-
     public enum SortBy: Codable, CustomStringConvertible {
         case version
         case dateCreated
@@ -43,6 +41,8 @@ public struct VOSnapshot {
         case asc
         case desc
     }
+
+    // MARK: - Types
 
     public struct Entity: Codable {
         public let id: String
