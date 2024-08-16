@@ -5,7 +5,15 @@
 
 import Foundation
 
-public enum Token {
+public struct Token {
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
+
     public struct Value {
         public var accessToken: String
     }

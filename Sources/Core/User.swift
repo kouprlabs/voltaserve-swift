@@ -6,8 +6,13 @@
 import Foundation
 
 public struct User {
-    public var baseURL: String
-    public var accessToken: String
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
 
     public enum SortBy: Codable, CustomStringConvertible {
         case email
@@ -42,5 +47,15 @@ public struct User {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+    }
+}
+
+public struct AuthUser {
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
     }
 }

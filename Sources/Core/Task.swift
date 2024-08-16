@@ -5,9 +5,14 @@
 
 import Foundation
 
-public struct TaskData {
-    public var baseURL: String
-    public var accessToken: String
+public struct Task {
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
 
     public enum SortBy: Codable, CustomStringConvertible {
         case name

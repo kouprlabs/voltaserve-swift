@@ -7,8 +7,13 @@ import Alamofire
 import Foundation
 
 public struct Mosaic {
-    public var baseURL: String
-    public var accessToken: String
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
 
     // MARK: - Requests
 

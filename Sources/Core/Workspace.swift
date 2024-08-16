@@ -6,8 +6,13 @@
 import Foundation
 
 public struct Workspace {
-    public var baseURL: String
-    public var accessToken: String
+    let baseURL: String
+    let accessToken: String
+
+    public init(baseURL: String, accessToken: String) {
+        self.baseURL = baseURL
+        self.accessToken = accessToken
+    }
 
     public enum SortBy: Codable, CustomStringConvertible {
         case name
