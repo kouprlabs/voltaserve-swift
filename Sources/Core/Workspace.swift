@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Workspace {
+public struct VOWorkspace {
     let baseURL: String
     let accessToken: String
 
@@ -39,10 +39,10 @@ public struct Workspace {
     public struct Entity: Codable {
         public let id: String
         public let name: String
-        public let permission: Permission.Value
+        public let permission: VOPermission.Value
         public let storageCapacity: Int
         public let rootId: String
-        public let organization: Organization.Entity
+        public let organization: VOOrganization.Entity
         public let createTime: String
         public let updateTime: String?
     }

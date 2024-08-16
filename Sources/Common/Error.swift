@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct ErrorResponse: Decodable, Error {
+public struct VOErrorResponse: Decodable, Error {
     let code: String
     let status: Int
     let message: String

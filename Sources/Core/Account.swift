@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Account {
+public struct VOAccount {
     let baseURL: String
     let accessToken: String
 

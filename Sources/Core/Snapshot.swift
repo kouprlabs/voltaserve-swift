@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Snapshot {
+public struct VOSnapshot {
     let baseURL: String
     let accessToken: String
 

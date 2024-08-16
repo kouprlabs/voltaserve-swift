@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Token {
+public struct VOToken {
     let baseURL: String
     let accessToken: String
 

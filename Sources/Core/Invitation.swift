@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Invitation {
+struct VOInvitation {
     let baseURL: String
     let accessToken: String
 
@@ -44,9 +44,9 @@ struct Invitation {
 
     public struct Entity: Codable {
         public let id: String
-        public let owner: User.Entity
+        public let owner: VOUser.Entity
         public let email: [String]
-        public let organization: Organization.Entity
+        public let organization: VOOrganization.Entity
         public let status: InvitationStatus
         public let createTime: String
         public let updateTime: String?

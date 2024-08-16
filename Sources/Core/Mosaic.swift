@@ -6,7 +6,7 @@
 import Alamofire
 import Foundation
 
-public struct Mosaic {
+public struct VOMosaic {
     let baseURL: String
     let accessToken: String
 

@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Group {
+public struct VOGroup {
     let baseURL: String
     let accessToken: String
 
@@ -39,7 +39,7 @@ public struct Group {
     public struct Entity: Codable {
         public let id: String
         public let name: String
-        public let organization: Organization.Entity
+        public let organization: VOOrganization.Entity
         public let permission: String
         public let createTime: String
         public let updateTime: String?

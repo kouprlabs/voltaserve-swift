@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct User {
+public struct VOUser {
     let baseURL: String
     let accessToken: String
 
@@ -50,7 +50,7 @@ public struct User {
     }
 }
 
-public struct AuthUser {
+public struct VOAuthUser {
     let baseURL: String
     let accessToken: String
 

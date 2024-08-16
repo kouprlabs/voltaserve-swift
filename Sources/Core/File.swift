@@ -6,7 +6,7 @@
 import Alamofire
 import Foundation
 
-public struct File {
+public struct VOFile {
     let baseURL: String
     let accessToken: String
 
@@ -525,7 +525,7 @@ public struct File {
         public let parentId: String
         public let permission: PermissionType
         public let isShared: Bool
-        public let snapshot: Snapshot.Entity?
+        public let snapshot: VOSnapshot.Entity?
         public let createTime: String
         public let updateTime: String?
     }
@@ -541,13 +541,13 @@ public struct File {
 
     public struct UserPermission: Codable {
         public let id: String
-        public let user: User.Entity
+        public let user: VOUser.Entity
         public let permission: String
     }
 
     public struct GroupPermission: Codable {
         public let id: String
-        public let group: Group.Entity
+        public let group: VOGroup.Entity
         public let permission: String
     }
 

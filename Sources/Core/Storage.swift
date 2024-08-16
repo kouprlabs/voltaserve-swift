@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct Storage {
+public struct VOStorage {
     let baseURL: String
     let accessToken: String
 

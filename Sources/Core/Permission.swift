@@ -5,7 +5,7 @@
 
 import Foundation
 
-public enum Permission {
+public enum VOPermission {
     public enum Value: String, Codable {
         case viewer
         case editor

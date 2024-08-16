@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Insights {
+struct VOInsights {
     let baseURL: String
     let accessToken: String
 
@@ -23,7 +23,7 @@ struct Insights {
     public struct Info: Codable {
         public let isAvailable: Bool
         public let isOutdated: Bool
-        public let snapshot: Snapshot.Entity?
+        public let snapshot: VOSnapshot.Entity?
     }
 
     public struct Entity: Codable {
