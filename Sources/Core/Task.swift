@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 public struct VOTask {
@@ -16,11 +17,126 @@ public struct VOTask {
 
     // MARK: - Requests
 
+    public func fetch(_ id: String) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForID(id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func fetchList(_ options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func fetchCount() async throws -> Int {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForCount(),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Int.self)
+            }
+        }
+    }
+
+    public func dismiss(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForDimiss(id: id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func dismiss() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForDismiss(),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
     // MARK: - URLs
+
+    public func url() -> URL {
+        URL(string: "\(baseURL)/v2/tasks")!
+    }
+
+    public func urlForID(_ id: String) -> URL {
+        URL(string: "\(baseURL)/v2/tasks/\(id)")!
+    }
+
+    public func urlForList(_ options: ListOptions) -> URL {
+        if let query = options.query {
+            URL(string: "\(url())?\(query)")!
+        } else {
+            url()
+        }
+    }
+
+    public func urlForCount() -> URL {
+        URL(string: "\(baseURL)/v2/tasks/count")!
+    }
+
+    public func urlForDimiss(id: String) -> URL {
+        URL(string: "\(baseURL)/v2/tasks/\(id)/dismiss")!
+    }
+
+    public func urlForDismiss() -> URL {
+        URL(string: "\(baseURL)/v2/tasks/dismiss")!
+    }
 
     // MARK: - Payloads
 
-    public enum SortBy: Codable, CustomStringConvertible {
+    public struct ListOptions {
+        public let query: String?
+        public let size: Int?
+        public let page: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+
+        var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+    }
+
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
