@@ -17,30 +17,6 @@ public struct VOMosaic {
 
     // MARK: - Requests
 
-    public func createForFile(_ id: String) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFile(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
-            }
-        }
-    }
-
-    public func deleteForFile(_ id: String) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFile(id),
-                method: .delete,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
-            }
-        }
-    }
-
     public func fetchInfoForFile(id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
@@ -64,6 +40,30 @@ public struct VOMosaic {
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleDataResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+    
+    public func createForFile(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForFile(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func deleteForFile(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForFile(id),
+                method: .delete,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
             }
         }
     }
