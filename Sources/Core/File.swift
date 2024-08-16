@@ -69,6 +69,28 @@ struct File {
         }
     }
 
+    func fetchUserPermissions(_ id: String) async throws -> UserPermission {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForUserPermissions(id: id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: UserPermission.self)
+            }
+        }
+    }
+
+    func fetchGroupPermissions(_ id: String) async throws -> GroupPermission {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForGroupPermissions(id: id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: GroupPermission.self)
+            }
+        }
+    }
+
     func create(_ options: CreateOptions) async throws -> Entity {
         switch options.type {
         case .file:
@@ -111,7 +133,12 @@ struct File {
 
     func patchName(id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForPatchName(id), method: .post, parameters: options).responseData { response in
+            AF.request(
+                urlForPatchName(id),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
         }
@@ -125,9 +152,14 @@ struct File {
         }
     }
 
-    func delete(options _: DeleteOptions) async throws {
+    func delete(_ options: DeleteOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(url(), method: .delete).responseData { response in
+            AF.request(
+                url(),
+                method: .delete,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -141,9 +173,14 @@ struct File {
         }
     }
 
-    func move(_: MoveOptions) async throws {
+    func move(_ options: MoveOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForMove(), method: .post).responseData { response in
+            AF.request(
+                urlForMove(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -157,9 +194,66 @@ struct File {
         }
     }
 
-    func copy(_: MoveOptions) async throws {
+    func copy(_ options: MoveOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForCopy(), method: .post).responseData { response in
+            AF.request(
+                urlForCopy(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForGrantUserPermission(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForRevokeUserPermission(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForGrantGroupPermission(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForRevokeGroupPermission(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
                 handleEmptyResponse(continuation: continuation, response: response)
             }
         }
@@ -269,6 +363,30 @@ struct File {
             "access_token=\(accessToken)")!
     }
 
+    func urlForUserPermissions(id: String) -> URL {
+        URL(string: "\(baseURL)/v2/files/\(id)/user_permissions")!
+    }
+
+    func urlForGroupPermissions(id: String) -> URL {
+        URL(string: "\(baseURL)/v2/files/\(id)/group_permissions")!
+    }
+
+    func urlForGrantUserPermission() -> URL {
+        URL(string: "\(baseURL)/v2/files/grant_user_permission")!
+    }
+
+    func urlForRevokeUserPermission() -> URL {
+        URL(string: "\(baseURL)/v2/files/revoke_user_permission")!
+    }
+
+    func urlForGrantGroupPermission() -> URL {
+        URL(string: "\(baseURL)/v2/files/grant_group_permission")!
+    }
+
+    func urlForRevokeGroupPermission() -> URL {
+        URL(string: "\(baseURL)/v2/files/revoke_group_permission")!
+    }
+
     // MARK: - Payloads
 
     struct PatchOptions {
@@ -302,9 +420,31 @@ struct File {
         let ids: [String]
     }
 
-    struct MoveOptions {
+    struct MoveOptions: Codable {
         let sourceIds: [String]
         let targetId: String
+    }
+
+    struct GrantUserPermissionOptions: Codable {
+        let ids: [String]
+        let userId: String
+        let permission: String
+    }
+
+    struct RevokeUserPermissionOptions: Codable {
+        let ids: [String]
+        let userId: String
+    }
+
+    struct GrantGroupPermissionOptions: Codable {
+        let ids: [String]
+        let groupId: String
+        let permission: String
+    }
+
+    struct RevokeGroupPermissionOptions: Codable {
+        let ids: [String]
+        let groupId: String
     }
 
     // MARK: - Types
