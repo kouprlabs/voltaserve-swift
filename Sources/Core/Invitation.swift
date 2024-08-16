@@ -179,15 +179,6 @@ struct VOInvitation {
         case desc
     }
 
-    public struct ListQueryParams {
-        public let page: String?
-        public let size: String?
-        public let sort_by: String?
-        public let sort_order: String?
-        public let query: String?
-        public let organization_id: String?
-    }
-
     // MARK: - Types
 
     public enum InvitationStatus: String, Codable {
