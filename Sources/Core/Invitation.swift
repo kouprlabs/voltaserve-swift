@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 struct VOInvitation {
@@ -16,11 +17,147 @@ struct VOInvitation {
 
     // MARK: - Requests
 
+    public func fetchIncoming(_ options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(urlForIncoming(), options: options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func fetchOutgoing(_ options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(urlForOutgoing(), options: options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func delete(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForID(id),
+                method: .delete,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func resend(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForResend(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func accept(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForAccept(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func decline(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForDecline(id),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
     // MARK: - URLs
+
+    public func url() -> URL {
+        URL(string: "\(baseURL)/invitations")!
+    }
+
+    public func urlForID(_ id: String) -> URL {
+        URL(string: "\(baseURL)/invitations/\(id)")!
+    }
+
+    public func urlForIncoming() -> URL {
+        URL(string: "\(baseURL)/invitations/incoming")!
+    }
+
+    public func urlForOutgoing() -> URL {
+        URL(string: "\(baseURL)/invitations/outgoing")!
+    }
+
+    public func urlForResend(_ id: String) -> URL {
+        URL(string: "\(baseURL)/invitations/\(id)/resend")!
+    }
+
+    public func urlForAccept(_ id: String) -> URL {
+        URL(string: "\(baseURL)/invitations/\(id)/accept")!
+    }
+
+    public func urlForDecline(_ id: String) -> URL {
+        URL(string: "\(baseURL)/invitations/\(id)/decline")!
+    }
+
+    public func urlForList(_ url: URL, options: ListOptions) -> URL {
+        var urlComponents = URLComponents()
+        if let organizationID = options.organizationId {
+            urlComponents.queryItems?.append(URLQueryItem(name: "organization_id", value: organizationID))
+        }
+        if let size = options.size {
+            urlComponents.queryItems?.append(URLQueryItem(name: "size", value: String(size)))
+        }
+        if let page = options.page {
+            urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
+        }
+        if let sortBy = options.sortBy {
+            urlComponents.queryItems?.append(URLQueryItem(name: "sort_by", value: sortBy.rawValue))
+        }
+        if let sortOrder = options.sortOrder {
+            urlComponents.queryItems?.append(URLQueryItem(name: "sort_order", value: sortOrder.rawValue))
+        }
+        let query = urlComponents.url?.query
+        if let query {
+            return URL(string: "\(url)?\(query)")!
+        } else {
+            return url
+        }
+    }
 
     // MARK: - Payloads
 
-    public enum SortBy: Codable, CustomStringConvertible {
+    public struct CreateOptions: Codable {
+        public let organizationId: String
+        public let emails: [String]
+    }
+
+    public struct ListOptions: Codable {
+        public let organizationId: String?
+        public let size: Int?
+        public let page: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+    }
+
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case email
         case dateCreated
         case dateModified
@@ -40,6 +177,15 @@ struct VOInvitation {
     public enum SortOrder: String, Codable {
         case asc
         case desc
+    }
+
+    public struct ListQueryParams {
+        public let page: String?
+        public let size: String?
+        public let sort_by: String?
+        public let sort_order: String?
+        public let query: String?
+        public let organization_id: String?
     }
 
     // MARK: - Types
