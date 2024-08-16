@@ -10,13 +10,13 @@ struct VOInsights {
     let accessToken: String
 
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
-    
+
     public init(baseURL: String, accessToken: String) {
         self.baseURL = baseURL
         self.accessToken = accessToken

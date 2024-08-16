@@ -15,13 +15,13 @@ struct VOInvitation {
     }
 
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
-    
+
     public enum SortBy: Codable, CustomStringConvertible {
         case email
         case dateCreated

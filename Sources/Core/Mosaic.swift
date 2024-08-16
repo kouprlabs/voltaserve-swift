@@ -17,7 +17,7 @@ public struct VOMosaic {
 
     // MARK: - Requests
 
-    public func fetchInfoForFile(id: String) async throws -> Info {
+    public func fetchInfoForFile(_ id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForInfo(id),
@@ -43,7 +43,7 @@ public struct VOMosaic {
             }
         }
     }
-    
+
     public func createForFile(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(

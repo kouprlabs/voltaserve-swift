@@ -15,13 +15,13 @@ public struct VOStorage {
     }
 
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
-    
+
     public struct Usage: Codable {
         public let bytes: Int
         public let maxBytes: Int

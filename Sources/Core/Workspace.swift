@@ -15,13 +15,13 @@ public struct VOWorkspace {
     }
 
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
-    
+
     public enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated

@@ -36,7 +36,7 @@ public struct VOFile {
         }
     }
 
-    public func fetchCount(id: String) async throws -> Int {
+    public func fetchCount(_ id: String) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(urlForCount(id), headers: headersWithAuthorization(accessToken)).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Int.self)

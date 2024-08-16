@@ -13,13 +13,13 @@ public struct VOUser {
         self.baseURL = baseURL
         self.accessToken = accessToken
     }
-    
+
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
 
     public enum SortBy: Codable, CustomStringConvertible {
@@ -66,12 +66,20 @@ public struct VOAuthUser {
         self.baseURL = baseURL
         self.accessToken = accessToken
     }
-    
+
     // MARK: - Requests
-    
+
     // MARK: - URLs
-    
+
     // MARK: - Payloads
-    
+
     // MARK: - Types
+
+    public struct Entity: Codable {
+        public let id: String
+        public let username: String
+        public let email: String
+        public let fullName: String
+        public let picture: String?
+    }
 }
