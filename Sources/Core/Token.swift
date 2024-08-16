@@ -5,8 +5,8 @@
 
 import Foundation
 
-enum Token {
-    struct Value {
-        var accessToken: String
+public enum Token {
+    public struct Value {
+        public var accessToken: String
     }
 }

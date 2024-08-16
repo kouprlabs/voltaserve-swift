@@ -6,15 +6,15 @@
 import Foundation
 
 struct Invitation {
-    var baseURL: String
-    var accessToken: String
+    public var baseURL: String
+    public var accessToken: String
 
-    enum SortBy: Codable, CustomStringConvertible {
+    public enum SortBy: Codable, CustomStringConvertible {
         case email
         case dateCreated
         case dateModified
 
-        var description: String {
+        public var description: String {
             switch self {
             case .email:
                 "email"
@@ -26,32 +26,32 @@ struct Invitation {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    enum InvitationStatus: String, Codable {
+    public enum InvitationStatus: String, Codable {
         case pending
         case accepted
         case declined
     }
 
-    struct Entity: Codable {
-        let id: String
-        let owner: User.Entity
-        let email: [String]
-        let organization: Organization.Entity
-        let status: InvitationStatus
-        let createTime: String
-        let updateTime: String?
+    public struct Entity: Codable {
+        public let id: String
+        public let owner: User.Entity
+        public let email: [String]
+        public let organization: Organization.Entity
+        public let status: InvitationStatus
+        public let createTime: String
+        public let updateTime: String?
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 }

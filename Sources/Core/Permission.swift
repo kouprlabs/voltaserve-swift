@@ -5,13 +5,13 @@
 
 import Foundation
 
-enum Permission {
-    enum Value: String, Codable {
+public enum Permission {
+    public enum Value: String, Codable {
         case viewer
         case editor
         case owner
 
-        func weight() -> Int {
+        public func weight() -> Int {
             switch self {
             case .viewer:
                 1
@@ -22,23 +22,23 @@ enum Permission {
             }
         }
 
-        func gt(_ permission: Value) -> Bool {
+        public func gt(_ permission: Value) -> Bool {
             weight() > permission.weight()
         }
 
-        func ge(_ permission: Value) -> Bool {
+        public func ge(_ permission: Value) -> Bool {
             weight() >= permission.weight()
         }
 
-        func lt(_ permission: Value) -> Bool {
+        public func lt(_ permission: Value) -> Bool {
             weight() < permission.weight()
         }
 
-        func le(_ permission: Value) -> Bool {
+        public func le(_ permission: Value) -> Bool {
             weight() <= permission.weight()
         }
 
-        func eq(_ permission: Value) -> Bool {
+        public func eq(_ permission: Value) -> Bool {
             weight() == permission.weight()
         }
     }

@@ -5,16 +5,16 @@
 
 import Foundation
 
-struct TaskData {
-    var baseURL: String
-    var accessToken: String
+public struct TaskData {
+    public var baseURL: String
+    public var accessToken: String
 
-    enum SortBy: Codable, CustomStringConvertible {
+    public enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
 
-        var description: String {
+        public var description: String {
             switch self {
             case .name:
                 "name"
@@ -26,42 +26,42 @@ struct TaskData {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Codable {
-        let id: String
-        let name: String
-        let error: String?
-        let percentage: Int?
-        let isIndeterminate: Bool
-        let userId: String
-        let status: Status
-        let payload: Payload?
+    public struct Entity: Codable {
+        public let id: String
+        public let name: String
+        public let error: String?
+        public let percentage: Int?
+        public let isIndeterminate: Bool
+        public let userId: String
+        public let status: Status
+        public let payload: Payload?
     }
 
-    enum Status: String, Codable {
+    public enum Status: String, Codable {
         case waiting
         case running
         case success
         case error
     }
 
-    struct Payload: Codable {
-        let taskObject: String?
+    public struct Payload: Codable {
+        public let taskObject: String?
 
         enum CodingKeys: String, CodingKey {
             case taskObject = "object"
         }
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 }

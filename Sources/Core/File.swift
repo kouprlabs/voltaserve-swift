@@ -6,13 +6,13 @@
 import Alamofire
 import Foundation
 
-struct File {
-    var baseURL: String
-    var accessToken: String
+public struct File {
+    public var baseURL: String
+    public var accessToken: String
 
     // MARK: - Requests
 
-    func fetch(_ id: String) async throws -> Entity {
+    public func fetch(_ id: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForID(id),
@@ -23,7 +23,7 @@ struct File {
         }
     }
 
-    func fetchPath(_ id: String) async throws -> [Entity] {
+    public func fetchPath(_ id: String) async throws -> [Entity] {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(urlForPath(id), headers: headersWithAuthorization(accessToken)).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: [Entity].self)
@@ -31,7 +31,7 @@ struct File {
         }
     }
 
-    func fetchCount(id: String) async throws -> Int {
+    public func fetchCount(id: String) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(urlForCount(id), headers: headersWithAuthorization(accessToken)).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Int.self)
@@ -39,7 +39,7 @@ struct File {
         }
     }
 
-    func fetchList(_ id: String, options: ListOptions) async throws -> List {
+    public func fetchList(_ id: String, options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForList(id: id, options: options),
@@ -51,7 +51,7 @@ struct File {
         }
     }
 
-    func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
+    public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForSegmentedPage(id: id, page: page, fileExtension: fileExtension),
@@ -62,7 +62,7 @@ struct File {
         }
     }
 
-    func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
+    public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForSegmentedThumbnail(id: id, page: page, fileExtension: String(fileExtension.dropFirst())),
@@ -73,7 +73,7 @@ struct File {
         }
     }
 
-    func fetchUserPermissions(_ id: String) async throws -> UserPermission {
+    public func fetchUserPermissions(_ id: String) async throws -> UserPermission {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForUserPermissions(id: id),
@@ -84,7 +84,7 @@ struct File {
         }
     }
 
-    func fetchGroupPermissions(_ id: String) async throws -> GroupPermission {
+    public func fetchGroupPermissions(_ id: String) async throws -> GroupPermission {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForGroupPermissions(id: id),
@@ -95,7 +95,7 @@ struct File {
         }
     }
 
-    func create(_ options: CreateOptions) async throws -> Entity {
+    public func create(_ options: CreateOptions) async throws -> Entity {
         switch options.type {
         case .file:
             try await upload(urlForCreate(options), method: .post, data: options.data!)
@@ -112,11 +112,11 @@ struct File {
         }
     }
 
-    func patch(_ id: String, options: PatchOptions) async throws -> Entity {
+    public func patch(_ id: String, options: PatchOptions) async throws -> Entity {
         try await upload(urlForID(id), method: .patch, data: options.data)
     }
 
-    private func upload(
+    func upload(
         _ url: URL,
         method: HTTPMethod,
         data: Data,
@@ -135,7 +135,7 @@ struct File {
         }
     }
 
-    func patchName(id: String, options: PatchNameOptions) async throws -> Entity {
+    public func patchName(id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForPatchName(id),
@@ -149,7 +149,7 @@ struct File {
         }
     }
 
-    func delete(id: String) async throws {
+    public func delete(id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForID(id),
@@ -161,7 +161,7 @@ struct File {
         }
     }
 
-    func delete(_ options: DeleteOptions) async throws {
+    public func delete(_ options: DeleteOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 url(),
@@ -175,7 +175,7 @@ struct File {
         }
     }
 
-    func move(_ id: String, to targetID: String) async throws {
+    public func move(_ id: String, to targetID: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForMove(id, to: targetID),
@@ -187,7 +187,7 @@ struct File {
         }
     }
 
-    func move(_ options: MoveOptions) async throws {
+    public func move(_ options: MoveOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForMove(),
@@ -201,7 +201,7 @@ struct File {
         }
     }
 
-    func copy(_ id: String, to targetID: String) async throws {
+    public func copy(_ id: String, to targetID: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForCopy(id, to: targetID),
@@ -213,7 +213,7 @@ struct File {
         }
     }
 
-    func copy(_ options: MoveOptions) async throws {
+    public func copy(_ options: MoveOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForCopy(),
@@ -227,7 +227,7 @@ struct File {
         }
     }
 
-    func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
+    public func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForGrantUserPermission(),
@@ -241,7 +241,7 @@ struct File {
         }
     }
 
-    func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
+    public func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForRevokeUserPermission(),
@@ -255,7 +255,7 @@ struct File {
         }
     }
 
-    func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
+    public func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForGrantGroupPermission(),
@@ -269,7 +269,7 @@ struct File {
         }
     }
 
-    func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
+    public func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForRevokeGroupPermission(),
@@ -285,43 +285,43 @@ struct File {
 
     // MARK: - URLs
 
-    func url() -> URL {
+    public func url() -> URL {
         URL(string: "\(baseURL)/v2/files")!
     }
 
-    func urlForID(_ id: String) -> URL {
+    public func urlForID(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)")!
     }
 
-    func urlForPath(_ id: String) -> URL {
+    public func urlForPath(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/path")!
     }
 
-    func urlForCount(_ id: String) -> URL {
+    public func urlForCount(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/count")!
     }
 
-    func urlForPatchName(_ id: String) -> URL {
+    public func urlForPatchName(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/name")!
     }
 
-    func urlForMove(_ id: String, to targetID: String) -> URL {
+    public func urlForMove(_ id: String, to targetID: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/move/\(targetID)")!
     }
 
-    func urlForMove() -> URL {
+    public func urlForMove() -> URL {
         URL(string: "\(baseURL)/v2/files/move")!
     }
 
-    func urlForCopy(_ id: String, to targetID: String) -> URL {
+    public func urlForCopy(_ id: String, to targetID: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/copy/\(targetID)")!
     }
 
-    func urlForCopy() -> URL {
+    public func urlForCopy() -> URL {
         URL(string: "\(baseURL)/v2/files/copy")!
     }
 
-    func urlForList(id: String, options: ListOptions) -> URL {
+    public func urlForList(id: String, options: ListOptions) -> URL {
         var urlComponents = URLComponents()
         if let page = options.page {
             urlComponents.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
@@ -351,7 +351,7 @@ struct File {
         }
     }
 
-    func urlForCreate(_ options: CreateOptions) -> URL {
+    public func urlForCreate(_ options: CreateOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
             URLQueryItem(name: "type", value: options.type.rawValue),
@@ -367,125 +367,125 @@ struct File {
         return URL(string: "\(baseURL)/v2/files?" + query!)!
     }
 
-    func urlForOriginal(id: String, fileExtension: String) -> URL {
+    public func urlForOriginal(id: String, fileExtension: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/original.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    func urlForPreview(id: String, fileExtension: String) -> URL {
+    public func urlForPreview(id: String, fileExtension: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/preview.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    func urlForSegmentedPage(id: String, page: Int, fileExtension: String) -> URL {
+    public func urlForSegmentedPage(id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/segmentation/pages/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
+    public func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/segmentation/thumbnails/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    func urlForUserPermissions(id: String) -> URL {
+    public func urlForUserPermissions(id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/user_permissions")!
     }
 
-    func urlForGroupPermissions(id: String) -> URL {
+    public func urlForGroupPermissions(id: String) -> URL {
         URL(string: "\(baseURL)/v2/files/\(id)/group_permissions")!
     }
 
-    func urlForGrantUserPermission() -> URL {
+    public func urlForGrantUserPermission() -> URL {
         URL(string: "\(baseURL)/v2/files/grant_user_permission")!
     }
 
-    func urlForRevokeUserPermission() -> URL {
+    public func urlForRevokeUserPermission() -> URL {
         URL(string: "\(baseURL)/v2/files/revoke_user_permission")!
     }
 
-    func urlForGrantGroupPermission() -> URL {
+    public func urlForGrantGroupPermission() -> URL {
         URL(string: "\(baseURL)/v2/files/grant_group_permission")!
     }
 
-    func urlForRevokeGroupPermission() -> URL {
+    public func urlForRevokeGroupPermission() -> URL {
         URL(string: "\(baseURL)/v2/files/revoke_group_permission")!
     }
 
     // MARK: - Payloads
 
-    struct PatchOptions {
-        let data: Data
-        let onProgress: ((Double) -> Void)?
+    public struct PatchOptions {
+        public let data: Data
+        public let onProgress: ((Double) -> Void)?
     }
 
-    struct ListOptions: Codable {
-        let size: Int?
-        let page: Int?
-        let type: FileType?
-        let sortBy: SortBy?
-        let sortOrder: SortOrder?
-        let query: Query?
+    public struct ListOptions: Codable {
+        public let size: Int?
+        public let page: Int?
+        public let type: FileType?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+        public let query: Query?
     }
 
-    struct CreateOptions {
-        let type: FileType
-        let workspaceID: String
-        let parentID: String?
-        let name: String?
-        let data: Data?
-        let onProgress: ((Double) -> Void)?
+    public struct CreateOptions {
+        public let type: FileType
+        public let workspaceID: String
+        public let parentID: String?
+        public let name: String?
+        public let data: Data?
+        public let onProgress: ((Double) -> Void)?
     }
 
-    struct PatchNameOptions: Codable {
-        let name: String
+    public struct PatchNameOptions: Codable {
+        public let name: String
     }
 
-    struct DeleteOptions: Codable {
-        let ids: [String]
+    public struct DeleteOptions: Codable {
+        public let ids: [String]
     }
 
-    struct MoveOptions: Codable {
-        let sourceIds: [String]
-        let targetId: String
+    public struct MoveOptions: Codable {
+        public let sourceIds: [String]
+        public let targetId: String
     }
 
-    struct GrantUserPermissionOptions: Codable {
-        let ids: [String]
-        let userId: String
-        let permission: String
+    public struct GrantUserPermissionOptions: Codable {
+        public let ids: [String]
+        public let userId: String
+        public let permission: String
     }
 
-    struct RevokeUserPermissionOptions: Codable {
-        let ids: [String]
-        let userId: String
+    public struct RevokeUserPermissionOptions: Codable {
+        public let ids: [String]
+        public let userId: String
     }
 
-    struct GrantGroupPermissionOptions: Codable {
-        let ids: [String]
-        let groupId: String
-        let permission: String
+    public struct GrantGroupPermissionOptions: Codable {
+        public let ids: [String]
+        public let groupId: String
+        public let permission: String
     }
 
-    struct RevokeGroupPermissionOptions: Codable {
-        let ids: [String]
-        let groupId: String
+    public struct RevokeGroupPermissionOptions: Codable {
+        public let ids: [String]
+        public let groupId: String
     }
 
     // MARK: - Types
 
-    enum FileType: String, Codable {
+    public enum FileType: String, Codable {
         case file
         case folder
     }
 
-    enum SortBy: String, Codable, CustomStringConvertible {
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case name
         case kind
         case size
         case dateCreated
         case dateModified
 
-        var description: String {
+        public var description: String {
             switch self {
             case .name:
                 "name"
@@ -501,58 +501,58 @@ struct File {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    enum PermissionType: String, Codable {
+    public enum PermissionType: String, Codable {
         case viewer
         case editor
         case owner
     }
 
-    struct Entity: Codable {
-        let id: String
-        let workspaceId: String
-        let name: String
-        let type: FileType
-        let parentId: String
-        let permission: PermissionType
-        let isShared: Bool
-        let snapshot: Snapshot.Entity?
-        let createTime: String
-        let updateTime: String?
+    public struct Entity: Codable {
+        public let id: String
+        public let workspaceId: String
+        public let name: String
+        public let type: FileType
+        public let parentId: String
+        public let permission: PermissionType
+        public let isShared: Bool
+        public let snapshot: Snapshot.Entity?
+        public let createTime: String
+        public let updateTime: String?
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
-        let query: Query?
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
+        public let query: Query?
     }
 
-    struct UserPermission: Codable {
-        let id: String
-        let user: User.Entity
-        let permission: String
+    public struct UserPermission: Codable {
+        public let id: String
+        public let user: User.Entity
+        public let permission: String
     }
 
-    struct GroupPermission: Codable {
-        let id: String
-        let group: Group.Entity
-        let permission: String
+    public struct GroupPermission: Codable {
+        public let id: String
+        public let group: Group.Entity
+        public let permission: String
     }
 
-    struct Query: Codable {
-        let text: String
-        let type: FileType?
-        let createTimeAfter: Int?
-        let createTimeBefore: Int?
-        let updateTimeAfter: Int?
-        let updateTimeBefore: Int?
+    public struct Query: Codable {
+        public let text: String
+        public let type: FileType?
+        public let createTimeAfter: Int?
+        public let createTimeBefore: Int?
+        public let updateTimeAfter: Int?
+        public let updateTimeBefore: Int?
 
         static func encodeToBase64(_ value: String) -> String {
             guard let data = value.data(using: .utf8) else {

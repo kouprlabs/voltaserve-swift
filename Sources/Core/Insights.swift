@@ -6,41 +6,41 @@
 import Foundation
 
 struct Insights {
-    var baseURL: String
-    var accessToken: String
+    public var baseURL: String
+    public var accessToken: String
 
-    struct Language: Codable {
-        let id: String
-        let iso6393: String
-        let name: String
+    public struct Language: Codable {
+        public let id: String
+        public let iso6393: String
+        public let name: String
     }
 
-    struct Info: Codable {
-        let isAvailable: Bool
-        let isOutdated: Bool
-        let snapshot: Snapshot.Entity?
+    public struct Info: Codable {
+        public let isAvailable: Bool
+        public let isOutdated: Bool
+        public let snapshot: Snapshot.Entity?
     }
 
-    struct Entity: Codable {
-        let text: String
-        let label: String
-        let frequency: Int
+    public struct Entity: Codable {
+        public let text: String
+        public let label: String
+        public let frequency: Int
     }
 
-    struct EntityList: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct EntityList: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 
-    enum SortBy: String, Codable {
+    public enum SortBy: String, Codable {
         case name
         case frequency
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case sesc
     }

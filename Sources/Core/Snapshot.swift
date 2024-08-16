@@ -5,16 +5,16 @@
 
 import Foundation
 
-struct Snapshot {
-    var baseURL: String
-    var accessToken: String
+public struct Snapshot {
+    public var baseURL: String
+    public var accessToken: String
 
-    enum SortBy: Codable, CustomStringConvertible {
+    public enum SortBy: Codable, CustomStringConvertible {
         case version
         case dateCreated
         case dateModified
 
-        var description: String {
+        public var description: String {
             switch self {
             case .version:
                 "version"
@@ -26,55 +26,55 @@ struct Snapshot {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Codable {
-        let id: String
-        let version: Int
-        let status: Status
-        let original: Download
-        let preview: Download?
-        let ocr: Download?
-        let text: Download?
-        let entities: Download?
-        let mosaic: Download?
-        let segmentation: Download?
-        let thumbnail: Download?
-        let language: String?
-        let isActive: Bool
-        let task: TaskInfo?
-        let createTime: String
-        let updateTime: String?
+    public struct Entity: Codable {
+        public let id: String
+        public let version: Int
+        public let status: Status
+        public let original: Download
+        public let preview: Download?
+        public let ocr: Download?
+        public let text: Download?
+        public let entities: Download?
+        public let mosaic: Download?
+        public let segmentation: Download?
+        public let thumbnail: Download?
+        public let language: String?
+        public let isActive: Bool
+        public let task: TaskInfo?
+        public let createTime: String
+        public let updateTime: String?
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 
-    enum Status: String, Codable {
+    public enum Status: String, Codable {
         case waiting
         case processing
         case ready
         case error
     }
 
-    struct TaskInfo: Codable {
-        let id: String
-        let isPending: Bool
+    public struct TaskInfo: Codable {
+        public let id: String
+        public let isPending: Bool
     }
 
-    struct Download: Codable {
-        let fileExtension: String?
-        let size: Int?
-        let image: ImageProps?
-        let document: DocumentProps?
+    public struct Download: Codable {
+        public let fileExtension: String?
+        public let size: Int?
+        public let image: ImageProps?
+        public let document: DocumentProps?
 
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
@@ -84,20 +84,20 @@ struct Snapshot {
         }
     }
 
-    struct ImageProps: Codable {
-        let width: Int
-        let height: Int
-        let zoomLevels: [ZoomLevel]?
+    public struct ImageProps: Codable {
+        public let width: Int
+        public let height: Int
+        public let zoomLevels: [ZoomLevel]?
     }
 
-    struct DocumentProps: Codable {
-        let pages: PagesProps?
-        let thumbnails: ThumbnailsProps?
+    public struct DocumentProps: Codable {
+        public let pages: PagesProps?
+        public let thumbnails: ThumbnailsProps?
     }
 
-    struct PagesProps: Codable {
-        let count: Int
-        let fileExtension: String
+    public struct PagesProps: Codable {
+        public let count: Int
+        public let fileExtension: String
 
         enum CodingKeys: String, CodingKey {
             case count
@@ -105,28 +105,28 @@ struct Snapshot {
         }
     }
 
-    struct ThumbnailsProps: Codable {
-        let fileExtension: String
+    public struct ThumbnailsProps: Codable {
+        public let fileExtension: String
 
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
         }
     }
 
-    struct Tile: Codable {
-        let width: Int
-        let height: Int
-        let lastColWidth: Int
-        let lastRowHeight: Int
+    public struct Tile: Codable {
+        public let width: Int
+        public let height: Int
+        public let lastColWidth: Int
+        public let lastRowHeight: Int
     }
 
-    struct ZoomLevel: Codable {
-        let index: Int
-        let width: Int
-        let height: Int
-        let rows: Int
-        let cols: Int
-        let scaleDownPercentage: Int
-        let tile: Tile
+    public struct ZoomLevel: Codable {
+        public let index: Int
+        public let width: Int
+        public let height: Int
+        public let rows: Int
+        public let cols: Int
+        public let scaleDownPercentage: Int
+        public let tile: Tile
     }
 }

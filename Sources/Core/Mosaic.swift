@@ -6,13 +6,13 @@
 import Alamofire
 import Foundation
 
-struct Mosaic {
-    var baseURL: String
-    var accessToken: String
+public struct Mosaic {
+    public var baseURL: String
+    public var accessToken: String
 
     // MARK: - Requests
 
-    func createForFile(_ id: String) async throws {
+    public func createForFile(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForFile(id),
@@ -24,7 +24,7 @@ struct Mosaic {
         }
     }
 
-    func deleteForFile(_ id: String) async throws {
+    public func deleteForFile(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForFile(id),
@@ -36,7 +36,7 @@ struct Mosaic {
         }
     }
 
-    func fetchInfoForFile(id: String) async throws -> Info {
+    public func fetchInfoForFile(id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForFile(id),
@@ -47,7 +47,7 @@ struct Mosaic {
         }
     }
 
-    func fetchDataForFile(
+    public func fetchDataForFile(
         _ id: String,
         zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
@@ -65,15 +65,15 @@ struct Mosaic {
 
     // MARK: - URLs
 
-    func urlForFile(_ id: String) -> URL {
+    public func urlForFile(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/mosaics/\(id)")!
     }
 
-    func urlForInfo(_ id: String) -> URL {
+    public func urlForInfo(_ id: String) -> URL {
         URL(string: "\(baseURL)/v2/mosaics/\(id)/info")!
     }
 
-    func urlForTile(
+    public func urlForTile(
         _ id: String,
         zoomLevel: ZoomLevel,
         row: Int,
@@ -87,15 +87,15 @@ struct Mosaic {
 
     // MARK: - Types
 
-    struct Info: Codable {
-        var metadata: Metadata
+    public struct Info: Codable {
+        public var metadata: Metadata
     }
 
-    struct Metadata: Codable {
-        var width: Int
-        var height: Int
-        var fileExtension: String
-        var zoomLevels: [ZoomLevel]
+    public struct Metadata: Codable {
+        public let width: Int
+        public let height: Int
+        public let fileExtension: String
+        public let zoomLevels: [ZoomLevel]
 
         enum CodingKeys: String, CodingKey {
             case width
@@ -105,20 +105,20 @@ struct Mosaic {
         }
     }
 
-    struct ZoomLevel: Codable {
-        var index: Int
-        var width: Int
-        var height: Int
-        var rows: Int
-        var cols: Int
-        var scaleDownPercentage: Float
-        var tile: Tile
+    public struct ZoomLevel: Codable {
+        public let index: Int
+        public let width: Int
+        public let height: Int
+        public let rows: Int
+        public let cols: Int
+        public let scaleDownPercentage: Float
+        public let tile: Tile
     }
 
-    struct Tile: Codable {
-        var width: Int
-        var height: Int
-        var lastColWidth: Int
-        var lastRowHeight: Int
+    public struct Tile: Codable {
+        public let width: Int
+        public let height: Int
+        public let lastColWidth: Int
+        public let lastRowHeight: Int
     }
 }

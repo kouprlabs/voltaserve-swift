@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Account {
-    var baseURL: String
-    var accessToken: String
+public struct Account {
+    public var baseURL: String
+    public var accessToken: String
 }

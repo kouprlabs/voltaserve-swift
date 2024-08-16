@@ -5,16 +5,16 @@
 
 import Foundation
 
-struct Organization {
-    var baseURL: String
-    var accessToken: String
+public struct Organization {
+    public var baseURL: String
+    public var accessToken: String
 
-    enum SortBy: Codable, CustomStringConvertible {
+    public enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
 
-        var description: String {
+        public var description: String {
             switch self {
             case .name:
                 "name"
@@ -26,24 +26,24 @@ struct Organization {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Codable {
-        let id: String
-        let name: String
-        let permission: Permission.Value
-        let createTime: String
-        let updateTime: String?
+    public struct Entity: Codable {
+        public let id: String
+        public let name: String
+        public let permission: Permission.Value
+        public let createTime: String
+        public let updateTime: String?
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 }

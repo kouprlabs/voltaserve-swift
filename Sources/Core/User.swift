@@ -5,15 +5,15 @@
 
 import Foundation
 
-struct User {
-    var baseURL: String
-    var accessToken: String
+public struct User {
+    public var baseURL: String
+    public var accessToken: String
 
-    enum SortBy: Codable, CustomStringConvertible {
+    public enum SortBy: Codable, CustomStringConvertible {
         case email
         case fullName
 
-        var description: String {
+        public var description: String {
             switch self {
             case .email:
                 "email"
@@ -23,24 +23,24 @@ struct User {
         }
     }
 
-    enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Codable {
-        let id: String
-        let username: String
-        let email: String
-        let fullName: String
-        let picture: String?
+    public struct Entity: Codable {
+        public let id: String
+        public let username: String
+        public let email: String
+        public let fullName: String
+        public let picture: String?
     }
 
-    struct List: Codable {
-        let data: [Entity]
-        let totalPages: Int
-        let totalElements: Int
-        let page: Int
-        let size: Int
+    public struct List: Codable {
+        public let data: [Entity]
+        public let totalPages: Int
+        public let totalElements: Int
+        public let page: Int
+        public let size: Int
     }
 }

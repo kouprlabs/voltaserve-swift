@@ -5,13 +5,13 @@
 
 import Foundation
 
-struct Storage {
-    var baseURL: String
-    var accessToken: String
+public struct Storage {
+    public var baseURL: String
+    public var accessToken: String
 
-    struct Usage: Codable {
-        let bytes: Int
-        let maxBytes: Int
-        let percentage: Int
+    public struct Usage: Codable {
+        public let bytes: Int
+        public let maxBytes: Int
+        public let percentage: Int
     }
 }
