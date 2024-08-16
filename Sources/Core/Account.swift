@@ -13,4 +13,12 @@ public struct VOAccount {
         self.baseURL = baseURL
         self.accessToken = accessToken
     }
+    
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
 }

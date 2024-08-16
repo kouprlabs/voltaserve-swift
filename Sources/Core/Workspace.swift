@@ -14,6 +14,14 @@ public struct VOWorkspace {
         self.accessToken = accessToken
     }
 
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
+    
     public enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated

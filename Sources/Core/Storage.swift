@@ -14,6 +14,14 @@ public struct VOStorage {
         self.accessToken = accessToken
     }
 
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
+    
     public struct Usage: Codable {
         public let bytes: Int
         public let maxBytes: Int

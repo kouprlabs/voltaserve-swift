@@ -14,6 +14,14 @@ struct VOInvitation {
         self.accessToken = accessToken
     }
 
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
+    
     public enum SortBy: Codable, CustomStringConvertible {
         case email
         case dateCreated

@@ -13,6 +13,14 @@ public struct VOUser {
         self.baseURL = baseURL
         self.accessToken = accessToken
     }
+    
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
 
     public enum SortBy: Codable, CustomStringConvertible {
         case email
@@ -58,4 +66,12 @@ public struct VOAuthUser {
         self.baseURL = baseURL
         self.accessToken = accessToken
     }
+    
+    // MARK: - Requests
+    
+    // MARK: - URLs
+    
+    // MARK: - Payloads
+    
+    // MARK: - Types
 }
