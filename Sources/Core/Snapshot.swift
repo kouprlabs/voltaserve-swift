@@ -17,7 +17,7 @@ public struct VOSnapshot {
 
     // MARK: - Requests
 
-    public func fetchList(options: ListOptions) async throws -> List {
+    public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForList(options),

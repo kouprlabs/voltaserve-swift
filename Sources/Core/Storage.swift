@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 public struct VOStorage {
@@ -16,9 +17,56 @@ public struct VOStorage {
 
     // MARK: - Requests
 
+    public func fetchAccountUsage() async throws -> Usage {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForAccountUsage(),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            }
+        }
+    }
+
+    public func fetchWorkspaceUsage(_ id: String) async throws -> Usage {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForWokrspaceUsage(id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            }
+        }
+    }
+
+    public func fetchFileUsage(_ id: String) async throws -> Usage {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForFileUsage(id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            }
+        }
+    }
+
     // MARK: - URLs
 
-    // MARK: - Payloads
+    public func urlForAccountUsage() -> URL {
+        URL(string: "\(baseURL)/v2/storage/account_usage")!
+    }
+
+    public func urlForWokrspaceUsage(_ id: String) -> URL {
+        var components = URLComponents(string: "\(baseURL)/v2/storage/workspace_usage")
+        components?.queryItems = [URLQueryItem(name: "id", value: id)]
+        return components!.url!
+    }
+
+    public func urlForFileUsage(_ id: String) -> URL {
+        var components = URLComponents(string: "\(baseURL)/v2/storage/file_usage")
+        components?.queryItems = [URLQueryItem(name: "id", value: id)]
+        return components!.url!
+    }
 
     // MARK: - Types
 
