@@ -44,7 +44,7 @@ public struct VOMosaic {
     public func fetchInfoForFile(id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForFile(id),
+                urlForInfo(id),
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Info.self)
