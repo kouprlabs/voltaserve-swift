@@ -7,7 +7,7 @@ Prerequisites:
 - Install [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
 - Install [SwiftLint](https://github.com/realm/SwiftLint).
 
-This is a Swift Package, it can be imported and used in your application as follows:
+This is a Swift package, it can be imported and used in your application as follows:
 ```swift
 import Voltaserve
 ```
