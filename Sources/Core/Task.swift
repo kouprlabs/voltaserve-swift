@@ -77,11 +77,11 @@ public struct VOTask {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/v2/tasks")!
+        URL(string: "\(baseURL)/tasks")!
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/tasks/\(id)")!
+        URL(string: "\(baseURL)/tasks/\(id)")!
     }
 
     public func urlForList(_ options: ListOptions) -> URL {
@@ -93,15 +93,15 @@ public struct VOTask {
     }
 
     public func urlForCount() -> URL {
-        URL(string: "\(baseURL)/v2/tasks/count")!
+        URL(string: "\(baseURL)/tasks/count")!
     }
 
     public func urlForDimiss(id: String) -> URL {
-        URL(string: "\(baseURL)/v2/tasks/\(id)/dismiss")!
+        URL(string: "\(baseURL)/tasks/\(id)/dismiss")!
     }
 
     public func urlForDismiss() -> URL {
-        URL(string: "\(baseURL)/v2/tasks/dismiss")!
+        URL(string: "\(baseURL)/tasks/dismiss")!
     }
 
     // MARK: - Payloads

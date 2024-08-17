@@ -59,19 +59,19 @@ struct VOInsights {
     // MARK: - URLs
 
     public func urlForFile(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/insights/\(id)")!
+        URL(string: "\(baseURL)/insights/\(id)")!
     }
 
     public func urlForInfo(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/insights/\(id)/info")!
+        URL(string: "\(baseURL)/insights/\(id)/info")!
     }
 
     public func urlForEntities(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/insights/\(id)/entities")!
+        URL(string: "\(baseURL)/insights/\(id)/entities")!
     }
 
     public func urlForLanguages() -> URL {
-        URL(string: "\(baseURL)/v2/insights/languages")!
+        URL(string: "\(baseURL)/insights/languages")!
     }
 
     public func urlForListEntities(_ id: String, options: ListEntitiesOptions) -> URL {

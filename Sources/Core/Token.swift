@@ -34,7 +34,7 @@ public struct VOToken {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/v2/token")!
+        URL(string: "\(baseURL)/token")!
     }
 
     // MARK: - Payloads

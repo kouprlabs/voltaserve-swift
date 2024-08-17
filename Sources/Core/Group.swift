@@ -79,11 +79,11 @@ public struct VOGroup {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/v2/groups")!
+        URL(string: "\(baseURL)/groups")!
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/groups/\(id)")!
+        URL(string: "\(baseURL)/groups/\(id)")!
     }
 
     public func urlForList(options: ListOptions) -> URL {

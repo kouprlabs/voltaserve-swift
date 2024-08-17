@@ -53,17 +53,17 @@ public struct VOStorage {
     // MARK: - URLs
 
     public func urlForAccountUsage() -> URL {
-        URL(string: "\(baseURL)/v2/storage/account_usage")!
+        URL(string: "\(baseURL)/storage/account_usage")!
     }
 
     public func urlForWokrspaceUsage(_ id: String) -> URL {
-        var components = URLComponents(string: "\(baseURL)/v2/storage/workspace_usage")
+        var components = URLComponents(string: "\(baseURL)/storage/workspace_usage")
         components?.queryItems = [URLQueryItem(name: "id", value: id)]
         return components!.url!
     }
 
     public func urlForFileUsage(_ id: String) -> URL {
-        var components = URLComponents(string: "\(baseURL)/v2/storage/file_usage")
+        var components = URLComponents(string: "\(baseURL)/storage/file_usage")
         components?.queryItems = [URLQueryItem(name: "id", value: id)]
         return components!.url!
     }

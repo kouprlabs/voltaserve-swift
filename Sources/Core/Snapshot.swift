@@ -55,7 +55,7 @@ public struct VOSnapshot {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/v2/snapshots")!
+        URL(string: "\(baseURL)/snapshots")!
     }
 
     public func urlForList(_ options: ListOptions) -> URL {
@@ -67,11 +67,11 @@ public struct VOSnapshot {
     }
 
     public func urlForActivate(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/snapshots/\(id)/activate")!
+        URL(string: "\(baseURL)/snapshots/\(id)/activate")!
     }
 
     public func urlForDetach(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/snapshots/\(id)/detach")!
+        URL(string: "\(baseURL)/snapshots/\(id)/detach")!
     }
 
     // MARK: - Payloads

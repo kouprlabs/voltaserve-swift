@@ -291,39 +291,39 @@ public struct VOFile {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/v2/files")!
+        URL(string: "\(baseURL)/files")!
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)")!
+        URL(string: "\(baseURL)/files/\(id)")!
     }
 
     public func urlForPath(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/path")!
+        URL(string: "\(baseURL)/files/\(id)/path")!
     }
 
     public func urlForCount(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/count")!
+        URL(string: "\(baseURL)/files/\(id)/count")!
     }
 
     public func urlForPatchName(_ id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/name")!
+        URL(string: "\(baseURL)/files/\(id)/name")!
     }
 
     public func urlForMove(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/move/\(targetID)")!
+        URL(string: "\(baseURL)/files/\(id)/move/\(targetID)")!
     }
 
     public func urlForMove() -> URL {
-        URL(string: "\(baseURL)/v2/files/move")!
+        URL(string: "\(baseURL)/files/move")!
     }
 
     public func urlForCopy(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/copy/\(targetID)")!
+        URL(string: "\(baseURL)/files/\(id)/copy/\(targetID)")!
     }
 
     public func urlForCopy() -> URL {
-        URL(string: "\(baseURL)/v2/files/copy")!
+        URL(string: "\(baseURL)/files/copy")!
     }
 
     public func urlForList(id: String, options: ListOptions) -> URL {
