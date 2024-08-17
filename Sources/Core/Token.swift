@@ -77,6 +77,13 @@ public struct VOToken {
         public var tokenType: String
         public var refreshToken: String
 
+        public init(accessToken: String, expiresIn: Int, tokenType: String, refreshToken: String) {
+            self.accessToken = accessToken
+            self.expiresIn = expiresIn
+            self.tokenType = tokenType
+            self.refreshToken = refreshToken
+        }
+
         enum CodingKeys: String, CodingKey {
             case accessToken = "access_token"
             case expiresIn = "expires_in"
