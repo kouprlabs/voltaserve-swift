@@ -128,15 +128,18 @@ public struct VOFile {
         onProgress: ((Double) -> Void)? = nil
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.upload(multipartFormData: { multipartFormData in
-                multipartFormData.append(data, withName: "file")
-            }, to: url, method: method, headers: headersWithAuthorization(accessToken))
-                .uploadProgress { progress in
-                    onProgress?(progress.fractionCompleted * 100)
-                }
-                .responseData { response in
-                    handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
-                }
+            AF.upload(
+                multipartFormData: { multipartFormData in multipartFormData.append(data, withName: "file") },
+                to: url,
+                method: method,
+                headers: headersWithAuthorization(accessToken)
+            )
+            .uploadProgress { progress in
+                onProgress?(progress.fractionCompleted * 100)
+            }
+            .responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
         }
     }
 

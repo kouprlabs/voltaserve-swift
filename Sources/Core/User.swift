@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 public struct VOUser {
@@ -18,9 +19,63 @@ public struct VOUser {
 
     // MARK: - URLs
 
+    public func url() -> URL {
+        URL(string: "\(baseURL)/users")!
+    }
+
+    public func urlForList(_ options: ListOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url())?\(query)")!
+        } else {
+            url()
+        }
+    }
+
     // MARK: - Payloads
 
-    public enum SortBy: Codable, CustomStringConvertible {
+    public struct ListOptions {
+        public let query: String?
+        public let organizationID: String?
+        public let groupID: String?
+        public let excludeGroupMembers: Bool?
+        public let size: Int?
+        public let page: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let organizationID {
+                items.append(.init(name: "organization_id", value: organizationID))
+            }
+            if let groupID {
+                items.append(.init(name: "group_id", value: groupID))
+            }
+            if let excludeGroupMembers {
+                items.append(.init(name: "exclude_group_members", value: String(excludeGroupMembers)))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+    }
+
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case email
         case fullName
 
@@ -69,9 +124,164 @@ public struct VOAuthUser {
 
     // MARK: - Requests
 
+    public func fetch() async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(url(), headers: headersWithAuthorization(accessToken)).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func delete(_ options: DeleteOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .delete,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func updateFullName(_ options: UpdateFullNameOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func updateEmailRequest(_ options: UpdateEmailRequestOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func updateEmailConfirmation(_ options: UpdateEmailConfirmationOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func updatePassword(_ options: UpdatePasswordOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.upload(
+                multipartFormData: { multipartFormData in multipartFormData.append(data, withName: "file") },
+                to: urlForUpdatePicture(),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            )
+            .uploadProgress { progress in
+                onProgress?(progress.fractionCompleted * 100)
+            }.responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func deletePicture() async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForDeletePicture(),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
     // MARK: - URLs
 
+    public func url() -> URL {
+        URL(string: "\(baseURL)/user")!
+    }
+
+    public func urlForUpdateFullName() -> URL {
+        URL(string: "\(baseURL)/user/update_full_name")!
+    }
+
+    public func urlForUpdateEmailRequest() -> URL {
+        URL(string: "\(baseURL)/user/update_email_request")!
+    }
+
+    public func urlForUpdateEmailConfirmation(token _: String) -> URL {
+        URL(string: "\(baseURL)/user/update_email_confirmation")!
+    }
+
+    public func urlForUpdatePassword() -> URL {
+        URL(string: "\(baseURL)/user/update_password")!
+    }
+
+    public func urlForUpdatePicture() -> URL {
+        URL(string: "\(baseURL)/user/update_picture")!
+    }
+
+    public func urlForDeletePicture() -> URL {
+        URL(string: "\(baseURL)/user/delete_picture")!
+    }
+
     // MARK: - Payloads
+
+    public struct UpdateFullNameOptions: Codable {
+        public let fullName: String
+    }
+
+    public struct UpdateEmailRequestOptions: Codable {
+        public let email: String
+    }
+
+    public struct UpdateEmailConfirmationOptions: Codable {
+        public let token: String
+    }
+
+    public struct UpdatePasswordOptions: Codable {
+        public let currentPassword: String
+        public let newPassword: String
+    }
+
+    public struct DeleteOptions: Codable {
+        public let password: String
+    }
 
     // MARK: - Types
 
