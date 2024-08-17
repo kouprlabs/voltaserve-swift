@@ -70,12 +70,16 @@ public struct VOMosaic {
 
     // MARK: - URLs
 
+    public func url() -> URL {
+        URL(string: "\(baseURL)/mosaics")!
+    }
+
     public func urlForFile(_ id: String) -> URL {
-        URL(string: "\(baseURL)/mosaics/\(id)")!
+        URL(string: "\(url())/\(id)")!
     }
 
     public func urlForInfo(_ id: String) -> URL {
-        URL(string: "\(baseURL)/mosaics/\(id)/info")!
+        URL(string: "\(urlForFile(id))/info")!
     }
 
     public func urlForTile(
@@ -85,7 +89,7 @@ public struct VOMosaic {
         col: Int,
         fileExtension: String
     ) -> URL {
-        URL(string: "\(baseURL)/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
+        URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)" +
             "/row/\(row)/col/\(col)/ext/\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }

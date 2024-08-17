@@ -94,27 +94,27 @@ struct VOInvitation {
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/invitations/\(id)")!
+        URL(string: "\(url())/\(id)")!
     }
 
     public func urlForIncoming() -> URL {
-        URL(string: "\(baseURL)/invitations/incoming")!
+        URL(string: "\(url())/incoming")!
     }
 
     public func urlForOutgoing() -> URL {
-        URL(string: "\(baseURL)/invitations/outgoing")!
+        URL(string: "\(url())/outgoing")!
     }
 
     public func urlForResend(_ id: String) -> URL {
-        URL(string: "\(baseURL)/invitations/\(id)/resend")!
+        URL(string: "\(urlForID(id))/resend")!
     }
 
     public func urlForAccept(_ id: String) -> URL {
-        URL(string: "\(baseURL)/invitations/\(id)/accept")!
+        URL(string: "\(urlForID(id))/accept")!
     }
 
     public func urlForDecline(_ id: String) -> URL {
-        URL(string: "\(baseURL)/invitations/\(id)/decline")!
+        URL(string: "\(urlForID(id))/decline")!
     }
 
     public func urlForList(_ url: URL, options: ListOptions) -> URL {

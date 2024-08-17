@@ -83,7 +83,7 @@ public struct VOGroup {
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/groups/\(id)")!
+        URL(string: "\(url())/\(id)")!
     }
 
     public func urlForList(options: ListOptions) -> URL {
@@ -95,7 +95,7 @@ public struct VOGroup {
     }
 
     public func urlForMembers(_ id: String) -> URL {
-        URL(string: "\(baseURL)/groups/\(id)/members")!
+        URL(string: "\(url())/\(id)/members")!
     }
 
     // MARK: - Payloads

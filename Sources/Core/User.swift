@@ -237,27 +237,27 @@ public struct VOAuthUser {
     }
 
     public func urlForUpdateFullName() -> URL {
-        URL(string: "\(baseURL)/user/update_full_name")!
+        URL(string: "\(url())/update_full_name")!
     }
 
     public func urlForUpdateEmailRequest() -> URL {
-        URL(string: "\(baseURL)/user/update_email_request")!
+        URL(string: "\(url())/update_email_request")!
     }
 
     public func urlForUpdateEmailConfirmation(token _: String) -> URL {
-        URL(string: "\(baseURL)/user/update_email_confirmation")!
+        URL(string: "\(url())/update_email_confirmation")!
     }
 
     public func urlForUpdatePassword() -> URL {
-        URL(string: "\(baseURL)/user/update_password")!
+        URL(string: "\(url())/update_password")!
     }
 
     public func urlForUpdatePicture() -> URL {
-        URL(string: "\(baseURL)/user/update_picture")!
+        URL(string: "\(url())/update_picture")!
     }
 
     public func urlForDeletePicture() -> URL {
-        URL(string: "\(baseURL)/user/delete_picture")!
+        URL(string: "\(url())/delete_picture")!
     }
 
     // MARK: - Payloads

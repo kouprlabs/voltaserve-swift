@@ -302,19 +302,19 @@ public struct VOFile {
     }
 
     public func urlForPath(_ id: String) -> URL {
-        URL(string: "\(url())/\(id)/path")!
+        URL(string: "\(urlForID(id))/path")!
     }
 
     public func urlForCount(_ id: String) -> URL {
-        URL(string: "\(url())/\(id)/count")!
+        URL(string: "\(urlForID(id))/count")!
     }
 
     public func urlForName(_ id: String) -> URL {
-        URL(string: "\(url())/\(id)/name")!
+        URL(string: "\(urlForID(id))/name")!
     }
 
     public func urlForMove(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(url())/\(id)/move/\(targetID)")!
+        URL(string: "\(urlForID(id))/move/\(targetID)")!
     }
 
     public func urlForMove() -> URL {
@@ -322,7 +322,7 @@ public struct VOFile {
     }
 
     public func urlForCopy(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(url())/\(id)/copy/\(targetID)")!
+        URL(string: "\(urlForID(id))/copy/\(targetID)")!
     }
 
     public func urlForCopy() -> URL {
@@ -350,51 +350,51 @@ public struct VOFile {
             urlComponents.queryItems?.append(URLQueryItem(name: "name", value: name))
         }
         let query = urlComponents.url?.query
-        return URL(string: "\(baseURL)/v2/files?" + query!)!
+        return URL(string: "\(url())?" + query!)!
     }
 
     public func urlForOriginal(id: String, fileExtension: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/original.\(fileExtension)?" +
+        URL(string: "\(urlForID(id))/original.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
     public func urlForPreview(id: String, fileExtension: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/preview.\(fileExtension)?" +
+        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedPage(id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/segmentation/pages/\(page).\(fileExtension)?" +
+        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/segmentation/thumbnails/\(page).\(fileExtension)?" +
+        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/user_permissions")!
+        URL(string: "\(urlForID(id))/user_permissions")!
     }
 
     public func urlForGroupPermissions(id: String) -> URL {
-        URL(string: "\(baseURL)/v2/files/\(id)/group_permissions")!
+        URL(string: "\(urlForID(id))/group_permissions")!
     }
 
     public func urlForGrantUserPermission() -> URL {
-        URL(string: "\(baseURL)/v2/files/grant_user_permission")!
+        URL(string: "\(url())/grant_user_permission")!
     }
 
     public func urlForRevokeUserPermission() -> URL {
-        URL(string: "\(baseURL)/v2/files/revoke_user_permission")!
+        URL(string: "\(url())/revoke_user_permission")!
     }
 
     public func urlForGrantGroupPermission() -> URL {
-        URL(string: "\(baseURL)/v2/files/grant_group_permission")!
+        URL(string: "\(url())/grant_group_permission")!
     }
 
     public func urlForRevokeGroupPermission() -> URL {
-        URL(string: "\(baseURL)/v2/files/revoke_group_permission")!
+        URL(string: "\(url())/revoke_group_permission")!
     }
 
     // MARK: - Payloads

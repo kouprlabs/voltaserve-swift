@@ -52,18 +52,22 @@ public struct VOStorage {
 
     // MARK: - URLs
 
+    public func url() -> URL {
+        URL(string: "\(baseURL)/storage")!
+    }
+
     public func urlForAccountUsage() -> URL {
-        URL(string: "\(baseURL)/storage/account_usage")!
+        URL(string: "\(url())/account_usage")!
     }
 
     public func urlForWokrspaceUsage(_ id: String) -> URL {
-        var components = URLComponents(string: "\(baseURL)/storage/workspace_usage")
+        var components = URLComponents(string: "\(url())/workspace_usage")
         components?.queryItems = [URLQueryItem(name: "id", value: id)]
         return components!.url!
     }
 
     public func urlForFileUsage(_ id: String) -> URL {
-        var components = URLComponents(string: "\(baseURL)/storage/file_usage")
+        var components = URLComponents(string: "\(url())/file_usage")
         components?.queryItems = [URLQueryItem(name: "id", value: id)]
         return components!.url!
     }

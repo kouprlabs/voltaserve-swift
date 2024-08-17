@@ -115,7 +115,7 @@ public struct VOOrganization {
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/organizations/\(id)")!
+        URL(string: "\(url())/\(id)")!
     }
 
     public func urlForList(options: ListOptions) -> URL {
@@ -127,15 +127,15 @@ public struct VOOrganization {
     }
 
     public func urlForPatchName(_ id: String) -> URL {
-        URL(string: "\(baseURL)/organizations/\(id)/name")!
+        URL(string: "\(urlForID(id))/name")!
     }
 
     public func urlForLeave(_ id: String) -> URL {
-        URL(string: "\(baseURL)/organizations/\(id)/leave")!
+        URL(string: "\(urlForID(id))/leave")!
     }
 
     public func urlForMembers(_ id: String) -> URL {
-        URL(string: "\(baseURL)/organizations/\(id)/members")!
+        URL(string: "\(urlForID(id))/members")!
     }
 
     // MARK: - Payloads
