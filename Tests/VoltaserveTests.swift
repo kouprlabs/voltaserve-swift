@@ -7,5 +7,5 @@
 import XCTest
 
 final class VoltaserveTests: XCTestCase {
-    func example() async throws {}
+    func testExample() async throws {}
 }

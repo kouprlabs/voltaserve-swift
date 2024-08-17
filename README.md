@@ -8,16 +8,19 @@ Prerequisites:
 - Install [SwiftLint](https://github.com/realm/SwiftLint).
 
 This is a Swift package, it can be installed using the [Swift Package Manager](https://www.swift.org/documentation/package-manager/) and  imported in your code as follows:
+
 ```swift
 import Voltaserve
 ```
 
 Format code:
+
 ```
 swiftformat .
 ```
 
 Lint code:
+
 ```
 swiftlint .
 ```
