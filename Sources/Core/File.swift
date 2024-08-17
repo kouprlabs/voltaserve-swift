@@ -146,7 +146,7 @@ public struct VOFile {
     public func patchName(id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForPatchName(id),
+                urlForName(id),
                 method: .post,
                 parameters: options,
                 encoder: JSONParameterEncoder.default,
@@ -298,35 +298,35 @@ public struct VOFile {
     }
 
     public func urlForID(_ id: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)")!
+        URL(string: "\(url())/\(id)")!
     }
 
     public func urlForPath(_ id: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)/path")!
+        URL(string: "\(url())/\(id)/path")!
     }
 
     public func urlForCount(_ id: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)/count")!
+        URL(string: "\(url())/\(id)/count")!
     }
 
-    public func urlForPatchName(_ id: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)/name")!
+    public func urlForName(_ id: String) -> URL {
+        URL(string: "\(url())/\(id)/name")!
     }
 
     public func urlForMove(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)/move/\(targetID)")!
+        URL(string: "\(url())/\(id)/move/\(targetID)")!
     }
 
     public func urlForMove() -> URL {
-        URL(string: "\(baseURL)/files/move")!
+        URL(string: "\(url())/move")!
     }
 
     public func urlForCopy(_ id: String, to targetID: String) -> URL {
-        URL(string: "\(baseURL)/files/\(id)/copy/\(targetID)")!
+        URL(string: "\(url())/\(id)/copy/\(targetID)")!
     }
 
     public func urlForCopy() -> URL {
-        URL(string: "\(baseURL)/files/copy")!
+        URL(string: "\(url())/copy")!
     }
 
     public func urlForList(id: String, options: ListOptions) -> URL {

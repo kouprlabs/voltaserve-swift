@@ -3,6 +3,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Alamofire
 import Foundation
 
 public struct VOWorkspace {
@@ -16,11 +17,155 @@ public struct VOWorkspace {
 
     // MARK: - Requests
 
+    public func fetch(_ id: String) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForID(id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func fetchList(_ options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func create(_ options: CreateOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForName(id),
+                method: .patch,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func patchStorageCapacity(_ id: String, options: PatchStorageCapacityOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForStorageCapacity(id),
+                method: .patch,
+                parameters: options,
+                encoder: JSONParameterEncoder.default
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            }
+        }
+    }
+
+    public func delete(_ id: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForID(id),
+                method: .delete,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
     // MARK: - URLs
+
+    public func url() -> URL {
+        URL(string: "\(baseURL)/workspaces")!
+    }
+
+    public func urlForID(_ id: String) -> URL {
+        URL(string: "\(url())/\(id)")!
+    }
+
+    public func urlForList(_ options: ListOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url())?\(query)")!
+        } else {
+            url()
+        }
+    }
+
+    public func urlForName(_ id: String) -> URL {
+        URL(string: "\(url())/\(id)/name")!
+    }
+
+    public func urlForStorageCapacity(_ id: String) -> URL {
+        URL(string: "\(url())/\(id)/storage_capacity")!
+    }
 
     // MARK: - Payloads
 
-    public enum SortBy: Codable, CustomStringConvertible {
+    public struct CreateOptions: Codable {
+        public let name: String
+        public let image: String?
+        public let organizationId: String
+        public let storageCapacity: Int
+    }
+
+    public struct ListOptions {
+        public let query: String?
+        public let size: Int?
+        public let page: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
+                items.append(.init(name: "query", value: base64Query))
+            }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+    }
+
+    public struct PatchNameOptions: Codable {
+        public let name: String
+    }
+
+    public struct PatchStorageCapacityOptions: Codable {
+        public let storageCapacity: Int
+    }
+
+    public enum SortBy: String, Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
