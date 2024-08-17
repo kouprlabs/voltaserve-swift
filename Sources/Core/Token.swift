@@ -18,7 +18,7 @@ public struct VOToken {
     // MARK: - Requests
 
     public func exchange(options: ExchangeOptions) async throws -> Value {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 url(),
                 method: .post,
