@@ -157,7 +157,7 @@ public struct VOOrganization {
         }
     }
 
-    public struct ListOptions: Codable {
+    public struct ListOptions {
         public let query: String?
         public let size: Int?
         public let page: Int?

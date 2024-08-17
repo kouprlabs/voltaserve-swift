@@ -137,7 +137,7 @@ struct VOInvitation {
         }
     }
 
-    public struct ListOptions: Codable {
+    public struct ListOptions {
         public let organizationID: String?
         public let size: Int?
         public let page: Int?

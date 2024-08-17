@@ -401,7 +401,7 @@ public struct VOFile {
         public let onProgress: ((Double) -> Void)?
     }
 
-    public struct ListOptions: Codable {
+    public struct ListOptions {
         public let size: Int?
         public let page: Int?
         public let type: FileType?

@@ -92,7 +92,7 @@ struct VOInsights {
         }
     }
 
-    public struct ListEntitiesOptions: Codable {
+    public struct ListEntitiesOptions {
         public let query: String?
         public let size: Int?
         public let page: Int?

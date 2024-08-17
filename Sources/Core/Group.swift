@@ -100,7 +100,7 @@ public struct VOGroup {
 
     // MARK: - Payloads
 
-    public struct ListOptions: Codable {
+    public struct ListOptions {
         public let query: String?
         public let organizationID: String?
         public let size: Int?

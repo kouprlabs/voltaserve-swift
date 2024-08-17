@@ -76,7 +76,7 @@ public struct VOSnapshot {
 
     // MARK: - Payloads
 
-    public struct ListOptions: Codable {
+    public struct ListOptions {
         public let fileID: String
         public let query: String?
         public let organizationID: String?
