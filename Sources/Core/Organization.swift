@@ -48,11 +48,13 @@ public struct VOOrganization {
         }
     }
 
-    public func create(_: CreateOptions) async throws -> Entity {
+    public func create(_ options: CreateOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 url(),
                 method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
@@ -60,11 +62,13 @@ public struct VOOrganization {
         }
     }
 
-    public func patchName(_ id: String, options _: PatchNameOptions) async throws -> Entity {
+    public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForID(id),
                 method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
