@@ -125,6 +125,13 @@ public struct VOWorkspace {
         public let image: String?
         public let organizationId: String
         public let storageCapacity: Int
+
+        public init(name: String, image: String?, organizationId: String, storageCapacity: Int) {
+            self.name = name
+            self.image = image
+            self.organizationId = organizationId
+            self.storageCapacity = storageCapacity
+        }
     }
 
     public struct ListOptions {
@@ -133,6 +140,14 @@ public struct VOWorkspace {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public init(query: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.query = query
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = []
@@ -159,10 +174,18 @@ public struct VOWorkspace {
 
     public struct PatchNameOptions: Codable {
         public let name: String
+
+        public init(name: String) {
+            self.name = name
+        }
     }
 
     public struct PatchStorageCapacityOptions: Codable {
         public let storageCapacity: Int
+
+        public init(storageCapacity: Int) {
+            self.storageCapacity = storageCapacity
+        }
     }
 
     public enum SortBy: String, Codable, CustomStringConvertible {

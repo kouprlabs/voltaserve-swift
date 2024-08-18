@@ -264,23 +264,44 @@ public struct VOAuthUser {
 
     public struct UpdateFullNameOptions: Codable {
         public let fullName: String
+
+        public init(fullName: String) {
+            self.fullName = fullName
+        }
     }
 
     public struct UpdateEmailRequestOptions: Codable {
         public let email: String
+
+        public init(email: String) {
+            self.email = email
+        }
     }
 
     public struct UpdateEmailConfirmationOptions: Codable {
         public let token: String
+
+        public init(token: String) {
+            self.token = token
+        }
     }
 
     public struct UpdatePasswordOptions: Codable {
         public let currentPassword: String
         public let newPassword: String
+
+        public init(currentPassword: String, newPassword: String) {
+            self.currentPassword = currentPassword
+            self.newPassword = newPassword
+        }
     }
 
     public struct DeleteOptions: Codable {
         public let password: String
+
+        public init(password: String) {
+            self.password = password
+        }
     }
 
     // MARK: - Types

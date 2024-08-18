@@ -402,6 +402,11 @@ public struct VOFile {
     public struct PatchOptions {
         public let data: Data
         public let onProgress: ((Double) -> Void)?
+
+        public init(data: Data, onProgress: ((Double) -> Void)?) {
+            self.data = data
+            self.onProgress = onProgress
+        }
     }
 
     public struct ListOptions {
@@ -411,6 +416,15 @@ public struct VOFile {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
         public let query: Query?
+
+        public init(size: Int?, page: Int?, type: FileType?, sortBy: SortBy?, sortOrder: SortOrder?, query: Query?) {
+            self.size = size
+            self.page = page
+            self.type = type
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+            self.query = query
+        }
 
         var urlQuery: String? {
             var items: [URLQueryItem] = []

@@ -91,6 +91,10 @@ struct VOInsights {
     struct CreateOptions: Codable {
         public let languageID: String
 
+        public init(languageID: String) {
+            self.languageID = languageID
+        }
+
         enum CodingKeys: String, CodingKey {
             case languageID = "languageId"
         }
@@ -102,6 +106,14 @@ struct VOInsights {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public init(query: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.query = query
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = []

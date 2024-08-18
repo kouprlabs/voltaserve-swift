@@ -113,6 +113,14 @@ public struct VOTask {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
+        public init(query: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.query = query
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
+
         var urlQuery: String? {
             var items: [URLQueryItem] = []
             if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {

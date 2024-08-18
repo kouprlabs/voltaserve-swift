@@ -43,6 +43,14 @@ public struct VOToken {
         public let refreshToken: String?
         public let locale: String?
 
+        public init(grantType: GrantType, username: String?, password: String?, refreshToken: String?, locale: String?) {
+            self.grantType = grantType
+            self.username = username
+            self.password = password
+            self.refreshToken = refreshToken
+            self.locale = locale
+        }
+
         var urlParameters: [String: String] {
             var params: [String: String] = ["grant_type": grantType.rawValue]
             if let username {

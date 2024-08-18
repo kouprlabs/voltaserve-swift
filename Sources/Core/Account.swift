@@ -109,19 +109,39 @@ public struct VOAccount {
         public let password: String
         public let fullName: String
         public let picture: String?
+
+        public init(email: String, password: String, fullName: String, picture: String?) {
+            self.email = email
+            self.password = password
+            self.fullName = fullName
+            self.picture = picture
+        }
     }
 
     public struct SendResetPasswordEmailOptions: Codable {
         public let email: String
+
+        public init(email: String) {
+            self.email = email
+        }
     }
 
     public struct ResetPasswordOptions: Codable {
         public let token: String
         public let newPassword: String
+
+        public init(token: String, newPassword: String) {
+            self.token = token
+            self.newPassword = newPassword
+        }
     }
 
     public struct ConfirmEmailOptions: Codable {
         public let token: String
+
+        public init(token: String) {
+            self.token = token
+        }
     }
 
     public struct PasswordRequirements: Codable {
@@ -130,5 +150,13 @@ public struct VOAccount {
         public let minUppercase: Int
         public let minNumbers: Int
         public let minSymbols: Int
+
+        public init(minLength: Int, minLowercase: Int, minUppercase: Int, minNumbers: Int, minSymbols: Int) {
+            self.minLength = minLength
+            self.minLowercase = minLowercase
+            self.minUppercase = minUppercase
+            self.minNumbers = minNumbers
+            self.minSymbols = minSymbols
+        }
     }
 }

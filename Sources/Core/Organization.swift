@@ -143,14 +143,27 @@ public struct VOOrganization {
     public struct CreateOptions: Codable {
         public let name: String
         public let image: String?
+
+        public init(name: String, image: String?) {
+            self.name = name
+            self.image = image
+        }
     }
 
     public struct PatchNameOptions: Codable {
         public let name: String
+
+        public init(name: String) {
+            self.name = name
+        }
     }
 
     public struct RemoveMemberOptions: Codable {
         public let userID: String
+
+        public init(userID: String) {
+            self.userID = userID
+        }
 
         enum CodingKeys: String, CodingKey {
             case userID = "userId"
@@ -163,6 +176,14 @@ public struct VOOrganization {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public init(query: String? = nil, size: Int? = nil, page: Int? = nil, sortBy: SortBy? = nil, sortOrder: SortOrder? = nil) {
+            self.query = query
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = []

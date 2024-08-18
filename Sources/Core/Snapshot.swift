@@ -89,6 +89,16 @@ public struct VOSnapshot {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
+        public init(fileID: String, query: String?, organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.fileID = fileID
+            self.query = query
+            self.organizationID = organizationID
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
+
         public var urlQuery: String? {
             var items: [URLQueryItem] = [.init(name: "file_id", value: fileID)]
             if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
@@ -128,6 +138,10 @@ public struct VOSnapshot {
     public struct ActivateOptions: Codable {
         public let fileID: String
 
+        public init(fileID: String) {
+            self.fileID = fileID
+        }
+
         enum CodingKeys: String, CodingKey {
             case fileID = "fileId"
         }
@@ -135,6 +149,10 @@ public struct VOSnapshot {
 
     public struct DetachOptions: Codable {
         public let fileID: String
+
+        public init(fileID: String) {
+            self.fileID = fileID
+        }
 
         enum CodingKeys: String, CodingKey {
             case fileID = "fileId"

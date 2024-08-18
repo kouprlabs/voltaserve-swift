@@ -108,6 +108,15 @@ public struct VOGroup {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
+        public init(query: String?, organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.query = query
+            self.organizationID = organizationID
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
+
         var urlQuery: String? {
             var items: [URLQueryItem] = []
             if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {

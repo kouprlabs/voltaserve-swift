@@ -131,6 +131,11 @@ struct VOInvitation {
         public let organizationID: String
         public let emails: [String]
 
+        public init(organizationID: String, emails: [String]) {
+            self.organizationID = organizationID
+            self.emails = emails
+        }
+
         enum CodingKeys: String, CodingKey {
             case organizationID = "organizationId"
             case emails
@@ -143,6 +148,14 @@ struct VOInvitation {
         public let page: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
+
+        public init(organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+            self.organizationID = organizationID
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = []
