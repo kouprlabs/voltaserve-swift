@@ -73,7 +73,8 @@ public struct VOWorkspace {
                 urlForStorageCapacity(id),
                 method: .patch,
                 parameters: options,
-                encoder: JSONParameterEncoder.default
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
@@ -111,11 +112,11 @@ public struct VOWorkspace {
     }
 
     public func urlForName(_ id: String) -> URL {
-        URL(string: "\(url())/\(id)/name")!
+        URL(string: "\(urlForID(id))/name")!
     }
 
     public func urlForStorageCapacity(_ id: String) -> URL {
-        URL(string: "\(url())/\(id)/storage_capacity")!
+        URL(string: "\(urlForID(id))/storage_capacity")!
     }
 
     // MARK: - Payloads

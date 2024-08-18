@@ -8,7 +8,8 @@ import Foundation
 
 func handleJSONResponse<T: Decodable>(
     continuation: CheckedContinuation<T, any Error>,
-    response: AFDataResponse<Data>, type _: T.Type
+    response: AFDataResponse<Data>,
+    type _: T.Type
 ) {
     switch response.result {
     case let .success(data):
