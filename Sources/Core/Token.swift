@@ -15,7 +15,7 @@ public struct VOToken {
 
     // MARK: - Requests
 
-    public func exchange(options: ExchangeOptions) async throws -> Value {
+    public func exchange(_ options: ExchangeOptions) async throws -> Value {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 url(),
