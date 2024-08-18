@@ -88,18 +88,6 @@ public struct VOOrganization {
         }
     }
 
-    public func patchName(_ id: String) async throws -> Entity {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForPatchName(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
-            }
-        }
-    }
-
     public func leave(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
