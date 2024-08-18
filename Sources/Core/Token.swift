@@ -8,11 +8,9 @@ import Foundation
 
 public struct VOToken {
     let baseURL: String
-    let accessToken: String
 
-    public init(baseURL: String, accessToken: String) {
+    public init(baseURL: String) {
         self.baseURL = baseURL
-        self.accessToken = accessToken
     }
 
     // MARK: - Requests
@@ -23,8 +21,7 @@ public struct VOToken {
                 url(),
                 method: .post,
                 parameters: options.urlParameters,
-                encoding: URLEncoding.default,
-                headers: headersWithAuthorization(accessToken)
+                encoding: URLEncoding.default
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: Value.self)
             }
