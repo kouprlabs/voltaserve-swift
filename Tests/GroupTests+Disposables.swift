@@ -18,14 +18,15 @@ extension GroupTests {
         return group
     }
 
-    struct Clients {
-        let organization: VOOrganization
-        let group: VOGroup
+    func disposeOrganizations(_ client: VOOrganization) async throws {
+        for disposable in disposableOrganizations {
+            try? await client.delete(disposable.id)
+        }
+    }
 
-        init(_ token: VOToken.Value) async throws {
-            let config = Config()
-            organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
-            group = VOGroup(baseURL: config.apiURL, accessToken: token.accessToken)
+    func disposeGroups(_ client: VOGroup) async throws {
+        for disposable in disposableGroups {
+            try? await client.delete(disposable.id)
         }
     }
 }

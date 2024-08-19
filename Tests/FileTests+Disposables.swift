@@ -22,6 +22,15 @@ extension FileTests {
         return workspace
     }
 
+    func createDisposableGroup(_ client: VOGroup, organizationID: String) async throws -> VOGroup.Entity {
+        let group = try await client.create(.init(
+            name: "Test Group",
+            organizationID: organizationID
+        ))
+        disposableGroups.append(group)
+        return group
+    }
+
     func createDisposableFile(_ client: VOFile, options: VOFile.CreateFileOptions) async throws -> VOFile.Entity {
         let file = try await client.createFile(options)
         disposableFiles.append(file)
@@ -34,16 +43,21 @@ extension FileTests {
         return folder
     }
 
-    struct Clients {
-        let organization: VOOrganization
-        let workspace: VOWorkspace
-        let file: VOFile
+    func disposeOrganizations(_ client: VOOrganization) async throws {
+        for disposable in disposableOrganizations {
+            try? await client.delete(disposable.id)
+        }
+    }
 
-        init(_ token: VOToken.Value) async throws {
-            let config = Config()
-            organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
-            workspace = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)
-            file = VOFile(baseURL: config.apiURL, accessToken: token.accessToken)
+    func disposeWorkspaces(_ client: VOWorkspace) async throws {
+        for disposable in disposableWorkspaces {
+            try? await client.delete(disposable.id)
+        }
+    }
+
+    func disposeFiles(_ client: VOFile) async throws {
+        for disposable in disposableFiles {
+            try? await client.delete(disposable.id)
         }
     }
 }

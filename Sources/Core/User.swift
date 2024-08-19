@@ -17,6 +17,17 @@ public struct VOUser {
 
     // MARK: - Requests
 
+    public func fetchList(_ options: ListOptions) async throws -> List {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForList(options),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
     // MARK: - URLs
 
     public func url() -> URL {

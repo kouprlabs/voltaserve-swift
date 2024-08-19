@@ -53,7 +53,7 @@ public struct VOTask {
     public func dismiss(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForDimiss(id: id),
+                urlForDimiss(id),
                 method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
@@ -96,7 +96,7 @@ public struct VOTask {
         URL(string: "\(url())/count")!
     }
 
-    public func urlForDimiss(id: String) -> URL {
+    public func urlForDimiss(_ id: String) -> URL {
         URL(string: "\(urlForID(id))/dismiss")!
     }
 

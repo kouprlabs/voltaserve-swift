@@ -10,10 +10,9 @@ final class SnapshotTests: XCTestCase {
     let config = Config()
 
     func testFetchPasswordRequirements() async throws {
-        let token = try await fetchTokenOrFail()
-        let accountClient = VOAccount(baseURL: config.idpURL, accessToken: token.accessToken)
+        let clients = try await Clients(fetchTokenOrFail())
 
-        let passwordRequirements = try await accountClient.fetchPasswordRequirements()
+        let passwordRequirements = try await clients.account.fetchPasswordRequirements()
         XCTAssertTrue(passwordRequirements.minLength > 0)
     }
 }

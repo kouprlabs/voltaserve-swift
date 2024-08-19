@@ -14,22 +14,4 @@ extension FileTests {
         try await disposeWorkspaces(clients.workspace)
         try await disposeOrganizations(clients.organization)
     }
-
-    func disposeOrganizations(_ client: VOOrganization) async throws {
-        for disposable in disposableOrganizations {
-            try? await client.delete(disposable.id)
-        }
-    }
-
-    func disposeWorkspaces(_ client: VOWorkspace) async throws {
-        for disposable in disposableWorkspaces {
-            try? await client.delete(disposable.id)
-        }
-    }
-
-    func disposeFiles(_ client: VOFile) async throws {
-        for disposable in disposableFiles {
-            try? await client.delete(disposable.id)
-        }
-    }
 }

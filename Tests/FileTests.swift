@@ -9,6 +9,7 @@ import XCTest
 final class FileTests: XCTestCase {
     let config = Config()
     var disposableOrganizations: [VOOrganization.Entity] = []
+    var disposableGroups: [VOGroup.Entity] = []
     var disposableWorkspaces: [VOWorkspace.Entity] = []
     var disposableFiles: [VOFile.Entity] = []
 
@@ -82,6 +83,56 @@ final class FileTests: XCTestCase {
         }
     }
 
+    func testUserPermissionsFlow() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let permissions = try await clients.file.fetchUserPermissions(folder.id)
+        XCTAssertEqual(permissions.count, 0)
+
+        let me = try await clients.authUser.fetch()
+
+        try await clients.file.revokeUserPermission(.init(ids: [folder.id], userID: me.id))
+        do {
+            _ = try await clients.file.fetch(folder.id)
+        } catch let error as VOErrorResponse {
+            XCTAssertEqual(error.code, "file_not_found")
+        } catch {
+            XCTFail("Invalid error: \(error)")
+        }
+    }
+
+    func testGroupPermissionsFlow() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let group = try await createDisposableGroup(clients.group, organizationID: organization.id)
+        try await clients.file.grantGroupPermission(.init(ids: [folder.id], groupID: group.id, permission: .editor))
+
+        let permissions = try await clients.file.fetchGroupPermissions(folder.id)
+        XCTAssertEqual(permissions.count, 1)
+        XCTAssertEqual(permissions.first?.group.id, group.id)
+        XCTAssertEqual(permissions.first?.permission, .editor)
+
+        try await clients.file.revokeGroupPermission(.init(ids: [folder.id], groupID: group.id))
+        let newPermissions = try await clients.file.fetchGroupPermissions(folder.id)
+        XCTAssertEqual(newPermissions.count, 0)
+    }
+
     func testFetchPath() async throws {
         let clients = try await Clients(fetchTokenOrFail())
 
@@ -122,36 +173,6 @@ final class FileTests: XCTestCase {
 
         let count = try await clients.file.fetchCount(workspace.rootID)
         XCTAssertEqual(count, 3)
-    }
-
-    func testFetchUserPermissions() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
-
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
-
-        let folder = try await createDisposableFolder(clients.file, options: .init(
-            workspaceID: workspace.id,
-            name: "Test Folder"
-        ))
-
-        let permissions = try await clients.file.fetchUserPermissions(folder.id)
-        XCTAssertEqual(permissions.count, 0)
-    }
-
-    func testFetchGroupPermissions() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
-
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
-
-        let folder = try await createDisposableFolder(clients.file, options: .init(
-            workspaceID: workspace.id,
-            name: "Test Folder"
-        ))
-
-        let permissions = try await clients.file.fetchGroupPermissions(folder.id)
-        XCTAssertEqual(permissions.count, 0)
     }
 
     func testDeleteMany() async throws {

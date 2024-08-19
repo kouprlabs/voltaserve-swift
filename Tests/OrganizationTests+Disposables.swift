@@ -15,12 +15,9 @@ extension OrganizationTests {
         return organization
     }
 
-    struct Clients {
-        let organization: VOOrganization
-
-        init(_ token: VOToken.Value) async throws {
-            let config = Config()
-            organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
+    func disposeOrganizations(_ client: VOOrganization) async throws {
+        for disposable in disposableOrganizations {
+            try? await client.delete(disposable.id)
         }
     }
 }

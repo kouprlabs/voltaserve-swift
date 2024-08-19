@@ -50,7 +50,7 @@ public struct VOFile {
     public func fetchList(_ id: String, options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForList(id: id, options: options),
+                urlForList(id, options: options),
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: List.self)
@@ -331,7 +331,7 @@ public struct VOFile {
         URL(string: "\(url())/copy")!
     }
 
-    public func urlForList(id: String, options: ListOptions) -> URL {
+    public func urlForList(_ id: String, options: ListOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(urlForID(id))/list?\(query)")!
         } else {
@@ -601,9 +601,9 @@ public struct VOFile {
     public struct GrantUserPermissionOptions: Codable {
         public let ids: [String]
         public let userID: String
-        public let permission: String
+        public let permission: VOPermission.Value
 
-        public init(ids: [String], userID: String, permission: String) {
+        public init(ids: [String], userID: String, permission: VOPermission.Value) {
             self.ids = ids
             self.userID = userID
             self.permission = permission
@@ -634,9 +634,9 @@ public struct VOFile {
     public struct GrantGroupPermissionOptions: Codable {
         public let ids: [String]
         public let groupID: String
-        public let permission: String
+        public let permission: VOPermission.Value
 
-        public init(ids: [String], groupID: String, permission: String) {
+        public init(ids: [String], groupID: String, permission: VOPermission.Value) {
             self.ids = ids
             self.groupID = groupID
             self.permission = permission

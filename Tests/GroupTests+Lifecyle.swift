@@ -15,16 +15,4 @@ extension GroupTests {
         try await disposeGroups(clients.group)
         try await disposeOrganizations(clients.organization)
     }
-
-    func disposeOrganizations(_ client: VOOrganization) async throws {
-        for disposable in disposableOrganizations {
-            try? await client.delete(disposable.id)
-        }
-    }
-
-    func disposeGroups(_ client: VOGroup) async throws {
-        for disposable in disposableGroups {
-            try? await client.delete(disposable.id)
-        }
-    }
 }

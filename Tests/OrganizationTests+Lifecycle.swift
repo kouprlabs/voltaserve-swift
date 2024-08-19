@@ -14,10 +14,4 @@ extension OrganizationTests {
 
         try await disposeOrganizations(clients.organization)
     }
-
-    func disposeOrganizations(_ client: VOOrganization) async throws {
-        for disposable in disposableOrganizations {
-            try? await client.delete(disposable.id)
-        }
-    }
 }

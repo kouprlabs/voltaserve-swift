@@ -21,14 +21,15 @@ extension WorkspaceTests {
         return workspace
     }
 
-    struct Clients {
-        let organization: VOOrganization
-        let workspace: VOWorkspace
+    func disposeOrganizations(_ client: VOOrganization) async throws {
+        for disposable in disposableOrganizations {
+            try? await client.delete(disposable.id)
+        }
+    }
 
-        init(_ token: VOToken.Value) async throws {
-            let config = Config()
-            organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
-            workspace = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)
+    func disposeWorkspaces(_ client: VOWorkspace) async throws {
+        for disposable in disposableWorkspaces {
+            try? await client.delete(disposable.id)
         }
     }
 }

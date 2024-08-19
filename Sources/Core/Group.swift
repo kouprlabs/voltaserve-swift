@@ -28,7 +28,7 @@ public struct VOGroup {
     public func fetchList(_ options: ListOptions) async throws -> VOGroup.List {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForList(options: options),
+                urlForList(options),
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: VOGroup.List.self)
@@ -90,7 +90,7 @@ public struct VOGroup {
         URL(string: "\(urlForID(id))/name")!
     }
 
-    public func urlForList(options: ListOptions) -> URL {
+    public func urlForList(_ options: ListOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(url())?\(query)")!
         } else {
