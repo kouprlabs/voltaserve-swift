@@ -89,16 +89,14 @@ final class FileTests: XCTestCase {
 
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
-
         let folder = try await createDisposableFolder(clients.file, options: .init(
             workspaceID: workspace.id,
             name: "Test Folder"
         ))
 
-        let otherUser = try await otherClients.authUser.fetch()
-
         /* Send invitation and accept it */
 
+        let otherUser = try await otherClients.authUser.fetch()
         try await clients.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]
@@ -149,18 +147,15 @@ final class FileTests: XCTestCase {
 
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
-
+        let group = try await createDisposableGroup(clients.group, organizationID: organization.id)
         let folder = try await createDisposableFolder(clients.file, options: .init(
             workspaceID: workspace.id,
             name: "Test Folder"
         ))
 
-        let group = try await createDisposableGroup(clients.group, organizationID: organization.id)
-
-        let otherUser = try await otherClients.authUser.fetch()
-
         /* Send invitation and accept it */
 
+        let otherUser = try await otherClients.authUser.fetch()
         try await clients.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]
