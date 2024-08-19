@@ -1,12 +1,7 @@
-// Copyright 2023 Anass Bouassaba.
+// Copyright 2024 Anass Bouassaba.
 //
-// Use of this software is governed by the Business Source License
-// included in the file licenses/BSL.txt.
-//
-// As of the Change Date specified in that file, in accordance with
-// the Business Source License, use of this software will be governed
-// by the GNU Affero General Public License v3.0 only, included in the file
-// licenses/AGPL.txt.
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
 import Voltaserve
