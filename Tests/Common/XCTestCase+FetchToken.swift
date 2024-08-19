@@ -15,12 +15,31 @@ extension XCTestCase {
         }
     }
 
+    func fetchOtherTokenOrFail() async throws -> VOToken.Value {
+        if let value = try await fetchOtherToken() {
+            return value
+        } else {
+            throw FailedToFetchToken()
+        }
+    }
+
     func fetchToken() async throws -> VOToken.Value? {
         let config = Config()
         return try await VOToken(baseURL: config.idpURL).exchange(VOToken.ExchangeOptions(
             grantType: .password,
             username: config.username,
             password: config.password,
+            refreshToken: nil,
+            locale: nil
+        ))
+    }
+
+    func fetchOtherToken() async throws -> VOToken.Value? {
+        let config = Config()
+        return try await VOToken(baseURL: config.idpURL).exchange(VOToken.ExchangeOptions(
+            grantType: .password,
+            username: config.otherUsername,
+            password: config.otherPassword,
             refreshToken: nil,
             locale: nil
         ))

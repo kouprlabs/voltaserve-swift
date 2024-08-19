@@ -7,12 +7,15 @@ import Foundation
 
 public enum VOPermission {
     public enum Value: String, Codable {
+        case none
         case viewer
         case editor
         case owner
 
         public func weight() -> Int {
             switch self {
+            case .none:
+                0
             case .viewer:
                 1
             case .editor:

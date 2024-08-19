@@ -11,6 +11,7 @@ extension FileTests {
         let workspace: VOWorkspace
         let file: VOFile
         let group: VOGroup
+        let invitation: VOInvitation
         let authUser: VOAuthUser
 
         init(_ token: VOToken.Value) async throws {
@@ -19,6 +20,7 @@ extension FileTests {
             workspace = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)
             file = VOFile(baseURL: config.apiURL, accessToken: token.accessToken)
             group = VOGroup(baseURL: config.apiURL, accessToken: token.accessToken)
+            invitation = VOInvitation(baseURL: config.apiURL, accessToken: token.accessToken)
             authUser = VOAuthUser(baseURL: config.idpURL, accessToken: token.accessToken)
         }
     }

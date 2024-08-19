@@ -684,7 +684,7 @@ public struct VOFile {
         public let type: FileType
         public let parentID: String?
         public let permission: PermissionType
-        public let isShared: Bool
+        public let isShared: Bool?
         public let snapshot: VOSnapshot.Entity?
         public let createTime: String
         public let updateTime: String?
@@ -696,7 +696,7 @@ public struct VOFile {
             type: FileType,
             parentID: String?,
             permission: PermissionType,
-            isShared: Bool,
+            isShared: Bool? = nil,
             snapshot: VOSnapshot.Entity? = nil,
             createTime: String,
             updateTime: String? = nil

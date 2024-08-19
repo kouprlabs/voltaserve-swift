@@ -113,6 +113,26 @@ public struct VOUser {
         public let email: String
         public let fullName: String
         public let picture: String?
+        public let createTime: String
+        public let updateTime: String?
+
+        public init(
+            id: String,
+            username: String,
+            email: String,
+            fullName: String,
+            picture: String? = nil,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.username = username
+            self.email = email
+            self.fullName = fullName
+            self.picture = picture
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
     }
 
     public struct List: Codable {
@@ -121,6 +141,20 @@ public struct VOUser {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(
+            data: [Entity],
+            totalPages: Int,
+            totalElements: Int,
+            page: Int,
+            size: Int
+        ) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 }
 

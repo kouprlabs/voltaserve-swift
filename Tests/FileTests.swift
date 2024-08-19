@@ -85,6 +85,7 @@ final class FileTests: XCTestCase {
 
     func testUserPermissionsFlow() async throws {
         let clients = try await Clients(fetchTokenOrFail())
+        let otherClients = try await Clients(fetchOtherTokenOrFail())
 
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
@@ -94,14 +95,47 @@ final class FileTests: XCTestCase {
             name: "Test Folder"
         ))
 
+        let otherUser = try await otherClients.authUser.fetch()
+
+        /* Send invitation and accept it */
+
+        try await clients.invitation.create(.init(
+            organizationID: organization.id,
+            emails: [otherUser.email]
+        ))
+        let incomingInvitations = try await otherClients.invitation.fetchIncoming(.init(size: 5))
+        try await otherClients.invitation.accept(incomingInvitations.data.first!.id)
+
+        /* Grant permission to the other user */
+
+        try await clients.file.grantUserPermission(.init(ids: [folder.id], userID: otherUser.id, permission: .editor))
+
+        /* Test the other user has the permission */
+
         let permissions = try await clients.file.fetchUserPermissions(folder.id)
-        XCTAssertEqual(permissions.count, 0)
+        XCTAssertEqual(permissions.count, 1)
+        XCTAssertEqual(permissions.first!.user.id, otherUser.id)
+        XCTAssertEqual(permissions.first!.permission, .editor)
 
-        let me = try await clients.authUser.fetch()
+        /* Test the other user can access the file */
 
-        try await clients.file.revokeUserPermission(.init(ids: [folder.id], userID: me.id))
+        let folderAgain = try await otherClients.file.fetch(folder.id)
+        XCTAssertEqual(folderAgain.id, folder.id)
+        XCTAssertEqual(folderAgain.permission, .editor)
+
+        /* Revoke permission from the other user */
+
+        try await clients.file.revokeUserPermission(.init(ids: [folder.id], userID: otherUser.id))
+
+        /* Test the other user no longer has the permission */
+
+        let newPermissions = try await clients.file.fetchUserPermissions(folder.id)
+        XCTAssertEqual(newPermissions.count, 0)
+
+        /* Test the other user can no longer access the file */
+
         do {
-            _ = try await clients.file.fetch(folder.id)
+            _ = try await otherClients.file.fetch(folder.id)
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "file_not_found")
         } catch {
@@ -111,6 +145,7 @@ final class FileTests: XCTestCase {
 
     func testGroupPermissionsFlow() async throws {
         let clients = try await Clients(fetchTokenOrFail())
+        let otherClients = try await Clients(fetchOtherTokenOrFail())
 
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
@@ -121,16 +156,57 @@ final class FileTests: XCTestCase {
         ))
 
         let group = try await createDisposableGroup(clients.group, organizationID: organization.id)
+
+        let otherUser = try await otherClients.authUser.fetch()
+
+        /* Send invitation and accept it */
+
+        try await clients.invitation.create(.init(
+            organizationID: organization.id,
+            emails: [otherUser.email]
+        ))
+        let incomingInvitations = try await otherClients.invitation.fetchIncoming(.init(size: 5))
+        try await otherClients.invitation.accept(incomingInvitations.data.first!.id)
+
+        /* Add the other user to the group */
+
+        try await clients.group.addMember(group.id, options: .init(userID: otherUser.id))
+
+        /* Grant permission to the group */
+
         try await clients.file.grantGroupPermission(.init(ids: [folder.id], groupID: group.id, permission: .editor))
+
+        /* Test the group has the permission */
 
         let permissions = try await clients.file.fetchGroupPermissions(folder.id)
         XCTAssertEqual(permissions.count, 1)
         XCTAssertEqual(permissions.first?.group.id, group.id)
         XCTAssertEqual(permissions.first?.permission, .editor)
 
+        /* Test the other user can access the file */
+
+        let folderAgain = try await otherClients.file.fetch(folder.id)
+        XCTAssertEqual(folderAgain.id, folder.id)
+        XCTAssertEqual(folderAgain.permission, .editor)
+
+        /* Revoke permission from the group */
+
         try await clients.file.revokeGroupPermission(.init(ids: [folder.id], groupID: group.id))
+
+        /* Test the group no longer has the permission */
+
         let newPermissions = try await clients.file.fetchGroupPermissions(folder.id)
         XCTAssertEqual(newPermissions.count, 0)
+
+        /* Test the other user can no longer access the file */
+
+        do {
+            _ = try await otherClients.file.fetch(folder.id)
+        } catch let error as VOErrorResponse {
+            XCTAssertEqual(error.code, "file_not_found")
+        } catch {
+            XCTFail("Invalid error: \(error)")
+        }
     }
 
     func testFetchPath() async throws {

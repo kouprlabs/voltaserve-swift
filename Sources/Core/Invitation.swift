@@ -6,7 +6,7 @@
 import Alamofire
 import Foundation
 
-struct VOInvitation {
+public struct VOInvitation {
     let baseURL: String
     let accessToken: String
 
@@ -35,6 +35,20 @@ struct VOInvitation {
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            }
+        }
+    }
+
+    public func create(_ options: CreateOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url(),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
             }
         }
     }
@@ -226,18 +240,18 @@ struct VOInvitation {
 
     public struct Entity: Codable {
         public let id: String
-        public let owner: VOUser.Entity
-        public let email: [String]
-        public let organization: VOOrganization.Entity
+        public let owner: VOUser.Entity?
+        public let email: String
+        public let organization: VOOrganization.Entity?
         public let status: InvitationStatus
         public let createTime: String
         public let updateTime: String?
 
         public init(
             id: String,
-            owner: VOUser.Entity,
-            email: [String],
-            organization: VOOrganization.Entity,
+            owner: VOUser.Entity? = nil,
+            email: String,
+            organization: VOOrganization.Entity? = nil,
             status: InvitationStatus,
             createTime: String,
             updateTime: String? = nil

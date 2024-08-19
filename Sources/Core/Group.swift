@@ -76,6 +76,34 @@ public struct VOGroup {
         }
     }
 
+    public func addMember(_ id: String, options: AddMemberOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForMembers(id),
+                method: .post,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
+    public func removeMember(_ id: String, options: AddMemberOptions) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForMembers(id),
+                method: .delete,
+                parameters: options,
+                encoder: JSONParameterEncoder.default,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleEmptyResponse(continuation: continuation, response: response)
+            }
+        }
+    }
+
     // MARK: - URLs
 
     public func url() -> URL {
