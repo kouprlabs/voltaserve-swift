@@ -312,5 +312,19 @@ public struct VOAuthUser {
         public let email: String
         public let fullName: String
         public let picture: String?
+
+        public init(
+            id: String,
+            username: String,
+            email: String,
+            fullName: String,
+            picture: String? = nil
+        ) {
+            self.id = id
+            self.username = username
+            self.email = email
+            self.fullName = fullName
+            self.picture = picture
+        }
     }
 }

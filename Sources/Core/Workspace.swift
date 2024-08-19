@@ -127,7 +127,7 @@ public struct VOWorkspace {
         public let organizationId: String
         public let storageCapacity: Int
 
-        public init(name: String, image: String?, organizationId: String, storageCapacity: Int) {
+        public init(name: String, image: String? = nil, organizationId: String, storageCapacity: Int) {
             self.name = name
             self.image = image
             self.organizationId = organizationId
@@ -137,12 +137,18 @@ public struct VOWorkspace {
 
     public struct ListOptions {
         public let query: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(query: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            query: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.query = query
             self.size = size
             self.page = page
@@ -223,6 +229,26 @@ public struct VOWorkspace {
         public let createTime: String
         public let updateTime: String?
 
+        public init(
+            id: String,
+            name: String,
+            permission: VOPermission.Value,
+            storageCapacity: Int,
+            rootID: String,
+            organization: VOOrganization.Entity,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.permission = permission
+            self.storageCapacity = storageCapacity
+            self.rootID = rootID
+            self.organization = organization
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
+
         enum CodingKeys: String, CodingKey {
             case id
             case name
@@ -241,5 +267,13 @@ public struct VOWorkspace {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(data: [Entity], totalPages: Int, totalElements: Int, page: Int, size: Int) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 }

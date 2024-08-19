@@ -108,12 +108,18 @@ public struct VOTask {
 
     public struct ListOptions {
         public let query: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(query: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            query: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.query = query
             self.size = size
             self.page = page
@@ -177,6 +183,26 @@ public struct VOTask {
         public let userID: String
         public let status: Status
         public let payload: Payload?
+
+        public init(
+            id: String,
+            name: String,
+            error: String? = nil,
+            percentage: Int? = nil,
+            isIndeterminate: Bool,
+            userID: String,
+            status: Status,
+            payload: Payload? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.error = error
+            self.percentage = percentage
+            self.isIndeterminate = isIndeterminate
+            self.userID = userID
+            self.status = status
+            self.payload = payload
+        }
 
         enum CodingKeys: String, CodingKey {
             case id

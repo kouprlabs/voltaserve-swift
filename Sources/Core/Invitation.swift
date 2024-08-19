@@ -144,12 +144,18 @@ struct VOInvitation {
 
     public struct ListOptions {
         public let organizationID: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            organizationID: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.organizationID = organizationID
             self.size = size
             self.page = page
@@ -226,6 +232,24 @@ struct VOInvitation {
         public let status: InvitationStatus
         public let createTime: String
         public let updateTime: String?
+
+        public init(
+            id: String,
+            owner: VOUser.Entity,
+            email: [String],
+            organization: VOOrganization.Entity,
+            status: InvitationStatus,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.owner = owner
+            self.email = email
+            self.organization = organization
+            self.status = status
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
     }
 
     public struct List: Codable {
@@ -234,5 +258,13 @@ struct VOInvitation {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(data: [Entity], totalPages: Int, totalElements: Int, page: Int, size: Int) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 }

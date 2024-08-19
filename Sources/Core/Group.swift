@@ -103,12 +103,19 @@ public struct VOGroup {
     public struct ListOptions {
         public let query: String?
         public let organizationID: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(query: String?, organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            query: String? = nil,
+            organizationID: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.query = query
             self.organizationID = organizationID
             self.size = size
@@ -179,6 +186,12 @@ public struct VOGroup {
         public let image: String?
         public let organizationID: String
 
+        public init(name: String, organizationID: String, image: String? = nil) {
+            self.name = name
+            self.image = image
+            self.organizationID = organizationID
+        }
+
         enum CodingKeys: String, CodingKey {
             case name
             case image
@@ -188,10 +201,18 @@ public struct VOGroup {
 
     public struct PatchNameOptions: Codable {
         public let name: String
+
+        public init(name: String) {
+            self.name = name
+        }
     }
 
     public struct AddMemberOptions: Codable {
         public let userID: String
+
+        public init(userID: String) {
+            self.userID = userID
+        }
 
         enum CodingKeys: String, CodingKey {
             case userID = "userId"
@@ -200,6 +221,10 @@ public struct VOGroup {
 
     public struct RemoveMemberOptions: Codable {
         public let userID: String
+
+        public init(userID: String) {
+            self.userID = userID
+        }
 
         enum CodingKeys: String, CodingKey {
             case userID = "userId"
@@ -215,6 +240,22 @@ public struct VOGroup {
         public let permission: String
         public let createTime: String
         public let updateTime: String?
+
+        public init(
+            id: String,
+            name: String,
+            organization: VOOrganization.Entity,
+            permission: String,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.organization = organization
+            self.permission = permission
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
     }
 
     public struct List: Codable {
@@ -223,5 +264,13 @@ public struct VOGroup {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(data: [Entity], totalPages: Int, totalElements: Int, page: Int, size: Int) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 }

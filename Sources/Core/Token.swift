@@ -43,7 +43,13 @@ public struct VOToken {
         public let refreshToken: String?
         public let locale: String?
 
-        public init(grantType: GrantType, username: String?, password: String?, refreshToken: String?, locale: String?) {
+        public init(
+            grantType: GrantType,
+            username: String? = nil,
+            password: String? = nil,
+            refreshToken: String? = nil,
+            locale: String? = nil
+        ) {
             self.grantType = grantType
             self.username = username
             self.password = password

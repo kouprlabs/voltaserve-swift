@@ -403,21 +403,28 @@ public struct VOFile {
         public let data: Data
         public let onProgress: ((Double) -> Void)?
 
-        public init(data: Data, onProgress: ((Double) -> Void)?) {
+        public init(data: Data, onProgress: ((Double) -> Void)? = nil) {
             self.data = data
             self.onProgress = onProgress
         }
     }
 
     public struct ListOptions {
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let type: FileType?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
         public let query: Query?
 
-        public init(size: Int?, page: Int?, type: FileType?, sortBy: SortBy?, sortOrder: SortOrder?, query: Query?) {
+        public init(
+            page: Int? = nil,
+            size: Int? = nil,
+            type: FileType? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil,
+            query: Query? = nil
+        ) {
             self.size = size
             self.page = page
             self.type = type
@@ -488,6 +495,22 @@ public struct VOFile {
         public let data: Data?
         public let onProgress: ((Double) -> Void)?
 
+        public init(
+            type: FileType,
+            workspaceID: String,
+            parentID: String? = nil,
+            name: String? = nil,
+            data: Data? = nil,
+            onProgress: ((Double) -> Void)? = nil
+        ) {
+            self.type = type
+            self.workspaceID = workspaceID
+            self.parentID = parentID
+            self.name = name
+            self.data = data
+            self.onProgress = onProgress
+        }
+
         enum CodingKeys: String, CodingKey {
             case type
             case workspaceID = "workspaceId"
@@ -499,15 +522,28 @@ public struct VOFile {
 
     public struct PatchNameOptions: Codable {
         public let name: String
+
+        public init(name: String) {
+            self.name = name
+        }
     }
 
     public struct DeleteOptions: Codable {
         public let ids: [String]
+
+        public init(ids: [String]) {
+            self.ids = ids
+        }
     }
 
     public struct MoveOptions: Codable {
         public let sourceIDs: [String]
         public let targetID: String
+
+        public init(sourceIDs: [String], targetID: String) {
+            self.sourceIDs = sourceIDs
+            self.targetID = targetID
+        }
 
         enum CodingKeys: String, CodingKey {
             case sourceIDs = "sourceIds"
@@ -520,6 +556,12 @@ public struct VOFile {
         public let userID: String
         public let permission: String
 
+        public init(ids: [String], userID: String, permission: String) {
+            self.ids = ids
+            self.userID = userID
+            self.permission = permission
+        }
+
         enum CodingKeys: String, CodingKey {
             case ids
             case userID = "userId"
@@ -530,6 +572,11 @@ public struct VOFile {
     public struct RevokeUserPermissionOptions: Codable {
         public let ids: [String]
         public let userID: String
+
+        public init(ids: [String], userID: String) {
+            self.ids = ids
+            self.userID = userID
+        }
 
         enum CodingKeys: String, CodingKey {
             case ids
@@ -542,6 +589,12 @@ public struct VOFile {
         public let groupID: String
         public let permission: String
 
+        public init(ids: [String], groupID: String, permission: String) {
+            self.ids = ids
+            self.groupID = groupID
+            self.permission = permission
+        }
+
         enum CodingKeys: String, CodingKey {
             case ids
             case groupID = "groupId"
@@ -552,6 +605,11 @@ public struct VOFile {
     public struct RevokeGroupPermissionOptions: Codable {
         public let ids: [String]
         public let groupID: String
+
+        public init(ids: [String], groupID: String) {
+            self.ids = ids
+            self.groupID = groupID
+        }
 
         enum CodingKeys: String, CodingKey {
             case ids
@@ -584,6 +642,30 @@ public struct VOFile {
         public let createTime: String
         public let updateTime: String?
 
+        public init(
+            id: String,
+            workspaceID: String,
+            name: String,
+            type: FileType,
+            parentID: String,
+            permission: PermissionType,
+            isShared: Bool,
+            snapshot: VOSnapshot.Entity? = nil,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.workspaceID = workspaceID
+            self.name = name
+            self.type = type
+            self.parentID = parentID
+            self.permission = permission
+            self.isShared = isShared
+            self.snapshot = snapshot
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
+
         enum CodingKeys: String, CodingKey {
             case id
             case workspaceID = "workspaceId"
@@ -605,18 +687,46 @@ public struct VOFile {
         public let page: Int
         public let size: Int
         public let query: Query?
+
+        public init(
+            data: [Entity],
+            totalPages: Int,
+            totalElements: Int,
+            page: Int,
+            size: Int,
+            query: Query? = nil
+        ) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+            self.query = query
+        }
     }
 
     public struct UserPermission: Codable {
         public let id: String
         public let user: VOUser.Entity
         public let permission: String
+
+        public init(id: String, user: VOUser.Entity, permission: String) {
+            self.id = id
+            self.user = user
+            self.permission = permission
+        }
     }
 
     public struct GroupPermission: Codable {
         public let id: String
         public let group: VOGroup.Entity
         public let permission: String
+
+        public init(id: String, group: VOGroup.Entity, permission: String) {
+            self.id = id
+            self.group = group
+            self.permission = permission
+        }
     }
 
     public struct Query: Codable {
@@ -626,6 +736,21 @@ public struct VOFile {
         public let createTimeBefore: Int?
         public let updateTimeAfter: Int?
         public let updateTimeBefore: Int?
+
+        public init(
+            text: String, type: FileType? = nil,
+            createTimeAfter: Int? = nil,
+            createTimeBefore: Int? = nil,
+            updateTimeAfter: Int? = nil,
+            updateTimeBefore: Int? = nil
+        ) {
+            self.text = text
+            self.type = type
+            self.createTimeAfter = createTimeAfter
+            self.createTimeBefore = createTimeBefore
+            self.updateTimeAfter = updateTimeAfter
+            self.updateTimeBefore = updateTimeBefore
+        }
 
         static func encodeToBase64(_ value: String) -> String {
             guard let data = value.data(using: .utf8) else {

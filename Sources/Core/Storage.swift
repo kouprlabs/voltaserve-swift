@@ -78,5 +78,11 @@ public struct VOStorage {
         public let bytes: Int
         public let maxBytes: Int
         public let percentage: Int
+
+        public init(bytes: Int, maxBytes: Int, percentage: Int) {
+            self.bytes = bytes
+            self.maxBytes = maxBytes
+            self.percentage = percentage
+        }
     }
 }

@@ -110,7 +110,7 @@ public struct VOAccount {
         public let fullName: String
         public let picture: String?
 
-        public init(email: String, password: String, fullName: String, picture: String?) {
+        public init(email: String, password: String, fullName: String, picture: String? = nil) {
             self.email = email
             self.password = password
             self.fullName = fullName

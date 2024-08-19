@@ -84,12 +84,20 @@ public struct VOSnapshot {
         public let fileID: String
         public let query: String?
         public let organizationID: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(fileID: String, query: String?, organizationID: String?, size: Int?, page: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            fileID: String,
+            query: String? = nil,
+            organizationID: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.fileID = fileID
             self.query = query
             self.organizationID = organizationID
@@ -200,6 +208,42 @@ public struct VOSnapshot {
         public let task: TaskInfo?
         public let createTime: String
         public let updateTime: String?
+
+        public init(
+            id: String,
+            version: Int,
+            status: Status,
+            original: Download,
+            preview: Download? = nil,
+            ocr: Download? = nil,
+            text: Download? = nil,
+            entities: Download? = nil,
+            mosaic: Download? = nil,
+            segmentation: Download? = nil,
+            thumbnail: Download? = nil,
+            language: String? = nil,
+            isActive: Bool,
+            task: TaskInfo? = nil,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.version = version
+            self.status = status
+            self.original = original
+            self.preview = preview
+            self.ocr = ocr
+            self.text = text
+            self.entities = entities
+            self.mosaic = mosaic
+            self.segmentation = segmentation
+            self.thumbnail = thumbnail
+            self.language = language
+            self.isActive = isActive
+            self.task = task
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
     }
 
     public struct List: Codable {
@@ -208,6 +252,14 @@ public struct VOSnapshot {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(data: [Entity], totalPages: Int, totalElements: Int, page: Int, size: Int) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 
     public enum Status: String, Codable {
@@ -220,6 +272,11 @@ public struct VOSnapshot {
     public struct TaskInfo: Codable {
         public let id: String
         public let isPending: Bool
+
+        public init(id: String, isPending: Bool) {
+            self.id = id
+            self.isPending = isPending
+        }
     }
 
     public struct Download: Codable {
@@ -227,6 +284,18 @@ public struct VOSnapshot {
         public let size: Int?
         public let image: ImageProps?
         public let document: DocumentProps?
+
+        public init(
+            fileExtension: String? = nil,
+            size: Int? = nil,
+            image: ImageProps? = nil,
+            document: DocumentProps? = nil
+        ) {
+            self.fileExtension = fileExtension
+            self.size = size
+            self.image = image
+            self.document = document
+        }
 
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
@@ -240,16 +309,32 @@ public struct VOSnapshot {
         public let width: Int
         public let height: Int
         public let zoomLevels: [ZoomLevel]?
+
+        public init(width: Int, height: Int, zoomLevels: [ZoomLevel]? = nil) {
+            self.width = width
+            self.height = height
+            self.zoomLevels = zoomLevels
+        }
     }
 
     public struct DocumentProps: Codable {
         public let pages: PagesProps?
         public let thumbnails: ThumbnailsProps?
+
+        public init(pages: PagesProps? = nil, thumbnails: ThumbnailsProps? = nil) {
+            self.pages = pages
+            self.thumbnails = thumbnails
+        }
     }
 
     public struct PagesProps: Codable {
         public let count: Int
         public let fileExtension: String
+
+        public init(count: Int, fileExtension: String) {
+            self.count = count
+            self.fileExtension = fileExtension
+        }
 
         enum CodingKeys: String, CodingKey {
             case count
@@ -259,6 +344,10 @@ public struct VOSnapshot {
 
     public struct ThumbnailsProps: Codable {
         public let fileExtension: String
+
+        public init(fileExtension: String) {
+            self.fileExtension = fileExtension
+        }
 
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
@@ -270,6 +359,13 @@ public struct VOSnapshot {
         public let height: Int
         public let lastColWidth: Int
         public let lastRowHeight: Int
+
+        public init(width: Int, height: Int, lastColWidth: Int, lastRowHeight: Int) {
+            self.width = width
+            self.height = height
+            self.lastColWidth = lastColWidth
+            self.lastRowHeight = lastRowHeight
+        }
     }
 
     public struct ZoomLevel: Codable {
@@ -280,5 +376,23 @@ public struct VOSnapshot {
         public let cols: Int
         public let scaleDownPercentage: Int
         public let tile: Tile
+
+        public init(
+            index: Int,
+            width: Int,
+            height: Int,
+            rows: Int,
+            cols: Int,
+            scaleDownPercentage: Int,
+            tile: Tile
+        ) {
+            self.index = index
+            self.width = width
+            self.height = height
+            self.rows = rows
+            self.cols = cols
+            self.scaleDownPercentage = scaleDownPercentage
+            self.tile = tile
+        }
     }
 }

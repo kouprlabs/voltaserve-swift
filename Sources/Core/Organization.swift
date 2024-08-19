@@ -136,7 +136,7 @@ public struct VOOrganization {
         public let name: String
         public let image: String?
 
-        public init(name: String, image: String?) {
+        public init(name: String, image: String? = nil) {
             self.name = name
             self.image = image
         }
@@ -164,12 +164,18 @@ public struct VOOrganization {
 
     public struct ListOptions {
         public let query: String?
-        public let size: Int?
         public let page: Int?
+        public let size: Int?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(query: String? = nil, size: Int? = nil, page: Int? = nil, sortBy: SortBy? = nil, sortOrder: SortOrder? = nil) {
+        public init(
+            query: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.query = query
             self.size = size
             self.page = page
@@ -230,6 +236,20 @@ public struct VOOrganization {
         public let permission: VOPermission.Value
         public let createTime: String
         public let updateTime: String?
+
+        public init(
+            id: String,
+            name: String,
+            permission: VOPermission.Value,
+            createTime: String,
+            updateTime: String? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.permission = permission
+            self.createTime = createTime
+            self.updateTime = updateTime
+        }
     }
 
     public struct List: Codable {
@@ -238,5 +258,13 @@ public struct VOOrganization {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(data: [Entity], totalPages: Int, totalElements: Int, page: Int, size: Int) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
     }
 }

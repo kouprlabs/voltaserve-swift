@@ -98,6 +98,10 @@ public struct VOMosaic {
 
     public struct Info: Codable {
         public var metadata: Metadata
+
+        public init(metadata: Metadata) {
+            self.metadata = metadata
+        }
     }
 
     public struct Metadata: Codable {
@@ -105,6 +109,13 @@ public struct VOMosaic {
         public let height: Int
         public let fileExtension: String
         public let zoomLevels: [ZoomLevel]
+
+        public init(width: Int, height: Int, fileExtension: String, zoomLevels: [ZoomLevel]) {
+            self.width = width
+            self.height = height
+            self.fileExtension = fileExtension
+            self.zoomLevels = zoomLevels
+        }
 
         enum CodingKeys: String, CodingKey {
             case width
@@ -122,6 +133,24 @@ public struct VOMosaic {
         public let cols: Int
         public let scaleDownPercentage: Float
         public let tile: Tile
+
+        public init(
+            index: Int,
+            width: Int,
+            height: Int,
+            rows: Int,
+            cols: Int,
+            scaleDownPercentage: Float,
+            tile: Tile
+        ) {
+            self.index = index
+            self.width = width
+            self.height = height
+            self.rows = rows
+            self.cols = cols
+            self.scaleDownPercentage = scaleDownPercentage
+            self.tile = tile
+        }
     }
 
     public struct Tile: Codable {
@@ -129,5 +158,12 @@ public struct VOMosaic {
         public let height: Int
         public let lastColWidth: Int
         public let lastRowHeight: Int
+
+        public init(width: Int, height: Int, lastColWidth: Int, lastRowHeight: Int) {
+            self.width = width
+            self.height = height
+            self.lastColWidth = lastColWidth
+            self.lastRowHeight = lastRowHeight
+        }
     }
 }
