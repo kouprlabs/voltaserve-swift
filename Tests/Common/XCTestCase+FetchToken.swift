@@ -8,12 +8,22 @@ import XCTest
 
 extension XCTestCase {
     func fetchTokenOrFail() async throws -> VOToken.Value {
-        var token = Token()
-        if let value = try await token.fetch() {
+        if let value = try await fetchToken() {
             return value
         } else {
             throw FailedToFetchToken()
         }
+    }
+
+    func fetchToken() async throws -> VOToken.Value? {
+        let config = Config()
+        return try await VOToken(baseURL: config.idpURL).exchange(VOToken.ExchangeOptions(
+            grantType: .password,
+            username: config.username,
+            password: config.password,
+            refreshToken: nil,
+            locale: nil
+        ))
     }
 
     struct FailedToFetchToken: Error {}

@@ -53,7 +53,7 @@ public struct VOGroup {
     public func patchName(_ id: String, options: PatchNameOptions) async throws -> VOGroup.Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForID(id),
+                urlForPatchName(id),
                 method: .patch,
                 parameters: options,
                 encoder: JSONParameterEncoder.default,
@@ -84,6 +84,10 @@ public struct VOGroup {
 
     public func urlForID(_ id: String) -> URL {
         URL(string: "\(url())/\(id)")!
+    }
+
+    public func urlForPatchName(_ id: String) -> URL {
+        URL(string: "\(urlForID(id))/name")!
     }
 
     public func urlForList(options: ListOptions) -> URL {

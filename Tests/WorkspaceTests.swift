@@ -8,14 +8,13 @@ import XCTest
 
 final class WorkspaceTests: XCTestCase {
     var config = Config()
+    var disposableOrganizations: [VOOrganization.Entity] = []
+    var disposableWorkspaces: [VOWorkspace.Entity] = []
 
     func testWorkspaceFlow() async throws {
-        let token = try await fetchTokenOrFail()
-        let organizationClient = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
-        let workspaceClient = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)
-        
-        /* Create organization */
-        let organization = try await organizationClient.create(.init(name: "Test Organization"))
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
 
         /* Create workspaces */
         var options: [VOWorkspace.CreateOptions] = []
@@ -28,8 +27,7 @@ final class WorkspaceTests: XCTestCase {
         }
         var workspaces: [VOWorkspace.Entity] = []
         for index in 0 ..< options.count {
-            let workspace = try await workspaceClient.create(options[index])
-            workspaces.append(workspace)
+            try await workspaces.append(createDisposableWorkspace(clients.workspace, options: options[index]))
         }
 
         /* Test creation */
@@ -42,55 +40,52 @@ final class WorkspaceTests: XCTestCase {
         /* Test list */
 
         /* Page 1 */
-        let page1 = try await workspaceClient.fetchList(VOWorkspace.ListOptions(page: 1, size: 3))
+        let page1 = try await clients.workspace.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertEqual(page1.page, 1)
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
         /* Page 2 */
-        let page2 = try await workspaceClient.fetchList(VOWorkspace.ListOptions(page: 2, size: 3))
+        let page2 = try await clients.workspace.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
         /* Test fetch */
-        let workspace = try await workspaceClient.fetch(workspaces[0].id)
+        let workspace = try await clients.workspace.fetch(workspaces[0].id)
         XCTAssertEqual(workspace.name, workspaces[0].name)
         XCTAssertEqual(workspace.organization.id, workspaces[0].organization.id)
         XCTAssertEqual(workspace.storageCapacity, workspaces[0].storageCapacity)
 
         /* Test patch name */
         let newName = "New Workspace"
-        let resultAlpha = try await workspaceClient.patchName(workspace.id, options: .init(name: newName))
+        let resultAlpha = try await clients.workspace.patchName(workspace.id, options: .init(name: newName))
         XCTAssertEqual(resultAlpha.name, newName)
-        let workspaceAlpha = try await workspaceClient.fetch(workspace.id)
+        let workspaceAlpha = try await clients.workspace.fetch(workspace.id)
         XCTAssertEqual(workspaceAlpha.name, newName)
 
         /* Test patch storage capacity */
         let newStorageCapacity = 200_000_000
-        let resultBeta = try await workspaceClient.patchStorageCapacity(
+        let resultBeta = try await clients.workspace.patchStorageCapacity(
             workspace.id,
             options: .init(storageCapacity: newStorageCapacity)
         )
         XCTAssertEqual(resultBeta.storageCapacity, newStorageCapacity)
-        let workspaceBeta = try await workspaceClient.fetch(workspace.id)
+        let workspaceBeta = try await clients.workspace.fetch(workspace.id)
         XCTAssertEqual(workspaceBeta.storageCapacity, newStorageCapacity)
 
         /* Test delete */
         for workspace in workspaces {
-            try await workspaceClient.delete(workspace.id)
+            try await clients.workspace.delete(workspace.id)
         }
         for workspace in workspaces {
             do {
-                _ = try await workspaceClient.fetch(workspace.id)
+                _ = try await clients.workspace.fetch(workspace.id)
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "workspace_not_found")
             }
         }
-
-        /* Delete organization */
-        try await organizationClient.delete(organization.id)
     }
 }

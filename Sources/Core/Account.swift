@@ -19,7 +19,10 @@ public struct VOAccount {
 
     public func fetchPasswordRequirements() async throws -> PasswordRequirements {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForPasswordRequirements()).responseData { response in
+            AF.request(
+                urlForPasswordRequirements(),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: PasswordRequirements.self)
             }
         }

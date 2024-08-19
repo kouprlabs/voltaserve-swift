@@ -37,7 +37,7 @@ struct VOInsights {
         }
     }
 
-    public func fetchEntities(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
+    public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForListEntities(id, options: options),

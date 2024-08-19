@@ -30,7 +30,10 @@ public struct VOFile {
 
     public func fetchPath(_ id: String) async throws -> [Entity] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForPath(id), headers: headersWithAuthorization(accessToken)).responseData { response in
+            AF.request(
+                urlForPath(id),
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: [Entity].self)
             }
         }
@@ -48,7 +51,6 @@ public struct VOFile {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForList(id: id, options: options),
-                method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: List.self)
@@ -78,41 +80,40 @@ public struct VOFile {
         }
     }
 
-    public func fetchUserPermissions(_ id: String) async throws -> UserPermission {
+    public func fetchUserPermissions(_ id: String) async throws -> [UserPermission] {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForUserPermissions(id: id),
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: UserPermission.self)
+                handleJSONResponse(continuation: continuation, response: response, type: [UserPermission].self)
             }
         }
     }
 
-    public func fetchGroupPermissions(_ id: String) async throws -> GroupPermission {
+    public func fetchGroupPermissions(_ id: String) async throws -> [GroupPermission] {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForGroupPermissions(id: id),
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: GroupPermission.self)
+                handleJSONResponse(continuation: continuation, response: response, type: [GroupPermission].self)
             }
         }
     }
 
-    public func create(_ options: CreateOptions) async throws -> Entity {
-        switch options.type {
-        case .file:
-            try await upload(urlForCreate(options), method: .post, data: options.data!)
-        case .folder:
-            try await withCheckedThrowingContinuation { continuation in
-                AF.request(
-                    urlForCreate(options),
-                    method: .post,
-                    headers: headersWithAuthorization(accessToken)
-                ).responseData { response in
-                    handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
-                }
+    public func createFile(_ options: CreateFileOptions) async throws -> Entity {
+        try await upload(urlForCreateFile(options), method: .post, data: options.data)
+    }
+
+    public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForCreateFolder(options),
+                method: .post,
+                headers: headersWithAuthorization(accessToken)
+            ).responseData { response in
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
         }
     }
@@ -129,7 +130,8 @@ public struct VOFile {
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.upload(
-                multipartFormData: { multipartFormData in multipartFormData.append(data, withName: "file") },
+                // If we don't give a value in fileName, Alamofire doesn't populate the "file" form field
+                multipartFormData: { $0.append(data, withName: "file", fileName: "file") },
                 to: url,
                 method: method,
                 headers: headersWithAuthorization(accessToken)
@@ -143,11 +145,11 @@ public struct VOFile {
         }
     }
 
-    public func patchName(id: String, options: PatchNameOptions) async throws -> Entity {
+    public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForName(id),
-                method: .post,
+                method: .patch,
                 parameters: options,
                 encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
@@ -157,7 +159,7 @@ public struct VOFile {
         }
     }
 
-    public func delete(id: String) async throws {
+    public func delete(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForID(id),
@@ -331,23 +333,37 @@ public struct VOFile {
 
     public func urlForList(id: String, options: ListOptions) -> URL {
         if let query = options.urlQuery {
-            URL(string: "\(urlForID(id))?\(query)")!
+            URL(string: "\(urlForID(id))/list?\(query)")!
         } else {
             urlForID(id)
         }
     }
 
-    public func urlForCreate(_ options: CreateOptions) -> URL {
+    public func urlForCreateFile(_ options: CreateFileOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
-            URLQueryItem(name: "type", value: options.type.rawValue),
-            URLQueryItem(name: "workspace_id", value: options.workspaceID)
+            .init(name: "type", value: FileType.file.rawValue),
+            .init(name: "workspace_id", value: options.workspaceID)
+        ]
+        if let parentID = options.parentID {
+            urlComponents.queryItems?.append(.init(name: "parent_id", value: parentID))
+        }
+        if let name = options.name {
+            urlComponents.queryItems?.append(.init(name: "name", value: name))
+        }
+        let query = urlComponents.url?.query
+        return URL(string: "\(url())?" + query!)!
+    }
+
+    public func urlForCreateFolder(_ options: CreateFolderOptions) -> URL {
+        var urlComponents = URLComponents()
+        urlComponents.queryItems = [
+            .init(name: "type", value: FileType.folder.rawValue),
+            .init(name: "workspace_id", value: options.workspaceID),
+            .init(name: "name", value: options.name)
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(URLQueryItem(name: "parent_id", value: parentID))
-        }
-        if let name = options.name {
-            urlComponents.queryItems?.append(URLQueryItem(name: "name", value: name))
         }
         let query = urlComponents.url?.query
         return URL(string: "\(url())?" + query!)!
@@ -487,23 +503,20 @@ public struct VOFile {
         case desc
     }
 
-    public struct CreateOptions {
-        public let type: FileType
+    public struct CreateFileOptions {
         public let workspaceID: String
         public let parentID: String?
         public let name: String?
-        public let data: Data?
+        public let data: Data
         public let onProgress: ((Double) -> Void)?
 
         public init(
-            type: FileType,
             workspaceID: String,
             parentID: String? = nil,
             name: String? = nil,
-            data: Data? = nil,
+            data: Data,
             onProgress: ((Double) -> Void)? = nil
         ) {
-            self.type = type
             self.workspaceID = workspaceID
             self.parentID = parentID
             self.name = name
@@ -512,11 +525,32 @@ public struct VOFile {
         }
 
         enum CodingKeys: String, CodingKey {
-            case type
             case workspaceID = "workspaceId"
             case parentID = "parentId"
             case name
             case data
+        }
+    }
+
+    public struct CreateFolderOptions {
+        public let workspaceID: String
+        public let parentID: String?
+        public let name: String
+
+        public init(
+            workspaceID: String,
+            parentID: String? = nil,
+            name: String
+        ) {
+            self.workspaceID = workspaceID
+            self.parentID = parentID
+            self.name = name
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case workspaceID = "workspaceId"
+            case parentID = "parentId"
+            case name
         }
     }
 
@@ -635,7 +669,7 @@ public struct VOFile {
         public let workspaceID: String
         public let name: String
         public let type: FileType
-        public let parentID: String
+        public let parentID: String?
         public let permission: PermissionType
         public let isShared: Bool
         public let snapshot: VOSnapshot.Entity?
@@ -647,7 +681,7 @@ public struct VOFile {
             workspaceID: String,
             name: String,
             type: FileType,
-            parentID: String,
+            parentID: String?,
             permission: PermissionType,
             isShared: Bool,
             snapshot: VOSnapshot.Entity? = nil,
@@ -708,9 +742,9 @@ public struct VOFile {
     public struct UserPermission: Codable {
         public let id: String
         public let user: VOUser.Entity
-        public let permission: String
+        public let permission: VOPermission.Value
 
-        public init(id: String, user: VOUser.Entity, permission: String) {
+        public init(id: String, user: VOUser.Entity, permission: VOPermission.Value) {
             self.id = id
             self.user = user
             self.permission = permission
@@ -720,9 +754,9 @@ public struct VOFile {
     public struct GroupPermission: Codable {
         public let id: String
         public let group: VOGroup.Entity
-        public let permission: String
+        public let permission: VOPermission.Value
 
-        public init(id: String, group: VOGroup.Entity, permission: String) {
+        public init(id: String, group: VOGroup.Entity, permission: VOPermission.Value) {
             self.id = id
             self.group = group
             self.permission = permission

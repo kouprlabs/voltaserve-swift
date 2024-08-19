@@ -29,7 +29,6 @@ public struct VOOrganization {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForList(options: options),
-                method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
                 handleJSONResponse(continuation: continuation, response: response, type: List.self)
@@ -65,8 +64,8 @@ public struct VOOrganization {
     public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForID(id),
-                method: .post,
+                urlForPatchName(id),
+                method: .patch,
                 parameters: options,
                 encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
@@ -91,7 +90,7 @@ public struct VOOrganization {
     public func leave(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
-                urlForID(id),
+                urlForLeave(id),
                 method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
