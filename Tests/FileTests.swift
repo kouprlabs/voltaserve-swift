@@ -23,7 +23,7 @@ final class FileTests: XCTestCase {
         for index in 0 ..< 6 {
             options.append(.init(
                 workspaceID: workspace.id,
-                name: "Test File \(index)",
+                name: "Test File \(index).txt",
                 data: Data("Test Content \(index)".utf8)
             ))
         }
@@ -61,7 +61,7 @@ final class FileTests: XCTestCase {
         XCTAssertEqual(file.workspaceID, files[0].workspaceID)
 
         /* Test patch name */
-        let newName = "New File"
+        let newName = "New File.txt"
         let resultAlpha = try await clients.file.patchName(file.id, options: .init(name: newName))
         XCTAssertEqual(resultAlpha.name, newName)
         let fileAlpha = try await clients.file.fetch(file.id)
@@ -76,6 +76,8 @@ final class FileTests: XCTestCase {
                 _ = try await clients.file.fetch(file.id)
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "file_not_found")
+            } catch {
+                XCTFail("Invalid error: \(error)")
             }
         }
     }
@@ -150,5 +152,149 @@ final class FileTests: XCTestCase {
 
         let permissions = try await clients.file.fetchGroupPermissions(folder.id)
         XCTAssertEqual(permissions.count, 0)
+    }
+
+    func testDeleteMany() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        var ids = [String]()
+        for index in 0 ..< 3 {
+            let folder = try await createDisposableFolder(clients.file, options: .init(
+                workspaceID: workspace.id,
+                name: "Test Folder \(index)"
+            ))
+            ids.append(folder.id)
+        }
+
+        _ = try await clients.file.delete(.init(ids: ids))
+        for id in ids {
+            do {
+                _ = try await clients.file.fetch(id)
+            } catch let error as VOErrorResponse {
+                XCTAssertEqual(error.code, "file_not_found")
+            } catch {
+                XCTFail("Invalid error: \(error)")
+            }
+        }
+    }
+
+    func testCopy() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        let file = try await createDisposableFile(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test File.txt",
+            data: Data("Test Content".utf8)
+        ))
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let copiedFile = try await clients.file.copy(file.id, to: folder.id)
+        XCTAssertEqual(copiedFile.name, file.name)
+        XCTAssertEqual(copiedFile.parentID, folder.id)
+
+        do {
+            _ = try await clients.file.copy(file.id, to: workspace.rootID)
+        } catch let error as VOErrorResponse {
+            XCTAssertEqual(error.code, "file_with_similar_name_exists")
+        } catch {
+            XCTFail("Invalid error: \(error)")
+        }
+    }
+
+    func testCopyMany() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        var files: [VOFile.Entity] = []
+        for index in 0 ..< 3 {
+            try await files.append(createDisposableFile(clients.file, options: .init(
+                workspaceID: workspace.id,
+                name: "Test File \(index).txt",
+                data: Data("Test Content \(index)".utf8)
+            )))
+        }
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let copyResult = try await clients.file.copy(.init(
+            sourceIDs: files.map(\.id),
+            targetID: folder.id
+        ))
+        XCTAssertEqual(copyResult.succeeded.count, files.count)
+        XCTAssertEqual(copyResult.failed.count, 0)
+        XCTAssertEqual(copyResult.new.count, files.count)
+    }
+
+    func testMove() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        let file = try await createDisposableFile(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test File.txt",
+            data: Data("Test Content".utf8)
+        ))
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let movedFile = try await clients.file.move(file.id, to: folder.id)
+        XCTAssertEqual(movedFile.parentID, folder.id)
+
+        do {
+            _ = try await createDisposableFile(clients.file, options: .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data("Test Content".utf8)
+            ))
+            _ = try await clients.file.move(file.id, to: workspace.rootID)
+        } catch let error as VOErrorResponse {
+            XCTAssertEqual(error.code, "file_with_similar_name_exists")
+        } catch {
+            XCTFail("Invalid error: \(error)")
+        }
+    }
+
+    func testMoveMany() async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        var files: [VOFile.Entity] = []
+        for index in 0 ..< 3 {
+            try await files.append(createDisposableFile(clients.file, options: .init(
+                workspaceID: workspace.id,
+                name: "Test File \(index).txt",
+                data: Data("Test Content \(index)".utf8)
+            )))
+        }
+        let folder = try await createDisposableFolder(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: "Test Folder"
+        ))
+
+        let moveResult = try await clients.file.move(.init(
+            sourceIDs: files.map(\.id),
+            targetID: folder.id
+        ))
+        XCTAssertEqual(moveResult.succeeded.count, files.count)
+        XCTAssertEqual(moveResult.failed.count, 0)
     }
 }

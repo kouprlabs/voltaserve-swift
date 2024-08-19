@@ -61,7 +61,7 @@ final class OrganizationTests: XCTestCase {
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "cannot_remove_last_owner_of_organization")
         } catch {
-            XCTFail()
+            XCTFail("Invalid error: \(error)")
         }
 
         /* Test delete */
@@ -73,6 +73,8 @@ final class OrganizationTests: XCTestCase {
                 _ = try await clients.organization.fetch(organization.id)
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "organization_not_found")
+            } catch {
+                XCTFail("Invalid error: \(error)")
             }
         }
     }

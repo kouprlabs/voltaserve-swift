@@ -185,19 +185,19 @@ public struct VOFile {
         }
     }
 
-    public func move(_ id: String, to targetID: String) async throws {
+    public func move(_ id: String, to targetID: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForMove(id, to: targetID),
                 method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
         }
     }
 
-    public func move(_ options: MoveOptions) async throws {
+    public func move(_ options: MoveOptions) async throws -> MoveResult {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForMove(),
@@ -206,24 +206,24 @@ public struct VOFile {
                 encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+                handleJSONResponse(continuation: continuation, response: response, type: MoveResult.self)
             }
         }
     }
 
-    public func copy(_ id: String, to targetID: String) async throws {
+    public func copy(_ id: String, to targetID: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForCopy(id, to: targetID),
                 method: .post,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
             }
         }
     }
 
-    public func copy(_ options: MoveOptions) async throws {
+    public func copy(_ options: CopyOptions) async throws -> CopyResult {
         try await withCheckedThrowingContinuation { continuation in
             AF.request(
                 urlForCopy(),
@@ -232,7 +232,7 @@ public struct VOFile {
                 encoder: JSONParameterEncoder.default,
                 headers: headersWithAuthorization(accessToken)
             ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+                handleJSONResponse(continuation: continuation, response: response, type: CopyResult.self)
             }
         }
     }
@@ -343,13 +343,11 @@ public struct VOFile {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.file.rawValue),
-            .init(name: "workspace_id", value: options.workspaceID)
+            .init(name: "workspace_id", value: options.workspaceID),
+            .init(name: "name", value: options.name)
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(.init(name: "parent_id", value: parentID))
-        }
-        if let name = options.name {
-            urlComponents.queryItems?.append(.init(name: "name", value: name))
         }
         let query = urlComponents.url?.query
         return URL(string: "\(url())?" + query!)!
@@ -506,14 +504,14 @@ public struct VOFile {
     public struct CreateFileOptions {
         public let workspaceID: String
         public let parentID: String?
-        public let name: String?
+        public let name: String
         public let data: Data
         public let onProgress: ((Double) -> Void)?
 
         public init(
             workspaceID: String,
             parentID: String? = nil,
-            name: String? = nil,
+            name: String,
             data: Data,
             onProgress: ((Double) -> Void)? = nil
         ) {
@@ -571,6 +569,21 @@ public struct VOFile {
     }
 
     public struct MoveOptions: Codable {
+        public let sourceIDs: [String]
+        public let targetID: String
+
+        public init(sourceIDs: [String], targetID: String) {
+            self.sourceIDs = sourceIDs
+            self.targetID = targetID
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case sourceIDs = "sourceIds"
+            case targetID = "targetId"
+        }
+    }
+
+    public struct CopyOptions: Codable {
         public let sourceIDs: [String]
         public let targetID: String
 
@@ -798,6 +811,28 @@ public struct VOFile {
                 return nil
             }
             return String(decoding: data, as: UTF8.self)
+        }
+    }
+
+    public struct CopyResult: Codable {
+        public let new: [String]
+        public let succeeded: [String]
+        public let failed: [String]
+
+        public init(new: [String], succeeded: [String], failed: [String]) {
+            self.new = new
+            self.succeeded = succeeded
+            self.failed = failed
+        }
+    }
+
+    public struct MoveResult: Codable {
+        public let succeeded: [String]
+        public let failed: [String]
+
+        public init(succeeded: [String], failed: [String]) {
+            self.succeeded = succeeded
+            self.failed = failed
         }
     }
 }
