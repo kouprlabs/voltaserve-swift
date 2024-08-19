@@ -33,13 +33,12 @@ Build Docker image:
 docker build -t voltaserve/swift-tests .
 ```
 
-The test suite expects the following account to exist:
+The test suite expects the following accounts to exist:
 
 | Email                   | Password    |
 | ----------------------- | ----------- |
 | test@koupr.com          | `Passw0rd!` |
-
-Just create one if you don't have it.
+| test+1@koupr.com        | `Passw0rd!` |
 
 Run with Docker:
 
