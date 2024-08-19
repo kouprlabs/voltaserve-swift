@@ -11,6 +11,6 @@ struct Config {
     let idpURL = "http://\(ProcessInfo.processInfo.environment["IDP_HOST"] ?? "localhost"):8081/v2"
     let username = ProcessInfo.processInfo.environment["USERNAME"] ?? "test@koupr.com"
     let password = ProcessInfo.processInfo.environment["PASSWORD"] ?? "Passw0rd!"
-    let otherUsername = ProcessInfo.processInfo.environment["USERNAME"] ?? "test+1@koupr.com"
-    let otherPassword = ProcessInfo.processInfo.environment["PASSWORD"] ?? "Passw0rd!"
+    let otherUsername = ProcessInfo.processInfo.environment["OTHER_USERNAME"] ?? "test+1@koupr.com"
+    let otherPassword = ProcessInfo.processInfo.environment["OTHER_PASSWORD"] ?? "Passw0rd!"
 }

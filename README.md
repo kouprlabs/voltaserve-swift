@@ -48,6 +48,8 @@ docker run --rm \
     -e IDP_HOST=host.docker.internal \
     -e USERNAME='test@koupr.com' \
     -e PASSWORD='Passw0rd!' \
+    -e OTHER_USERNAME='test+1@koupr.com' \
+    -e OTHER_PASSWORD='Passw0rd!' \
     voltaserve/tests
 ```
 
