@@ -94,12 +94,14 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
+        self.factory = factory
+
         guard let otherFactory = try? await DisposableFactory.withOtherCredentials() else {
             failedToCreateFactory()
             return
         }
-        self.factory = factory
         self.otherFactory = otherFactory
+
         let client = factory.client.file
         let otherClient = otherFactory.client.file
 
@@ -163,12 +165,14 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
+        self.factory = factory
+
         guard let otherFactory = try? await DisposableFactory.withOtherCredentials() else {
             failedToCreateFactory()
             return
         }
-        self.factory = factory
         self.otherFactory = otherFactory
+
         let client = factory.client.file
         let otherClient = otherFactory.client.file
 
