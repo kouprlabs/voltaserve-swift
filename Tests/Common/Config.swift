@@ -13,4 +13,17 @@ struct Config {
     let password = ProcessInfo.processInfo.environment["PASSWORD"] ?? "Passw0rd!"
     let otherUsername = ProcessInfo.processInfo.environment["OTHER_USERNAME"] ?? "test+1@koupr.com"
     let otherPassword = ProcessInfo.processInfo.environment["OTHER_PASSWORD"] ?? "Passw0rd!"
+
+    var credentials: Credentials {
+        .init(username: username, password: password)
+    }
+
+    var otherCredentials: Credentials {
+        .init(username: otherUsername, password: otherPassword)
+    }
+
+    struct Credentials {
+        let username: String
+        let password: String
+    }
 }

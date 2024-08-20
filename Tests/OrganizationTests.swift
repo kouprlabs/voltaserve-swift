@@ -7,11 +7,15 @@
 import XCTest
 
 final class OrganizationTests: XCTestCase {
-    var config = Config()
-    var disposableOrganizations: [VOOrganization.Entity] = []
+    var factory: DisposableFactory?
 
     func testOrganizationFlow() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+
+        let client = factory.client.organization
 
         /* Create organizations */
         var options: [VOOrganization.CreateOptions] = []
@@ -20,7 +24,7 @@ final class OrganizationTests: XCTestCase {
         }
         var organizations: [VOOrganization.Entity] = []
         for index in 0 ..< options.count {
-            try await organizations.append(createDisposableOrganization(clients.organization, options: options[index]))
+            try await organizations.append(factory.organization(options[index]))
         }
 
         /* Test creation */
@@ -31,33 +35,33 @@ final class OrganizationTests: XCTestCase {
         /* Test list */
 
         /* Page 1 */
-        let page1 = try await clients.organization.fetchList(.init(page: 1, size: 3))
+        let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertEqual(page1.page, 1)
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
         /* Page 2 */
-        let page2 = try await clients.organization.fetchList(.init(page: 2, size: 3))
+        let page2 = try await client.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
         /* Test fetch */
-        let organization = try await clients.organization.fetch(organizations[0].id)
+        let organization = try await client.fetch(organizations[0].id)
         XCTAssertEqual(organization.name, organizations[0].name)
 
         /* Test patch name */
         let newName = "New Organization"
-        let resultAlpha = try await clients.organization.patchName(organization.id, options: .init(name: newName))
-        XCTAssertEqual(resultAlpha.name, newName)
-        let organizationAlpha = try await clients.organization.fetch(organization.id)
-        XCTAssertEqual(organizationAlpha.name, newName)
+        let alpha = try await client.patchName(organization.id, options: .init(name: newName))
+        XCTAssertEqual(alpha.name, newName)
+        let beta = try await factory.client.organization.fetch(organization.id)
+        XCTAssertEqual(beta.name, newName)
 
         /* Test leave */
         do {
-            try await clients.organization.leave(organization.id)
+            try await client.leave(organization.id)
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "cannot_remove_last_owner_of_organization")
         } catch {
@@ -66,11 +70,11 @@ final class OrganizationTests: XCTestCase {
 
         /* Test delete */
         for organization in organizations {
-            try await clients.organization.delete(organization.id)
+            try await client.delete(organization.id)
         }
         for organization in organizations {
             do {
-                _ = try await clients.organization.fetch(organization.id)
+                _ = try await client.fetch(organization.id)
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "organization_not_found")
             } catch {
@@ -81,9 +85,6 @@ final class OrganizationTests: XCTestCase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-
-        let clients = try await Clients(fetchTokenOrFail())
-
-        try await disposeOrganizations(clients.organization)
+        await factory?.dispose()
     }
 }

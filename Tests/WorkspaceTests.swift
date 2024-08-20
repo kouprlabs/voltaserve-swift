@@ -7,82 +7,85 @@
 import XCTest
 
 final class WorkspaceTests: XCTestCase {
-    var config = Config()
-    var disposableOrganizations: [VOOrganization.Entity] = []
-    var disposableWorkspaces: [VOWorkspace.Entity] = []
+    var factory: DisposableFactory?
 
     func testWorkspaceFlow() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let organization = try await createDisposableOrganization(clients.organization)
+        let client = factory.client.workspace
+
+        let organization = try await factory.organization(.init(name: "Test Organization"))
 
         /* Create workspaces */
         var options: [VOWorkspace.CreateOptions] = []
         for index in 0 ..< 6 {
             options.append(.init(
                 name: "Test Workspace \(index)",
-                organizationId: organization.id,
+                organizationID: organization.id,
                 storageCapacity: 100_000_000 + index
             ))
         }
         var workspaces: [VOWorkspace.Entity] = []
         for index in 0 ..< options.count {
-            try await workspaces.append(createDisposableWorkspace(clients.workspace, options: options[index]))
+            try await workspaces.append(factory.workspace(options[index]))
         }
 
         /* Test creation */
         for index in 0 ..< workspaces.count {
             XCTAssertEqual(workspaces[index].name, options[index].name)
-            XCTAssertEqual(workspaces[index].organization.id, options[index].organizationId)
+            XCTAssertEqual(workspaces[index].organization.id, options[index].organizationID)
             XCTAssertEqual(workspaces[index].storageCapacity, options[index].storageCapacity)
         }
 
         /* Test list */
 
         /* Page 1 */
-        let page1 = try await clients.workspace.fetchList(.init(page: 1, size: 3))
+        let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertEqual(page1.page, 1)
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
         /* Page 2 */
-        let page2 = try await clients.workspace.fetchList(.init(page: 2, size: 3))
+        let page2 = try await client.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
         /* Test fetch */
-        let workspace = try await clients.workspace.fetch(workspaces[0].id)
+        let workspace = try await client.fetch(workspaces[0].id)
         XCTAssertEqual(workspace.name, workspaces[0].name)
         XCTAssertEqual(workspace.organization.id, workspaces[0].organization.id)
         XCTAssertEqual(workspace.storageCapacity, workspaces[0].storageCapacity)
 
         /* Test patch name */
         let newName = "New Workspace"
-        let resultAlpha = try await clients.workspace.patchName(workspace.id, options: .init(name: newName))
+        let resultAlpha = try await client.patchName(workspace.id, options: .init(name: newName))
         XCTAssertEqual(resultAlpha.name, newName)
-        let workspaceAlpha = try await clients.workspace.fetch(workspace.id)
+        let workspaceAlpha = try await client.fetch(workspace.id)
         XCTAssertEqual(workspaceAlpha.name, newName)
 
         /* Test patch storage capacity */
         let newStorageCapacity = 200_000_000
-        let resultBeta = try await clients.workspace.patchStorageCapacity(
+        let resultBeta = try await client.patchStorageCapacity(
             workspace.id,
             options: .init(storageCapacity: newStorageCapacity)
         )
         XCTAssertEqual(resultBeta.storageCapacity, newStorageCapacity)
-        let workspaceBeta = try await clients.workspace.fetch(workspace.id)
+        let workspaceBeta = try await client.fetch(workspace.id)
         XCTAssertEqual(workspaceBeta.storageCapacity, newStorageCapacity)
 
         /* Test delete */
         for workspace in workspaces {
-            try await clients.workspace.delete(workspace.id)
+            try await client.delete(workspace.id)
         }
         for workspace in workspaces {
             do {
-                _ = try await clients.workspace.fetch(workspace.id)
+                _ = try await client.fetch(workspace.id)
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "workspace_not_found")
             } catch {
@@ -93,10 +96,6 @@ final class WorkspaceTests: XCTestCase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-
-        let clients = try await Clients(fetchTokenOrFail())
-
-        try await disposeWorkspaces(clients.workspace)
-        try await disposeOrganizations(clients.organization)
+        await factory?.dispose()
     }
 }

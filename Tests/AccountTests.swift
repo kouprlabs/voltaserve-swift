@@ -7,12 +7,17 @@
 import XCTest
 
 final class AccountTests: XCTestCase {
-    let config = Config()
+    var factory: DisposableFactory?
 
     func testFetchPasswordRequirements() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let passwordRequirements = try await clients.account.fetchPasswordRequirements()
+        let client = factory.client.account
+
+        let passwordRequirements = try await client.fetchPasswordRequirements()
         XCTAssertTrue(passwordRequirements.minLength > 0)
     }
 }

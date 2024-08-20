@@ -160,14 +160,21 @@ public struct VOWorkspace {
     public struct CreateOptions: Codable {
         public let name: String
         public let image: String?
-        public let organizationId: String
+        public let organizationID: String
         public let storageCapacity: Int
 
-        public init(name: String, image: String? = nil, organizationId: String, storageCapacity: Int) {
+        public init(name: String, image: String? = nil, organizationID: String, storageCapacity: Int) {
             self.name = name
             self.image = image
-            self.organizationId = organizationId
+            self.organizationID = organizationID
             self.storageCapacity = storageCapacity
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case name
+            case image
+            case organizationID = "organizationId"
+            case storageCapacity
         }
     }
 

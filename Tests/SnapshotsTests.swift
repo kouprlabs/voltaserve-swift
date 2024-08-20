@@ -8,17 +8,23 @@ import Foundation
 import XCTest
 
 final class SnapshotsTests: XCTestCase {
-    let config = Config()
-    var disposableOrganizations: [VOOrganization.Entity] = []
-    var disposableWorkspaces: [VOWorkspace.Entity] = []
-    var disposableFiles: [VOFile.Entity] = []
+    var factory: DisposableFactory?
 
     func testFetchList() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
-        let file = try await createDisposableFile(clients.file, options: .init(
+        let client = factory.client.snapshot
+
+        let organization = try await factory.organization(.init(name: "Test Organization"))
+        let workspace = try await factory.workspace(.init(
+            name: "Test Workspace",
+            organizationID: organization.id,
+            storageCapacity: 100_000_000
+        ))
+        let file = try await factory.file(.init(
             workspaceID: workspace.id,
             name: "Test File.txt",
             data: Data("Test Content".utf8)
@@ -27,13 +33,16 @@ final class SnapshotsTests: XCTestCase {
         /* Create snapshots by patching the existing file */
 
         for index in 0 ..< 5 {
-            _ = try await clients.file.patch(file.id, options: .init(data: Data("Another Test Content \(index)".utf8)))
+            _ = try await factory.client.file.patch(
+                file.id,
+                options: .init(data: Data("Another Test Content \(index)".utf8))
+            )
         }
 
         /* Test we receive a snapshot list */
 
         for index in 1 ..< 3 {
-            let page = try await clients.snapshot.fetchList(.init(fileID: file.id, page: index, size: 3))
+            let page = try await client.fetchList(.init(fileID: file.id, page: index, size: 3))
             XCTAssertEqual(page.page, index)
             XCTAssertEqual(page.size, 3)
             XCTAssertEqual(page.totalElements, 6)
@@ -87,14 +96,21 @@ final class SnapshotsTests: XCTestCase {
     }
 
     func testVideoFlow() async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+        let organization = try await factory.organization(.init(name: "Test Organization"))
+        let workspace = try await factory.workspace(.init(
+            name: "Test Workspace",
+            organizationID: organization.id,
+            storageCapacity: 100_000_000
+        ))
 
         let url = getResourceURL(forResource: "video", withExtension: "mp4")!
         let data = try Data(contentsOf: url)
-        var file = try await createDisposableFile(clients.file, options: .init(
+        var file = try await factory.file(.init(
             workspaceID: workspace.id,
             name: url.lastPathComponent,
             data: data
@@ -109,7 +125,7 @@ final class SnapshotsTests: XCTestCase {
         /* Wait for processing */
 
         repeat {
-            file = try await clients.file.fetch(file.id)
+            file = try await factory.client.file.fetch(file.id)
             if file.snapshot!.status == .error {
                 XCTFail("Failed to process \(url.lastPathComponent)")
                 return
@@ -143,14 +159,21 @@ final class SnapshotsTests: XCTestCase {
         width: Int,
         height: Int
     ) async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+        let organization = try await factory.organization(.init(name: "Test Organization"))
+        let workspace = try await factory.workspace(.init(
+            name: "Test Workspace",
+            organizationID: organization.id,
+            storageCapacity: 100_000_000
+        ))
 
         let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
-        var file = try await createDisposableFile(clients.file, options: .init(
+        var file = try await factory.file(.init(
             workspaceID: workspace.id,
             name: url.lastPathComponent,
             data: data
@@ -165,7 +188,7 @@ final class SnapshotsTests: XCTestCase {
         /* Wait for processing */
 
         repeat {
-            file = try await clients.file.fetch(file.id)
+            file = try await factory.client.file.fetch(file.id)
             if file.snapshot!.status == .error {
                 XCTFail("Failed to process \(url.lastPathComponent)")
                 return
@@ -195,14 +218,21 @@ final class SnapshotsTests: XCTestCase {
     }
 
     func checkDocumentFlow(forResource resource: String, withExtension fileExtension: String) async throws {
-        let clients = try await Clients(fetchTokenOrFail())
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
 
-        let organization = try await createDisposableOrganization(clients.organization)
-        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+        let organization = try await factory.organization(.init(name: "Test Organization"))
+        let workspace = try await factory.workspace(.init(
+            name: "Test Workspace",
+            organizationID: organization.id,
+            storageCapacity: 100_000_000
+        ))
 
         let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
-        var file = try await createDisposableFile(clients.file, options: .init(
+        var file = try await factory.file(.init(
             workspaceID: workspace.id,
             name: url.lastPathComponent,
             data: data
@@ -217,7 +247,7 @@ final class SnapshotsTests: XCTestCase {
         /* Wait for processing */
 
         repeat {
-            file = try await clients.file.fetch(file.id)
+            file = try await factory.client.file.fetch(file.id)
             if file.snapshot!.status == .error {
                 XCTFail("Failed to process \(url.lastPathComponent)")
                 return
@@ -252,11 +282,6 @@ final class SnapshotsTests: XCTestCase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-
-        let clients = try await Clients(fetchTokenOrFail())
-
-        try await disposeFiles(clients.file)
-        try await disposeWorkspaces(clients.workspace)
-        try await disposeOrganizations(clients.organization)
+        await factory?.dispose()
     }
 }
