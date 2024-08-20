@@ -53,13 +53,40 @@ final class SnapshotsTests: XCTestCase {
         try await checkDocumentFlow(forResource: "document", withExtension: "odt")
     }
 
-    func testImageFlow() async throws {
+    func testJPEGFlow() async throws {
+        try await checkImageFlow(
+            forResource: "image",
+            withExtension: "jpg",
+            previewExtension: "jpg",
+            thumbnailExtension: "jpg"
+        )
+    }
+
+    func testTIFFFlow() async throws {
+        try await checkImageFlow(
+            forResource: "image",
+            withExtension: "tiff",
+            previewExtension: "jpg",
+            thumbnailExtension: "jpg"
+        )
+    }
+
+    func testWebPFlow() async throws {
+        try await checkImageFlow(
+            forResource: "image",
+            withExtension: "webp",
+            previewExtension: "webp",
+            thumbnailExtension: "webp"
+        )
+    }
+
+    func testVideoFlow() async throws {
         let clients = try await Clients(fetchTokenOrFail())
 
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
 
-        let url = resourcesBundle.url(forResource: "image", withExtension: "jpg")!
+        let url = resourcesBundle.url(forResource: "video", withExtension: "mp4")!
         let data = try Data(contentsOf: url)
         var file = try await createDisposableFile(clients.file, options: .init(
             workspaceID: workspace.id,
@@ -70,29 +97,90 @@ final class SnapshotsTests: XCTestCase {
         /* Test original is valid */
 
         XCTAssertNotNil(file.snapshot)
-        XCTAssertEqual(file.snapshot!.original.fileExtension, ".jpg")
+        XCTAssertEqual(file.snapshot!.original.fileExtension, ".mp4")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
-        /* Test preview is valid */
+        /* Wait for processing */
 
         repeat {
             file = try await clients.file.fetch(file.id)
+            if file.snapshot!.status == .error {
+                XCTFail("Failed to process file")
+                return
+            }
             sleep(1)
         } while file.snapshot!.task != nil
 
+        /* Test preview is nil */
+
         XCTAssertNotNil(file.snapshot!.preview)
-        XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".jpg")
+        XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".mp4")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
-        XCTAssertNotNil(file.snapshot!.preview!.image)
-        XCTAssertEqual(file.snapshot!.preview!.image!.width, 640)
-        XCTAssertEqual(file.snapshot!.preview!.image!.height, 800)
+        XCTAssertNil(file.snapshot!.preview!.image)
+        XCTAssertNil(file.snapshot!.preview!.document)
 
         /* Test thumbnail is valid */
 
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
-        XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".jpg")
+        XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".png")
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.image!.width, 0)
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.image!.height, 0)
+    }
+
+    func checkImageFlow(
+        forResource resource: String,
+        withExtension fileExtension: String,
+        previewExtension: String,
+        thumbnailExtension: String
+    ) async throws {
+        let clients = try await Clients(fetchTokenOrFail())
+
+        let organization = try await createDisposableOrganization(clients.organization)
+        let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
+
+        let url = resourcesBundle.url(forResource: resource, withExtension: fileExtension)!
+        let data = try Data(contentsOf: url)
+        var file = try await createDisposableFile(clients.file, options: .init(
+            workspaceID: workspace.id,
+            name: url.lastPathComponent,
+            data: data
+        ))
+
+        /* Test original is valid */
+
+        XCTAssertNotNil(file.snapshot)
+        XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
+        XCTAssertEqual(file.snapshot!.original.size, data.count)
+
+        /* Wait for processing */
+
+        repeat {
+            file = try await clients.file.fetch(file.id)
+            if file.snapshot!.status == .error {
+                XCTFail("Failed to process file")
+                return
+            }
+            sleep(1)
+        } while file.snapshot!.task != nil
+
+        /* Test preview is valid */
+
+        XCTAssertNotNil(file.snapshot!.preview)
+        XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".\(previewExtension)")
+        XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
+        XCTAssertNotNil(file.snapshot!.preview!.image)
+        XCTAssertEqual(file.snapshot!.preview!.image!.width, 640)
+        XCTAssertEqual(file.snapshot!.preview!.image!.height, 800)
+        XCTAssertNil(file.snapshot!.preview!.document)
+
+        /* Test thumbnail is valid */
+
+        XCTAssertNotNil(file.snapshot!.thumbnail)
+        XCTAssertNotNil(file.snapshot!.thumbnail!.image)
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
+        XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".\(thumbnailExtension)")
         XCTAssertTrue(
             file.snapshot!.thumbnail!.image!.width == 512 ||
                 file.snapshot!.thumbnail!.image!.height == 512)
@@ -118,12 +206,14 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
-        /* Test preview is valid */
+        /* Wait for processing */
 
         repeat {
             file = try await clients.file.fetch(file.id)
             sleep(1)
         } while file.snapshot!.task != nil
+
+        /* Test preview is valid */
 
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".pdf")
@@ -135,6 +225,7 @@ final class SnapshotsTests: XCTestCase {
             file.snapshot!.preview!.document!.pages!.fileExtension,
             file.snapshot!.preview!.fileExtension
         )
+        XCTAssertNil(file.snapshot!.preview!.image)
 
         /* Test thumbnail is valid */
 
