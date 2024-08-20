@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOStorage {
@@ -19,34 +18,55 @@ public struct VOStorage {
 
     public func fetchAccountUsage() async throws -> Usage {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForAccountUsage(),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            var request = URLRequest(url: urlForAccountUsage())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Usage.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchWorkspaceUsage(_ id: String) async throws -> Usage {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForWokrspaceUsage(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            var request = URLRequest(url: urlForWokrspaceUsage(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Usage.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchFileUsage(_ id: String) async throws -> Usage {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFileUsage(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Usage.self)
+            var request = URLRequest(url: urlForFileUsage(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Usage.self
+                )
             }
+            task.resume()
         }
     }
 

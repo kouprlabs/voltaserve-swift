@@ -14,13 +14,9 @@ let package = Package(
             targets: ["Voltaserve"]
         )
     ],
-    dependencies: [
-        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.9.1"))
-    ],
     targets: [
         .target(
             name: "Voltaserve",
-            dependencies: ["Alamofire"],
             path: "Sources"
         ),
         .testTarget(

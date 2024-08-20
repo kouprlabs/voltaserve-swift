@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOInvitation {
@@ -19,85 +18,123 @@ public struct VOInvitation {
 
     public func fetchIncoming(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(urlForIncoming(), options: options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(urlForIncoming(), options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchOutgoing(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(urlForOutgoing(), options: options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(urlForOutgoing(), options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
     public func create(_ options: CreateOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: url())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func delete(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                method: .delete,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func resend(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForResend(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForResend(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func accept(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForAccept(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForAccept(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func decline(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForDecline(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForDecline(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 

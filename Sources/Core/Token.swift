@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOToken {
@@ -17,14 +16,20 @@ public struct VOToken {
 
     public func exchange(_ options: ExchangeOptions) async throws -> Value {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options.urlParameters,
-                encoding: URLEncoding.default
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Value.self)
+            var request = URLRequest(url: url())
+            request.httpMethod = "POST"
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            request.httpBody = Data(options.urlEncodedString.utf8)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Value.self
+                )
             }
+            task.resume()
         }
     }
 
@@ -36,7 +41,7 @@ public struct VOToken {
 
     // MARK: - Payloads
 
-    public struct ExchangeOptions {
+    public struct ExchangeOptions: Codable {
         public let grantType: GrantType
         public let username: String?
         public let password: String?
@@ -73,9 +78,23 @@ public struct VOToken {
             }
             return params
         }
+
+        var urlEncodedString: String {
+            var components = URLComponents()
+            components.queryItems = urlParameters.map { key, value in
+                URLQueryItem(name: key, value: value)
+            }
+
+            // Explicitly replace spaces with + and encode & characters
+            var percentEncodedQuery = components.percentEncodedQuery ?? ""
+            percentEncodedQuery = percentEncodedQuery
+                .replacingOccurrences(of: "+", with: "%2B")
+                .replacingOccurrences(of: "%20", with: "+")
+            return percentEncodedQuery
+        }
     }
 
-    public enum GrantType: String {
+    public enum GrantType: String, Codable {
         case password
         case refreshToken = "refresh_token"
     }

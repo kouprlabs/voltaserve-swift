@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOUser {
@@ -19,12 +18,19 @@ public struct VOUser {
 
     public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
@@ -171,107 +177,179 @@ public struct VOAuthUser {
 
     public func fetch() async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(url(), headers: headersWithAuthorization(accessToken)).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: url())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
-    public func delete(_ options: DeleteOptions) async throws {
+    public func delete(_: DeleteOptions) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .delete,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: url())
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func updateFullName(_ options: UpdateFullNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForPatchFullName())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func updateEmailRequest(_ options: UpdateEmailRequestOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForUpdateEmailRequest())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func updateEmailConfirmation(_ options: UpdateEmailConfirmationOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForUpdateEmailConfirmation())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func updatePassword(_ options: UpdatePasswordOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForUpdatePassword())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.upload(
-                multipartFormData: { multipartFormData in multipartFormData.append(data, withName: "file") },
-                to: urlForUpdatePicture(),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
+            var request = URLRequest(url: urlForUpdatePicture())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+
+            let boundary = UUID().uuidString
+            request.setValue(
+                "multipart/form-data; boundary=\(boundary)",
+                forHTTPHeaderField: "Content-Type"
             )
-            .uploadProgress { progress in
-                onProgress?(progress.fractionCompleted * 100)
-            }.responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+
+            var httpBody = Data()
+            httpBody.append(Data("--\(boundary)\r\n".utf8))
+            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n".utf8))
+            httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
+
+            httpBody.append(data)
+            httpBody.append(Data("\r\n--\(boundary)--\r\n".utf8))
+
+            let task = URLSession.shared.uploadTask(with: request, from: httpBody) { responseData, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: responseData,
+                    error: error,
+                    type: Entity.self
+                )
+            }
+            task.resume()
+
+            if let onProgress {
+                let progressHandler = DispatchSource.makeUserDataAddSource(queue: .main)
+                progressHandler.setEventHandler {
+                    onProgress(task.progress.fractionCompleted * 100)
+                }
+                progressHandler.resume()
+                _ = task.progress.observe(\.fractionCompleted) { _, _ in
+                    progressHandler.add(data: 1)
+                }
+                _ = task.observe(\.state) { _, _ in
+                    if task.state == .completed {
+                        progressHandler.cancel()
+                    }
+                }
             }
         }
     }
 
     public func deletePicture() async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForDeletePicture(),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForDeletePicture())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
@@ -281,7 +359,7 @@ public struct VOAuthUser {
         URL(string: "\(baseURL)/user")!
     }
 
-    public func urlForUpdateFullName() -> URL {
+    public func urlForPatchFullName() -> URL {
         URL(string: "\(url())/update_full_name")!
     }
 
@@ -289,7 +367,7 @@ public struct VOAuthUser {
         URL(string: "\(url())/update_email_request")!
     }
 
-    public func urlForUpdateEmailConfirmation(token _: String) -> URL {
+    public func urlForUpdateEmailConfirmation() -> URL {
         URL(string: "\(url())/update_email_confirmation")!
     }
 

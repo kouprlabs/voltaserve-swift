@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOMosaic {
@@ -19,12 +18,19 @@ public struct VOMosaic {
 
     public func fetchInfoForFile(_ id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForInfo(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Info.self)
+            var request = URLRequest(url: urlForInfo(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Info.self
+                )
             }
+            task.resume()
         }
     }
 
@@ -35,36 +41,58 @@ public struct VOMosaic {
         fileExtension: String
     ) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForTile(id, zoomLevel: zoomLevel, row: row, col: col, fileExtension: fileExtension),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleDataResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForTile(
+                id,
+                zoomLevel: zoomLevel,
+                row: row,
+                col: col,
+                fileExtension: fileExtension
+            ))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleDataResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func createForFile(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFile(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForFile(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func deleteForFile(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFile(id),
-                method: .delete,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForFile(id))
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 

@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 struct VOInsights {
@@ -17,42 +16,75 @@ struct VOInsights {
 
     // MARK: - Requests
 
-    public func create(_ id: String, options _: CreateOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForFile(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
-            }
-        }
-    }
-
     public func fetchInfo(_ id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForInfo(id), headers: headersWithAuthorization(accessToken)).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Info.self)
+            var request = URLRequest(url: urlForInfo(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Info.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForListEntities(id, options: options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: EntityList.self)
+            var request = URLRequest(url: urlForEntities(id, options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: EntityList.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchLanguages() async throws -> [Language] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForLanguages(), headers: headersWithAuthorization(accessToken)).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: [Language].self)
+            var request = URLRequest(url: urlForLanguages())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [Language].self
+                )
             }
+            task.resume()
+        }
+    }
+
+    public func create(_ id: String, options: CreateOptions) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: urlForFile(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
+            }
+            task.resume()
         }
     }
 
@@ -78,7 +110,7 @@ struct VOInsights {
         URL(string: "\(url())/languages")!
     }
 
-    public func urlForListEntities(_ id: String, options: ListEntitiesOptions) -> URL {
+    public func urlForEntities(_ id: String, options: ListEntitiesOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(urlForEntities(id))?\(query)")!
         } else {

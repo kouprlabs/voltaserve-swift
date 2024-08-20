@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOWorkspace {
@@ -19,77 +18,111 @@ public struct VOWorkspace {
 
     public func fetch(_ id: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
     public func create(_ options: CreateOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: url())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForName(id),
-                method: .patch,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForName(id))
+            request.httpMethod = "PATCH"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func patchStorageCapacity(_ id: String, options: PatchStorageCapacityOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForStorageCapacity(id),
-                method: .patch,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForStorageCapacity(id))
+            request.httpMethod = "PATCH"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func delete(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                method: .delete,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 

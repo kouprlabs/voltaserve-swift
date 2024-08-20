@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOTask {
@@ -19,58 +18,89 @@ public struct VOTask {
 
     public func fetch(_ id: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchCount() async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForCount(),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Int.self)
+            var request = URLRequest(url: urlForCount())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Int.self
+                )
             }
+            task.resume()
         }
     }
 
     public func dismiss(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForDimiss(id),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForDimiss(id))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func dismiss() async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForDismiss(),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForDismiss())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
