@@ -50,7 +50,7 @@ docker run --rm \
     -e PASSWORD='Passw0rd!' \
     -e OTHER_USERNAME='test+1@koupr.com' \
     -e OTHER_PASSWORD='Passw0rd!' \
-    voltaserve/tests
+    voltaserve/swift-tests
 ```
 
 In Linux you should replace `host.docker.internal` with the host IP address, it can be found as follows:

@@ -90,4 +90,13 @@ final class WorkspaceTests: XCTestCase {
             }
         }
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
+
+        try await disposeWorkspaces(clients.workspace)
+        try await disposeOrganizations(clients.organization)
+    }
 }

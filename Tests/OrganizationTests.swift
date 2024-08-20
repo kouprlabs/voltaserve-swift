@@ -78,4 +78,12 @@ final class OrganizationTests: XCTestCase {
             }
         }
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
+
+        try await disposeOrganizations(clients.organization)
+    }
 }
