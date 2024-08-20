@@ -14,7 +14,7 @@ final class AccountTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.account
 
         let passwordRequirements = try await client.fetchPasswordRequirements()

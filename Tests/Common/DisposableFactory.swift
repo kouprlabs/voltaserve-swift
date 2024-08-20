@@ -55,17 +55,17 @@ class DisposableFactory {
     }
 
     func dispose() async {
-        for disposable in organizations {
-            try? await client.organization.delete(disposable.id)
-        }
-        for disposable in workspaces {
-            try? await client.workspace.delete(disposable.id)
-        }
-        for disposable in workspaces {
-            try? await client.workspace.delete(disposable.id)
-        }
         for disposable in files {
             try? await client.file.delete(disposable.id)
+        }
+        for disposable in workspaces {
+            try? await client.workspace.delete(disposable.id)
+        }
+        for disposable in groups {
+            try? await client.group.delete(disposable.id)
+        }
+        for disposable in organizations {
+            try? await client.organization.delete(disposable.id)
         }
     }
 }

@@ -8,13 +8,14 @@ import XCTest
 
 final class FileTests: XCTestCase {
     var factory: DisposableFactory?
+    var otherFactory: DisposableFactory?
 
     func testFileFlow() async throws {
         guard let factory = try? await DisposableFactory.withCredentials() else {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -97,7 +98,8 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
+        self.otherFactory = otherFactory
         let client = factory.client.file
         let otherClient = otherFactory.client.file
 
@@ -165,7 +167,8 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
+        self.otherFactory = otherFactory
         let client = factory.client.file
         let otherClient = otherFactory.client.file
 
@@ -234,7 +237,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -268,7 +271,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -291,7 +294,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -324,7 +327,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -359,7 +362,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -390,7 +393,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -429,7 +432,7 @@ final class FileTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -457,5 +460,6 @@ final class FileTests: XCTestCase {
     override func tearDown() async throws {
         try await super.tearDown()
         await factory?.dispose()
+        await otherFactory?.dispose()
     }
 }

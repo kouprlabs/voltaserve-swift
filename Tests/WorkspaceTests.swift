@@ -14,7 +14,7 @@ final class WorkspaceTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.workspace
 
         let organization = try await factory.organization(.init(name: "Test Organization"))

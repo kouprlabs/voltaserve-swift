@@ -14,7 +14,7 @@ final class OrganizationTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.organization
 
         /* Create organizations */

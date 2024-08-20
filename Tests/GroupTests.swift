@@ -14,7 +14,7 @@ final class GroupTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.group
 
         let organization = try await factory.organization(.init(name: "Test Organization"))

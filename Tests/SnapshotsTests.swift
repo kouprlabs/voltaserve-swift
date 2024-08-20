@@ -15,7 +15,7 @@ final class SnapshotsTests: XCTestCase {
             failedToCreateFactory()
             return
         }
-
+        self.factory = factory
         let client = factory.client.snapshot
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
@@ -100,6 +100,7 @@ final class SnapshotsTests: XCTestCase {
             failedToCreateFactory()
             return
         }
+        self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(
@@ -163,6 +164,7 @@ final class SnapshotsTests: XCTestCase {
             failedToCreateFactory()
             return
         }
+        self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(
@@ -222,6 +224,7 @@ final class SnapshotsTests: XCTestCase {
             failedToCreateFactory()
             return
         }
+        self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(
