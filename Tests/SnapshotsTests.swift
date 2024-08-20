@@ -105,7 +105,7 @@ final class SnapshotsTests: XCTestCase {
         repeat {
             file = try await clients.file.fetch(file.id)
             if file.snapshot!.status == .error {
-                XCTFail("Failed to process file")
+                XCTFail("Failed to process \(url.lastPathComponent)")
                 return
             }
             sleep(1)
@@ -159,7 +159,7 @@ final class SnapshotsTests: XCTestCase {
         repeat {
             file = try await clients.file.fetch(file.id)
             if file.snapshot!.status == .error {
-                XCTFail("Failed to process file")
+                XCTFail("Failed to process \(url.lastPathComponent)")
                 return
             }
             sleep(1)
@@ -210,6 +210,10 @@ final class SnapshotsTests: XCTestCase {
 
         repeat {
             file = try await clients.file.fetch(file.id)
+            if file.snapshot!.status == .error {
+                XCTFail("Failed to process \(url.lastPathComponent)")
+                return
+            }
             sleep(1)
         } while file.snapshot!.task != nil
 
