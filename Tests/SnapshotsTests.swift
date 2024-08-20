@@ -86,7 +86,7 @@ final class SnapshotsTests: XCTestCase {
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
 
-        let url = resourcesBundle.url(forResource: "video", withExtension: "mp4")!
+        let url = getResourceURL(forResource: "video", withExtension: "mp4")!
         let data = try Data(contentsOf: url)
         var file = try await createDisposableFile(clients.file, options: .init(
             workspaceID: workspace.id,
@@ -140,7 +140,7 @@ final class SnapshotsTests: XCTestCase {
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
 
-        let url = resourcesBundle.url(forResource: resource, withExtension: fileExtension)!
+        let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
         var file = try await createDisposableFile(clients.file, options: .init(
             workspaceID: workspace.id,
@@ -192,7 +192,7 @@ final class SnapshotsTests: XCTestCase {
         let organization = try await createDisposableOrganization(clients.organization)
         let workspace = try await createDisposableWorkspace(clients.workspace, organizationID: organization.id)
 
-        let url = resourcesBundle.url(forResource: resource, withExtension: fileExtension)!
+        let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
         var file = try await createDisposableFile(clients.file, options: .init(
             workspaceID: workspace.id,

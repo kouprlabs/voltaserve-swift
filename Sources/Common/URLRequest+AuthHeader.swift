@@ -4,6 +4,9 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
 extension URLRequest {
     mutating func appendAuthorizationHeader(_ accessToken: String) {

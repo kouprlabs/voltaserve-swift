@@ -4,6 +4,9 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
 public struct VOMosaic {
     let baseURL: String

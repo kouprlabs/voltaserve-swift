@@ -4,6 +4,9 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
 public struct VOFile {
     let baseURL: String
@@ -228,19 +231,16 @@ public struct VOFile {
             task.resume()
 
             if let onProgress {
-                let progressHandler = DispatchSource.makeUserDataAddSource(queue: .main)
-                progressHandler.setEventHandler {
+                let progressHandler = {
                     onProgress(task.progress.fractionCompleted * 100)
                 }
-                progressHandler.resume()
-                _ = task.progress.observe(\.fractionCompleted) { _, _ in
-                    progressHandler.add(data: 1)
-                }
-                _ = task.observe(\.state) { _, _ in
-                    if task.state == .completed {
-                        progressHandler.cancel()
+                let timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+                    progressHandler()
+                    if task.progress.isFinished {
+                        timer.invalidate()
                     }
                 }
+                RunLoop.main.add(timer, forMode: .default)
             }
         }
     }

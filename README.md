@@ -27,12 +27,6 @@ swiftlint .
 
 ## Tests
 
-Build Docker image:
-
-```shell
-docker build -t voltaserve/swift-tests .
-```
-
 The test suite expects the following accounts to exist:
 
 | Email                   | Password    |
@@ -40,10 +34,10 @@ The test suite expects the following accounts to exist:
 | test@koupr.com          | `Passw0rd!` |
 | test+1@koupr.com        | `Passw0rd!` |
 
-Run with Docker:
+Build and run with Docker:
 
 ```shell
-docker run --rm \
+docker build -t voltaserve/swift-tests . && docker run --rm \
     -e API_HOST=host.docker.internal \
     -e IDP_HOST=host.docker.internal \
     -e USERNAME='test@koupr.com' \
