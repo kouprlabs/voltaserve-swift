@@ -28,6 +28,41 @@ func handleJSONResponse<T: Decodable>(
     }
 }
 
+public struct VONoDataError: Error {}
+public struct VOInvalidResponseError: Error {}
+
+func handleJSONResponse<T: Decodable>(
+    continuation: CheckedContinuation<T, any Error>,
+    response: URLResponse?,
+    data: Data?,
+    error: (any Error)?,
+    type _: T.Type
+) {
+    if let error {
+        continuation.resume(throwing: error)
+    } else {
+        guard let data else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        guard let httpResponse = response as? HTTPURLResponse else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        if (200 ... 299).contains(httpResponse.statusCode) {
+            do {
+                let x = String(decoding: data, as: UTF8.self)
+                let result = try JSONDecoder().decode(T.self, from: data)
+                continuation.resume(returning: result)
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        } else {
+            handleErrorResponse(continuation: continuation, data: data)
+        }
+    }
+}
+
 func handleDataResponse(continuation: CheckedContinuation<Data, any Error>, response: AFDataResponse<Data>) {
     switch response.result {
     case let .success(data):
@@ -41,6 +76,31 @@ func handleDataResponse(continuation: CheckedContinuation<Data, any Error>, resp
     }
 }
 
+func handleDataResponse(
+    continuation: CheckedContinuation<Data, any Error>,
+    response: URLResponse?,
+    data: Data?,
+    error: (any Error)?
+) {
+    if let error {
+        continuation.resume(throwing: error)
+    } else {
+        guard let data else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        guard let httpResponse = response as? HTTPURLResponse else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        if (200 ... 299).contains(httpResponse.statusCode) {
+            continuation.resume(returning: data)
+        } else {
+            handleErrorResponse(continuation: continuation, data: data)
+        }
+    }
+}
+
 func handleEmptyResponse(continuation: CheckedContinuation<Void, any Error>, response: AFDataResponse<Data>) {
     switch response.result {
     case .success:
@@ -51,6 +111,31 @@ func handleEmptyResponse(continuation: CheckedContinuation<Void, any Error>, res
         }
     case let .failure(error):
         continuation.resume(throwing: error)
+    }
+}
+
+func handleEmptyResponse(
+    continuation: CheckedContinuation<Void, any Error>,
+    response: URLResponse?,
+    data: Data?,
+    error: (any Error)?
+) {
+    if let error {
+        continuation.resume(throwing: error)
+    } else {
+        guard let data else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        guard let httpResponse = response as? HTTPURLResponse else {
+            continuation.resume(throwing: VONoDataError())
+            return
+        }
+        if (200 ... 299).contains(httpResponse.statusCode) {
+            continuation.resume()
+        } else {
+            handleErrorResponse(continuation: continuation, data: data)
+        }
     }
 }
 

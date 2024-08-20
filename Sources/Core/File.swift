@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOFile {
@@ -19,280 +18,430 @@ public struct VOFile {
 
     public func fetch(_ id: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchPath(_ id: String) async throws -> [Entity] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForPath(id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: [Entity].self)
+            var request = URLRequest(url: urlForPath(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [Entity].self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchCount(_ id: String) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(urlForCount(id), headers: headersWithAuthorization(accessToken)).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Int.self)
+            var request = URLRequest(url: urlForCount(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Int.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchList(_ id: String, options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForList(id, options: options),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: List.self)
+            var request = URLRequest(url: urlForList(id, options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: List.self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForSegmentedPage(id: id, page: page, fileExtension: fileExtension),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleDataResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleDataResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForSegmentedThumbnail(id: id, page: page, fileExtension: String(fileExtension.dropFirst())),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleDataResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForSegmentedThumbnail(
+                id,
+                page: page,
+                fileExtension: String(fileExtension.dropFirst())
+            ))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleDataResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchUserPermissions(_ id: String) async throws -> [UserPermission] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForUserPermissions(id: id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: [UserPermission].self)
+            var request = URLRequest(url: urlForUserPermissions(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [UserPermission].self
+                )
             }
+            task.resume()
         }
     }
 
     public func fetchGroupPermissions(_ id: String) async throws -> [GroupPermission] {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForGroupPermissions(id: id),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: [GroupPermission].self)
+            var request = URLRequest(url: urlForGroupPermissions(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [GroupPermission].self
+                )
             }
+            task.resume()
         }
     }
 
     public func createFile(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreateFile(options), method: .post, data: options.data, fileName: options.name)
+        try await upload(urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name)
     }
 
     public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForCreateFolder(options),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForCreateFolder(options))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func patch(_ id: String, options: PatchOptions) async throws -> Entity {
-        try await upload(urlForID(id), method: .patch, data: options.data)
+        try await upload(urlForID(id), method: "PATCH", data: options.data)
     }
 
     func upload(
         _ url: URL,
-        method: HTTPMethod,
+        method: String,
         data: Data,
         fileName: String? = nil,
         onProgress: ((Double) -> Void)? = nil
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.upload(
-                // If we don't give a value in fileName, Alamofire doesn't populate the "file" form field
-                multipartFormData: {
-                    $0.append(data, withName: "file", fileName: fileName != nil ? fileName! : "file")
-                },
-                to: url,
-                method: method,
-                headers: headersWithAuthorization(accessToken)
+            var request = URLRequest(url: url)
+            request.httpMethod = method
+            request.appendAuthorizationHeader(accessToken)
+
+            let boundary = UUID().uuidString
+            request.setValue(
+                "multipart/form-data; boundary=\(boundary)",
+                forHTTPHeaderField: "Content-Type"
             )
-            .uploadProgress { progress in
-                onProgress?(progress.fractionCompleted * 100)
+
+            var httpBody = Data()
+            httpBody.append(Data("--\(boundary)\r\n".utf8))
+            // swiftlint:disable:next line_length
+            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName ?? "file")\"\r\n".utf8))
+            httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
+
+            httpBody.append(data)
+            httpBody.append(Data("\r\n--\(boundary)--\r\n".utf8))
+
+            let task = URLSession.shared.uploadTask(with: request, from: httpBody) { responseData, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: responseData,
+                    error: error,
+                    type: Entity.self
+                )
             }
-            .responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            task.resume()
+
+            if let onProgress {
+                let progressHandler = DispatchSource.makeUserDataAddSource(queue: .main)
+                progressHandler.setEventHandler {
+                    onProgress(task.progress.fractionCompleted * 100)
+                }
+                progressHandler.resume()
+                _ = task.progress.observe(\.fractionCompleted) { _, _ in
+                    progressHandler.add(data: 1)
+                }
+                _ = task.observe(\.state) { _, _ in
+                    if task.state == .completed {
+                        progressHandler.cancel()
+                    }
+                }
             }
         }
     }
 
     public func patchName(_ id: String, options: PatchNameOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForName(id),
-                method: .patch,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForName(id))
+            request.httpMethod = "PATCH"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func delete(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForID(id),
-                method: .delete,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func delete(_ options: DeleteOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .delete,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: url())
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func move(_ id: String, to targetID: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForMove(id, to: targetID),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForMove(id, to: targetID))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func move(_ options: MoveOptions) async throws -> MoveResult {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForMove(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: MoveResult.self)
+            var request = URLRequest(url: urlForMove())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: MoveResult.self
+                )
             }
+            task.resume()
         }
     }
 
     public func copy(_ id: String, to targetID: String) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForCopy(id, to: targetID),
-                method: .post,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: Entity.self)
+            var request = URLRequest(url: urlForCopy(id, to: targetID))
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func copy(_ options: CopyOptions) async throws -> CopyResult {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForCopy(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: CopyResult.self)
+            var request = URLRequest(url: urlForCopy())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: CopyResult.self
+                )
             }
+            task.resume()
         }
     }
 
     public func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForGrantUserPermission(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            var request = URLRequest(url: urlForGrantUserPermission())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForRevokeUserPermission(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            var request = URLRequest(url: urlForRevokeUserPermission())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForGrantGroupPermission(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            var request = URLRequest(url: urlForGrantGroupPermission())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForRevokeGroupPermission(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            var request = URLRequest(url: urlForRevokeGroupPermission())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
@@ -370,31 +519,31 @@ public struct VOFile {
         return URL(string: "\(url())?" + query!)!
     }
 
-    public func urlForOriginal(id: String, fileExtension: String) -> URL {
+    public func urlForOriginal(_ id: String, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/original.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    public func urlForPreview(id: String, fileExtension: String) -> URL {
+    public func urlForPreview(_ id: String, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/preview.\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    public func urlForSegmentedPage(id: String, page: Int, fileExtension: String) -> URL {
+    public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    public func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
+    public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
-    public func urlForUserPermissions(id: String) -> URL {
+    public func urlForUserPermissions(_ id: String) -> URL {
         URL(string: "\(urlForID(id))/user_permissions")!
     }
 
-    public func urlForGroupPermissions(id: String) -> URL {
+    public func urlForGroupPermissions(_ id: String) -> URL {
         URL(string: "\(urlForID(id))/group_permissions")!
     }
 
@@ -533,7 +682,7 @@ public struct VOFile {
         }
     }
 
-    public struct CreateFolderOptions {
+    public struct CreateFolderOptions: Codable {
         public let workspaceID: String
         public let parentID: String?
         public let name: String
