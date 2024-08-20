@@ -3,7 +3,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Alamofire
 import Foundation
 
 public struct VOAccount {
@@ -19,67 +18,91 @@ public struct VOAccount {
 
     public func fetchPasswordRequirements() async throws -> PasswordRequirements {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForPasswordRequirements(),
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: PasswordRequirements.self)
+            var request = URLRequest(url: urlForPasswordRequirements())
+            request.httpMethod = "GET"
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: PasswordRequirements.self
+                )
             }
+            task.resume()
         }
     }
 
     public func create(_ options: CreateOptions) async throws -> VOAuthUser.Entity {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                url(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleJSONResponse(continuation: continuation, response: response, type: VOAuthUser.Entity.self)
+            var request = URLRequest(url: url())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: VOAuthUser.Entity.self
+                )
             }
+            task.resume()
         }
     }
 
     public func sendResetPasswordEmail(_ options: SendResetPasswordEmailOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForSendPasswordEmail(),
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: urlForSendPasswordEmail())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func resetPassword(_ options: ResetPasswordOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForResetPassword(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: urlForResetPassword())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 
     public func confirmEmail(_ options: ConfirmEmailOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            AF.request(
-                urlForConfirmEmail(),
-                method: .post,
-                parameters: options,
-                encoder: JSONParameterEncoder.default,
-                headers: headersWithAuthorization(accessToken)
-            ).responseData { response in
-                handleEmptyResponse(continuation: continuation, response: response)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: urlForConfirmEmail())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
             }
+            task.resume()
         }
     }
 

@@ -374,7 +374,7 @@ public struct VOFile {
     }
 
     public func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForGrantUserPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -392,7 +392,7 @@ public struct VOFile {
     }
 
     public func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForRevokeUserPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -410,7 +410,7 @@ public struct VOFile {
     }
 
     public func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForGrantGroupPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -428,7 +428,7 @@ public struct VOFile {
     }
 
     public func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForRevokeGroupPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
