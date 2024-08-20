@@ -9,8 +9,7 @@ extension GroupTests {
     override func tearDown() async throws {
         try await super.tearDown()
 
-        let token = try await fetchTokenOrFail()
-        let clients = try await Clients(token)
+        let clients = try await Clients(fetchTokenOrFail())
 
         try await disposeGroups(clients.group)
         try await disposeOrganizations(clients.organization)

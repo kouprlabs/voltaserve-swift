@@ -7,8 +7,9 @@ import Voltaserve
 
 extension FileTests {
     override func tearDown() async throws {
-        let token = try await fetchTokenOrFail()
-        let clients = try await Clients(token)
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
 
         try await disposeFiles(clients.file)
         try await disposeWorkspaces(clients.workspace)

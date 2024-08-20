@@ -6,7 +6,7 @@
 @testable import Voltaserve
 import XCTest
 
-final class SnapshotTests: XCTestCase {
+final class AccountTests: XCTestCase {
     let config = Config()
 
     func testFetchPasswordRequirements() async throws {

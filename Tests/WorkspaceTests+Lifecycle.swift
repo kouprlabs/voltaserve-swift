@@ -7,8 +7,9 @@ import Voltaserve
 
 extension WorkspaceTests {
     override func tearDown() async throws {
-        let token = try await fetchTokenOrFail()
-        let clients = try await Clients(token)
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
 
         try await disposeWorkspaces(clients.workspace)
         try await disposeOrganizations(clients.organization)

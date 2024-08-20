@@ -9,7 +9,7 @@ extension OrganizationTests {
     struct Clients {
         let organization: VOOrganization
 
-        init(_ token: VOToken.Value) async throws {
+        init(_ token: VOToken.Value) {
             let config = Config()
             organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
         }

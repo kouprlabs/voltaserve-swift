@@ -5,15 +5,19 @@
 
 import Voltaserve
 
-extension GroupTests {
+extension SnapshotsTests {
     struct Clients {
         let organization: VOOrganization
-        let group: VOGroup
+        let workspace: VOWorkspace
+        let file: VOFile
+        let snapshot: VOSnapshot
 
         init(_ token: VOToken.Value) {
             let config = Config()
             organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
-            group = VOGroup(baseURL: config.apiURL, accessToken: token.accessToken)
+            workspace = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)
+            file = VOFile(baseURL: config.apiURL, accessToken: token.accessToken)
+            snapshot = VOSnapshot(baseURL: config.apiURL, accessToken: token.accessToken)
         }
     }
 }

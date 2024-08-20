@@ -103,7 +103,7 @@ public struct VOFile {
     }
 
     public func createFile(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreateFile(options), method: .post, data: options.data)
+        try await upload(urlForCreateFile(options), method: .post, data: options.data, fileName: options.name)
     }
 
     public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
@@ -126,12 +126,15 @@ public struct VOFile {
         _ url: URL,
         method: HTTPMethod,
         data: Data,
+        fileName: String? = nil,
         onProgress: ((Double) -> Void)? = nil
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             AF.upload(
                 // If we don't give a value in fileName, Alamofire doesn't populate the "file" form field
-                multipartFormData: { $0.append(data, withName: "file", fileName: "file") },
+                multipartFormData: {
+                    $0.append(data, withName: "file", fileName: fileName != nil ? fileName! : "file")
+                },
                 to: url,
                 method: method,
                 headers: headersWithAuthorization(accessToken)

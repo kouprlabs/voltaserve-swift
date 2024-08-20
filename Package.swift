@@ -26,7 +26,8 @@ let package = Package(
         .testTarget(
             name: "VoltaserveTests",
             dependencies: ["Voltaserve"],
-            path: "Tests"
+            path: "Tests",
+            resources: [.process("Resources")]
         )
     ]
 )

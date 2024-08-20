@@ -8,7 +8,7 @@ import Voltaserve
 struct Clients {
     let account: VOAccount
 
-    init(_ token: VOToken.Value) async throws {
+    init(_ token: VOToken.Value) {
         let config = Config()
         account = VOAccount(baseURL: config.idpURL, accessToken: token.accessToken)
     }

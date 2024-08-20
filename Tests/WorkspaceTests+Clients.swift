@@ -10,7 +10,7 @@ extension WorkspaceTests {
         let organization: VOOrganization
         let workspace: VOWorkspace
 
-        init(_ token: VOToken.Value) async throws {
+        init(_ token: VOToken.Value) {
             let config = Config()
             organization = VOOrganization(baseURL: config.apiURL, accessToken: token.accessToken)
             workspace = VOWorkspace(baseURL: config.apiURL, accessToken: token.accessToken)

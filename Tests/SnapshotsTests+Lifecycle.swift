@@ -5,12 +5,14 @@
 
 import Voltaserve
 
-extension OrganizationTests {
+extension SnapshotsTests {
     override func tearDown() async throws {
         try await super.tearDown()
 
         let clients = try await Clients(fetchTokenOrFail())
 
+        try await disposeFiles(clients.file)
+        try await disposeWorkspaces(clients.workspace)
         try await disposeOrganizations(clients.organization)
     }
 }
