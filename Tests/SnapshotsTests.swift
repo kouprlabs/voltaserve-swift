@@ -58,7 +58,9 @@ final class SnapshotsTests: XCTestCase {
             forResource: "image",
             withExtension: "jpg",
             previewExtension: "jpg",
-            thumbnailExtension: "jpg"
+            thumbnailExtension: "jpg",
+            width: 640,
+            height: 800
         )
     }
 
@@ -67,7 +69,9 @@ final class SnapshotsTests: XCTestCase {
             forResource: "image",
             withExtension: "tiff",
             previewExtension: "jpg",
-            thumbnailExtension: "jpg"
+            thumbnailExtension: "jpg",
+            width: 650,
+            height: 434
         )
     }
 
@@ -76,7 +80,9 @@ final class SnapshotsTests: XCTestCase {
             forResource: "image",
             withExtension: "webp",
             previewExtension: "webp",
-            thumbnailExtension: "webp"
+            thumbnailExtension: "webp",
+            width: 550,
+            height: 368
         )
     }
 
@@ -133,7 +139,9 @@ final class SnapshotsTests: XCTestCase {
         forResource resource: String,
         withExtension fileExtension: String,
         previewExtension: String,
-        thumbnailExtension: String
+        thumbnailExtension: String,
+        width: Int,
+        height: Int
     ) async throws {
         let clients = try await Clients(fetchTokenOrFail())
 
@@ -171,8 +179,8 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".\(previewExtension)")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
         XCTAssertNotNil(file.snapshot!.preview!.image)
-        XCTAssertEqual(file.snapshot!.preview!.image!.width, 640)
-        XCTAssertEqual(file.snapshot!.preview!.image!.height, 800)
+        XCTAssertEqual(file.snapshot!.preview!.image!.width, width)
+        XCTAssertEqual(file.snapshot!.preview!.image!.height, height)
         XCTAssertNil(file.snapshot!.preview!.document)
 
         /* Test thumbnail is valid */
