@@ -389,4 +389,14 @@ final class FileTests: XCTestCase {
         XCTAssertEqual(moveResult.succeeded.count, files.count)
         XCTAssertEqual(moveResult.failed.count, 0)
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
+
+        try await disposeFiles(clients.file)
+        try await disposeWorkspaces(clients.workspace)
+        try await disposeOrganizations(clients.organization)
+    }
 }

@@ -74,4 +74,13 @@ final class GroupTests: XCTestCase {
             }
         }
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
+
+        try await disposeGroups(clients.group)
+        try await disposeOrganizations(clients.organization)
+    }
 }

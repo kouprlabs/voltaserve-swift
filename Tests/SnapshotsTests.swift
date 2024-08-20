@@ -241,4 +241,14 @@ final class SnapshotsTests: XCTestCase {
             file.snapshot!.thumbnail!.image!.width == 512 ||
                 file.snapshot!.thumbnail!.image!.height == 512)
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+
+        let clients = try await Clients(fetchTokenOrFail())
+
+        try await disposeFiles(clients.file)
+        try await disposeWorkspaces(clients.workspace)
+        try await disposeOrganizations(clients.organization)
+    }
 }
