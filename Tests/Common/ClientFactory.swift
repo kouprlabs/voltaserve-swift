@@ -14,6 +14,7 @@ class ClientFactory {
     private var _snapshot: VOSnapshot?
     private var _group: VOGroup?
     private var _invitation: VOInvitation?
+    private var _storage: VOStorage?
     private var _authUser: VOAuthUser?
     private var _account: VOAccount?
 
@@ -79,6 +80,16 @@ class ClientFactory {
             )
         }
         return _invitation!
+    }
+
+    var storage: VOStorage {
+        if _storage == nil {
+            _storage = .init(
+                baseURL: config.apiURL,
+                accessToken: token.accessToken
+            )
+        }
+        return _storage!
     }
 
     var authUser: VOAuthUser {

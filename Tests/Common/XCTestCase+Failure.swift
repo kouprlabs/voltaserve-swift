@@ -5,6 +5,8 @@
 
 import XCTest
 
-func failedToCreateFactory() {
-    XCTFail("Failed to create factory")
+extension XCTestCase {
+    func failedToCreateFactory() {
+        XCTFail("Failed to create factory")
+    }
 }

@@ -19,9 +19,9 @@ public struct VOInvitation {
 
     // MARK: - Requests
 
-    public func fetchIncoming(_ options: ListOptions) async throws -> List {
+    public func fetchIncoming(_ options: ListIncomingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForList(urlForIncoming(), options: options))
+            var request = URLRequest(url: urlForListIncoming(urlForIncoming(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -37,9 +37,9 @@ public struct VOInvitation {
         }
     }
 
-    public func fetchOutgoing(_ options: ListOptions) async throws -> List {
+    public func fetchOutgoing(_ options: ListOutgoingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForList(urlForOutgoing(), options: options))
+            var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -55,18 +55,19 @@ public struct VOInvitation {
         }
     }
 
-    public func create(_ options: CreateOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+    public func create(_ options: CreateOptions) async throws -> [Entity] {
+        try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: [Entity].self
                 )
             }
             task.resume()
@@ -171,7 +172,15 @@ public struct VOInvitation {
         URL(string: "\(urlForID(id))/decline")!
     }
 
-    public func urlForList(_ url: URL, options: ListOptions) -> URL {
+    public func urlForListIncoming(_ url: URL, options: ListIncomingOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url)?\(query)")!
+        } else {
+            url
+        }
+    }
+
+    public func urlForListOutgoing(_ url: URL, options: ListOutgoingOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(url)?\(query)")!
         } else {
@@ -196,7 +205,7 @@ public struct VOInvitation {
         }
     }
 
-    public struct ListOptions {
+    public struct ListIncomingOptions {
         public let organizationID: String?
         public let page: Int?
         public let size: Int?
@@ -222,6 +231,55 @@ public struct VOInvitation {
             if let organizationID {
                 items.append(.init(name: "organization_id", value: organizationID))
             }
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            if let page {
+                items.append(.init(name: "page", value: String(page)))
+            }
+            if let sortBy {
+                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+            }
+            if let sortOrder {
+                items.append(.init(name: "sort_order", value: sortOrder.rawValue))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case organizationID = "organizationId"
+            case size
+            case page
+            case sortBy
+            case sortOrder
+        }
+    }
+
+    public struct ListOutgoingOptions {
+        public let organizationID: String
+        public let page: Int?
+        public let size: Int?
+        public let sortBy: SortBy?
+        public let sortOrder: SortOrder?
+
+        public init(
+            organizationID: String,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
+            self.organizationID = organizationID
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
+
+        public var urlQuery: String? {
+            var items: [URLQueryItem] = [.init(name: "organization_id", value: organizationID)]
             if let size {
                 items.append(.init(name: "size", value: String(size)))
             }

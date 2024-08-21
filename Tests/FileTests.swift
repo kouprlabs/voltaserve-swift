@@ -66,6 +66,8 @@ final class FileTests: XCTestCase {
         let file = try await client.fetch(files[0].id)
         XCTAssertEqual(file.name, files[0].name)
         XCTAssertEqual(file.workspaceID, files[0].workspaceID)
+        XCTAssertEqual(file.permission, .owner)
+        XCTAssertEqual(file.snapshot!.original.size!, options[0].data.count)
 
         /* Test patch name */
         let newName = "New File.txt"
