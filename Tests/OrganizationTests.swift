@@ -8,6 +8,7 @@ import XCTest
 
 final class OrganizationTests: XCTestCase {
     var factory: DisposableFactory?
+    var otherFactory: DisposableFactory?
 
     func testOrganizationFlow() async throws {
         guard let factory = try? await DisposableFactory.withCredentials() else {
@@ -62,10 +63,11 @@ final class OrganizationTests: XCTestCase {
         /* Test leave */
         do {
             try await client.leave(organization.id)
+            expectedToFail()
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "cannot_remove_last_owner_of_organization")
         } catch {
-            XCTFail("Invalid error: \(error)")
+            invalidError(error)
         }
 
         /* Test delete */
@@ -75,11 +77,49 @@ final class OrganizationTests: XCTestCase {
         for organization in organizations {
             do {
                 _ = try await client.fetch(organization.id)
+                expectedToFail()
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "organization_not_found")
             } catch {
-                XCTFail("Invalid error: \(error)")
+                invalidError(error)
             }
+        }
+    }
+
+    func testRemoveMember() async throws {
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+        self.factory = factory
+
+        guard let otherFactory = try? await DisposableFactory.withOtherCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+        self.otherFactory = otherFactory
+
+        let client = factory.client.organization
+        let otherClient = otherFactory.client.organization
+
+        let organization = try await client.create(.init(name: "Test Organization"))
+        let otherUser = try await otherFactory.client.authUser.fetch()
+
+        let invitations = try await factory.client.invitation.create(.init(
+            organizationID: organization.id,
+            emails: [otherUser.email]
+        ))
+        try await otherFactory.client.invitation.accept(invitations.first!.id)
+        let organizationAgain = try await otherClient.fetch(organization.id)
+        XCTAssertEqual(organizationAgain.id, organization.id)
+
+        _ = try await client.removeMember(organization.id, options: .init(userID: otherUser.id))
+        do {
+            _ = try await client.fetch(organizationAgain.id)
+        } catch let error as VOErrorResponse {
+            XCTAssertEqual(error.code, "organization_not_found")
+        } catch {
+            invalidError(error)
         }
     }
 

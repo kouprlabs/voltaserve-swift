@@ -63,6 +63,26 @@ public struct VOUser {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
+        public init(
+            query: String? = nil,
+            organizationID: String? = nil,
+            groupID: String? = nil,
+            excludeGroupMembers: Bool? = nil,
+            size: Int? = nil,
+            page: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
+            self.query = query
+            self.organizationID = organizationID
+            self.groupID = groupID
+            self.excludeGroupMembers = excludeGroupMembers
+            self.size = size
+            self.page = page
+            self.sortBy = sortBy
+            self.sortOrder = sortOrder
+        }
+
         public var urlQuery: String? {
             var items: [URLQueryItem] = []
             if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {

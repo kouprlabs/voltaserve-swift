@@ -83,10 +83,11 @@ final class FileTests: XCTestCase {
         for file in files {
             do {
                 _ = try await client.fetch(file.id)
+                expectedToFail()
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "file_not_found")
             } catch {
-                XCTFail("Invalid error: \(error)")
+                invalidError(error)
             }
         }
     }
@@ -118,12 +119,11 @@ final class FileTests: XCTestCase {
         /* Send invitation and accept it */
 
         let otherUser = try await otherFactory.client.authUser.fetch()
-        try await factory.client.invitation.create(.init(
+        let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]
         ))
-        let incomingInvitations = try await otherFactory.client.invitation.fetchIncoming(.init(size: 5))
-        try await otherFactory.client.invitation.accept(incomingInvitations.data.first!.id)
+        try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Grant permission to the other user */
 
@@ -155,10 +155,11 @@ final class FileTests: XCTestCase {
 
         do {
             _ = try await otherClient.fetch(folder.id)
+            expectedToFail()
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "file_not_found")
         } catch {
-            XCTFail("Invalid error: \(error)")
+            invalidError(error)
         }
     }
 
@@ -190,12 +191,11 @@ final class FileTests: XCTestCase {
         /* Send invitation and accept it */
 
         let otherUser = try await otherFactory.client.authUser.fetch()
-        try await factory.client.invitation.create(.init(
+        let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]
         ))
-        let incomingInvitations = try await otherFactory.client.invitation.fetchIncoming(.init(size: 5))
-        try await otherFactory.client.invitation.accept(incomingInvitations.data.first!.id)
+        try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Add the other user to the group */
 
@@ -231,10 +231,11 @@ final class FileTests: XCTestCase {
 
         do {
             _ = try await otherClient.fetch(folder.id)
+            expectedToFail()
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "file_not_found")
         } catch {
-            XCTFail("Invalid error: \(error)")
+            invalidError(error)
         }
     }
 
@@ -320,10 +321,11 @@ final class FileTests: XCTestCase {
         for id in ids {
             do {
                 _ = try await client.fetch(id)
+                expectedToFail()
             } catch let error as VOErrorResponse {
                 XCTAssertEqual(error.code, "file_not_found")
             } catch {
-                XCTFail("Invalid error: \(error)")
+                invalidError(error)
             }
         }
     }
@@ -354,13 +356,12 @@ final class FileTests: XCTestCase {
         XCTAssertEqual(copiedFile.name, file.name)
         XCTAssertEqual(copiedFile.parentID, folder.id)
 
-        do {
-            _ = try await client.copy(file.id, to: workspace.rootID)
-        } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "file_with_similar_name_exists")
-        } catch {
-            XCTFail("Invalid error: \(error)")
-        }
+        /* Check the copied file name has a suffix that makes it unique */
+        let copiedFileAgain = try await client.copy(file.id, to: workspace.rootID)
+        XCTAssertNotEqual(file.name, copiedFileAgain.name)
+        let lhs = (copiedFileAgain.name as NSString).deletingPathExtension
+        let rhs = (file.name as NSString).deletingPathExtension
+        XCTAssertNotNil(lhs.range(of: rhs))
     }
 
     func testCopyMany() async throws {
@@ -426,10 +427,11 @@ final class FileTests: XCTestCase {
                 data: Data("Test Content".utf8)
             ))
             _ = try await client.move(file.id, to: workspace.rootID)
+            expectedToFail()
         } catch let error as VOErrorResponse {
             XCTAssertEqual(error.code, "file_with_similar_name_exists")
         } catch {
-            XCTFail("Invalid error: \(error)")
+            invalidError(error)
         }
     }
 

@@ -9,4 +9,12 @@ extension XCTestCase {
     func failedToCreateFactory() {
         XCTFail("Failed to create factory")
     }
+
+    func expectedToFail() {
+        XCTFail("Expected to fail")
+    }
+
+    func invalidError(_ error: Error) {
+        XCTFail("Invalid error: \(error)")
+    }
 }

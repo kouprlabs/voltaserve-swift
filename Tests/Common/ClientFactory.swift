@@ -12,9 +12,11 @@ class ClientFactory {
     private var _workspace: VOWorkspace?
     private var _file: VOFile?
     private var _snapshot: VOSnapshot?
+    private var _task: VOTask?
     private var _group: VOGroup?
     private var _invitation: VOInvitation?
     private var _storage: VOStorage?
+    private var _user: VOUser?
     private var _authUser: VOAuthUser?
     private var _account: VOAccount?
 
@@ -62,6 +64,16 @@ class ClientFactory {
         return _snapshot!
     }
 
+    var task: VOTask {
+        if _task == nil {
+            _task = .init(
+                baseURL: config.apiURL,
+                accessToken: token.accessToken
+            )
+        }
+        return _task!
+    }
+
     var group: VOGroup {
         if _group == nil {
             _group = .init(
@@ -90,6 +102,16 @@ class ClientFactory {
             )
         }
         return _storage!
+    }
+
+    var user: VOUser {
+        if _user == nil {
+            _user = .init(
+                baseURL: config.apiURL,
+                accessToken: token.accessToken
+            )
+        }
+        return _user!
     }
 
     var authUser: VOAuthUser {

@@ -55,24 +55,6 @@ public struct VOOrganization {
         }
     }
 
-    public func fetchMembers(_ id: String) async throws -> List {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForMembers(id))
-            request.httpMethod = "GET"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleJSONResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error,
-                    type: List.self
-                )
-            }
-            task.resume()
-        }
-    }
-
     public func create(_ options: CreateOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
@@ -133,6 +115,24 @@ public struct VOOrganization {
             var request = URLRequest(url: urlForLeave(id))
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleEmptyResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error
+                )
+            }
+            task.resume()
+        }
+    }
+
+    public func removeMember(_ id: String, options: RemoveMemberOptions) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            var request = URLRequest(url: urlForMembers(id))
+            request.httpMethod = "DELETE"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
                     continuation: continuation,
