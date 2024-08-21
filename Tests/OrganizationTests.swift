@@ -102,7 +102,7 @@ final class OrganizationTests: XCTestCase {
         let client = factory.client.organization
         let otherClient = otherFactory.client.organization
 
-        let organization = try await client.create(.init(name: "Test Organization"))
+        let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.authUser.fetch()
 
         let invitations = try await factory.client.invitation.create(.init(
@@ -126,5 +126,6 @@ final class OrganizationTests: XCTestCase {
     override func tearDown() async throws {
         try await super.tearDown()
         await factory?.dispose()
+        await otherFactory?.dispose()
     }
 }

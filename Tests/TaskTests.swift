@@ -135,4 +135,9 @@ final class TaskTests: XCTestCase {
             invalidError(error)
         }
     }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await factory?.dispose()
+    }
 }
