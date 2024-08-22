@@ -8,7 +8,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
-struct VOInsights {
+public struct VOInsights {
     let baseURL: String
     let accessToken: String
 
@@ -73,18 +73,19 @@ struct VOInsights {
         }
     }
 
-    public func create(_ id: String, options: CreateOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+    public func create(_ id: String, options: CreateOptions) async throws -> VOTask.Entity {
+        try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForFile(id))
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: VOTask.Entity.self
                 )
             }
             task.resume()
@@ -106,7 +107,7 @@ struct VOInsights {
     }
 
     public func urlForEntities(_ id: String) -> URL {
-        URL(string: "\(urlForFile(id))/\(id)/entities")!
+        URL(string: "\(urlForFile(id))/entities")!
     }
 
     public func urlForLanguages() -> URL {
@@ -123,7 +124,7 @@ struct VOInsights {
 
     // MARK: - Payloads
 
-    struct CreateOptions: Codable {
+    public struct CreateOptions: Codable {
         public let languageID: String
 
         public init(languageID: String) {
@@ -142,7 +143,13 @@ struct VOInsights {
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
-        public init(query: String?, page: Int?, size: Int?, sortBy: SortBy?, sortOrder: SortOrder?) {
+        public init(
+            query: String? = nil,
+            page: Int? = nil,
+            size: Int? = nil,
+            sortBy: SortBy? = nil,
+            sortOrder: SortOrder? = nil
+        ) {
             self.query = query
             self.size = size
             self.page = page

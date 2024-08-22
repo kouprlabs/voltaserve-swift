@@ -40,6 +40,7 @@ final class GroupTests: XCTestCase {
         /* Page 1 */
         let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
+        XCTAssertGreaterThanOrEqual(page1.totalPages, 2)
         XCTAssertEqual(page1.page, 1)
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)

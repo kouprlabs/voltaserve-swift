@@ -65,17 +65,18 @@ public struct VOMosaic {
         }
     }
 
-    public func createForFile(_ id: String) async throws {
+    public func createForFile(_ id: String) async throws -> VOTask.Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForFile(id))
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: VOTask.Entity.self
                 )
             }
             task.resume()

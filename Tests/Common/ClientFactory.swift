@@ -16,6 +16,8 @@ class ClientFactory {
     private var _group: VOGroup?
     private var _invitation: VOInvitation?
     private var _storage: VOStorage?
+    private var _insights: VOInsights?
+    private var _mosaic: VOMosaic?
     private var _user: VOUser?
     private var _authUser: VOAuthUser?
     private var _account: VOAccount?
@@ -102,6 +104,26 @@ class ClientFactory {
             )
         }
         return _storage!
+    }
+
+    var insights: VOInsights {
+        if _insights == nil {
+            _insights = .init(
+                baseURL: config.apiURL,
+                accessToken: token.accessToken
+            )
+        }
+        return _insights!
+    }
+
+    var mosaic: VOMosaic {
+        if _mosaic == nil {
+            _mosaic = .init(
+                baseURL: config.apiURL,
+                accessToken: token.accessToken
+            )
+        }
+        return _mosaic!
     }
 
     var user: VOUser {

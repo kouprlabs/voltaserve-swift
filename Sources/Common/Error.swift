@@ -6,9 +6,9 @@
 import Foundation
 
 public struct VOErrorResponse: Decodable, Error {
-    let code: String
-    let status: Int
-    let message: String
-    let userMessage: String
-    let moreInfo: String
+    public let code: String
+    public let status: Int
+    public let message: String
+    public let userMessage: String
+    public let moreInfo: String
 }

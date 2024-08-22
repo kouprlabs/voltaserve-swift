@@ -30,7 +30,6 @@ final class SnapshotsTests: XCTestCase {
         ))
 
         /* Create snapshots by patching the existing file */
-
         for index in 0 ..< 5 {
             _ = try await factory.client.file.patch(
                 file.id,
@@ -39,7 +38,6 @@ final class SnapshotsTests: XCTestCase {
         }
 
         /* Test we receive a snapshot list */
-
         for index in 1 ..< 3 {
             let page = try await client.fetchList(.init(fileID: file.id, page: index, size: 3))
             XCTAssertEqual(page.page, index)
@@ -117,24 +115,13 @@ final class SnapshotsTests: XCTestCase {
         ))
 
         /* Test original is valid */
-
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".mp4")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
-        /* Wait for processing */
-
-        repeat {
-            file = try await factory.client.file.fetch(file.id)
-            if file.snapshot!.status == .error {
-                XCTFail("Failed to process \(url.lastPathComponent)")
-                return
-            }
-            sleep(1)
-        } while file.snapshot!.task != nil
+        file = try await factory.client.file.wait(file.id)
 
         /* Test preview is nil */
-
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".mp4")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
@@ -142,7 +129,6 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertNil(file.snapshot!.preview!.document)
 
         /* Test thumbnail is valid */
-
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
@@ -181,24 +167,13 @@ final class SnapshotsTests: XCTestCase {
         ))
 
         /* Test original is valid */
-
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
-        /* Wait for processing */
-
-        repeat {
-            file = try await factory.client.file.fetch(file.id)
-            if file.snapshot!.status == .error {
-                XCTFail("Failed to process \(url.lastPathComponent)")
-                return
-            }
-            sleep(1)
-        } while file.snapshot!.task != nil
+        file = try await factory.client.file.wait(file.id)
 
         /* Test preview is valid */
-
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".\(previewExtension)")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
@@ -208,7 +183,6 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertNil(file.snapshot!.preview!.document)
 
         /* Test thumbnail is valid */
-
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
@@ -241,24 +215,13 @@ final class SnapshotsTests: XCTestCase {
         ))
 
         /* Test original is valid */
-
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
-        /* Wait for processing */
-
-        repeat {
-            file = try await factory.client.file.fetch(file.id)
-            if file.snapshot!.status == .error {
-                XCTFail("Failed to process \(url.lastPathComponent)")
-                return
-            }
-            sleep(1)
-        } while file.snapshot!.task != nil
+        file = try await factory.client.file.wait(file.id)
 
         /* Test preview is valid */
-
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".pdf")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
@@ -272,7 +235,6 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertNil(file.snapshot!.preview!.image)
 
         /* Test thumbnail is valid */
-
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)

@@ -51,6 +51,7 @@ final class FileTests: XCTestCase {
         /* Page 1 */
         let page1 = try await client.fetchList(workspace.rootID, options: .init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
+        XCTAssertEqual(page1.totalPages, 2)
         XCTAssertEqual(page1.page, 1)
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
@@ -117,7 +118,6 @@ final class FileTests: XCTestCase {
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
-
         let otherUser = try await otherFactory.client.authUser.fetch()
         let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
@@ -126,33 +126,27 @@ final class FileTests: XCTestCase {
         try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Grant permission to the other user */
-
         try await client.grantUserPermission(.init(ids: [folder.id], userID: otherUser.id, permission: .editor))
 
         /* Test the other user has the permission */
-
         let permissions = try await client.fetchUserPermissions(folder.id)
         XCTAssertEqual(permissions.count, 1)
         XCTAssertEqual(permissions.first!.user.id, otherUser.id)
         XCTAssertEqual(permissions.first!.permission, .editor)
 
         /* Test the other user can access the file */
-
         let folderAgain = try await otherClient.fetch(folder.id)
         XCTAssertEqual(folderAgain.id, folder.id)
         XCTAssertEqual(folderAgain.permission, .editor)
 
         /* Revoke permission from the other user */
-
         try await client.revokeUserPermission(.init(ids: [folder.id], userID: otherUser.id))
 
         /* Test the other user no longer has the permission */
-
         let newPermissions = try await client.fetchUserPermissions(folder.id)
         XCTAssertEqual(newPermissions.count, 0)
 
         /* Test the other user can no longer access the file */
-
         do {
             _ = try await otherClient.fetch(folder.id)
             expectedToFail()
@@ -189,7 +183,6 @@ final class FileTests: XCTestCase {
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
-
         let otherUser = try await otherFactory.client.authUser.fetch()
         let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
@@ -198,37 +191,30 @@ final class FileTests: XCTestCase {
         try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Add the other user to the group */
-
         try await factory.client.group.addMember(group.id, options: .init(userID: otherUser.id))
 
         /* Grant permission to the group */
-
         try await client.grantGroupPermission(.init(ids: [folder.id], groupID: group.id, permission: .editor))
 
         /* Test the group has the permission */
-
         let permissions = try await client.fetchGroupPermissions(folder.id)
         XCTAssertEqual(permissions.count, 1)
         XCTAssertEqual(permissions.first?.group.id, group.id)
         XCTAssertEqual(permissions.first?.permission, .editor)
 
         /* Test the other user can access the file */
-
         let folderAgain = try await otherClient.fetch(folder.id)
         XCTAssertEqual(folderAgain.id, folder.id)
         XCTAssertEqual(folderAgain.permission, .editor)
 
         /* Revoke permission from the group */
-
         try await client.revokeGroupPermission(.init(ids: [folder.id], groupID: group.id))
 
         /* Test the group no longer has the permission */
-
         let newPermissions = try await client.fetchGroupPermissions(folder.id)
         XCTAssertEqual(newPermissions.count, 0)
 
         /* Test the other user can no longer access the file */
-
         do {
             _ = try await otherClient.fetch(folder.id)
             expectedToFail()

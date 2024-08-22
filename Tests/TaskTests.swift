@@ -23,12 +23,14 @@ final class TaskTests: XCTestCase {
             organizationID: organization.id,
             storageCapacity: 100_000_000
         ))
+
         // Here we intentionally create a file that fails the conversion so the task is not quickly deleted
         let file = try await factory.file(.init(
             workspaceID: workspace.id,
             name: "Test File.jpg",
             data: Data("Test Content".utf8)
         ))
+
         let user = try await factory.client.authUser.fetch()
 
         let task = try await client.fetch(file.snapshot!.task!.id)
@@ -59,6 +61,7 @@ final class TaskTests: XCTestCase {
         ))
 
         let list = try await client.fetchList(.init())
+
         // The reason we do 1 here, is because the tests are running in parallel,
         // so there might be other tasks running
         XCTAssertGreaterThanOrEqual(list.totalElements, 1)
@@ -88,6 +91,7 @@ final class TaskTests: XCTestCase {
         ))
 
         let count = try await client.fetchCount()
+
         // The reason we do 1 here, is because the tests are running in parallel,
         // so there might be other tasks running
         XCTAssertGreaterThanOrEqual(count, 1)
@@ -118,7 +122,7 @@ final class TaskTests: XCTestCase {
 
         var task = try await client.fetch(file.snapshot!.task!.id)
 
-        // Wait for the task to stop so we can dismiss it
+        /* Wait for the task to stop so we can dismiss it */
         repeat {
             task = try await client.fetch(task.id)
             sleep(1)
