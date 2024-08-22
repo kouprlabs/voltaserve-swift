@@ -189,14 +189,14 @@ public struct VOFile {
     }
 
     public func patch(_ id: String, options: PatchOptions) async throws -> Entity {
-        try await upload(urlForID(id), method: "PATCH", data: options.data)
+        try await upload(urlForID(id), method: "PATCH", data: options.data, fileName: options.name)
     }
 
     func upload(
         _ url: URL,
         method: String,
         data: Data,
-        fileName: String? = nil,
+        fileName: String,
         onProgress: ((Double) -> Void)? = nil
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
@@ -212,8 +212,7 @@ public struct VOFile {
 
             var httpBody = Data()
             httpBody.append(Data("--\(boundary)\r\n".utf8))
-            // swiftlint:disable:next line_length
-            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName ?? "file")\"\r\n".utf8))
+            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".utf8))
             httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
 
             httpBody.append(data)
@@ -566,11 +565,13 @@ public struct VOFile {
     // MARK: - Payloads
 
     public struct PatchOptions {
+        public let name: String
         public let data: Data
         public let onProgress: ((Double) -> Void)?
 
-        public init(data: Data, onProgress: ((Double) -> Void)? = nil) {
+        public init(data: Data, name: String, onProgress: ((Double) -> Void)? = nil) {
             self.data = data
+            self.name = name
             self.onProgress = onProgress
         }
     }

@@ -45,9 +45,6 @@ final class TaskTests: XCTestCase {
         self.factory = factory
         let client = factory.client.task
 
-        // Dismiss all other tasks to have a clean state
-        try await client.dismiss()
-
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(
             name: "Test Workspace",
@@ -75,9 +72,6 @@ final class TaskTests: XCTestCase {
         self.factory = factory
         let client = factory.client.task
 
-        // Dismiss all other tasks to have a clean state
-        try await client.dismiss()
-
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(
             name: "Test Workspace",
@@ -104,9 +98,6 @@ final class TaskTests: XCTestCase {
         }
         self.factory = factory
         let client = factory.client.task
-
-        // Dismiss all other tasks to have a clean state
-        try await client.dismiss()
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(.init(

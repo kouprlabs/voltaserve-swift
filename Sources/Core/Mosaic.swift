@@ -19,7 +19,7 @@ public struct VOMosaic {
 
     // MARK: - Requests
 
-    public func fetchInfoForFile(_ id: String) async throws -> Info {
+    public func fetchInfo(_ id: String) async throws -> Info {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForInfo(id))
             request.httpMethod = "GET"
@@ -37,7 +37,7 @@ public struct VOMosaic {
         }
     }
 
-    public func fetchDataForFile(
+    public func fetchData(
         _ id: String,
         zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
@@ -65,7 +65,7 @@ public struct VOMosaic {
         }
     }
 
-    public func createForFile(_ id: String) async throws -> VOTask.Entity {
+    public func create(_ id: String) async throws -> VOTask.Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForFile(id))
             request.httpMethod = "POST"
@@ -83,17 +83,18 @@ public struct VOMosaic {
         }
     }
 
-    public func deleteForFile(_ id: String) async throws {
+    public func delete(_ id: String) async throws -> VOTask.Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForFile(id))
             request.httpMethod = "DELETE"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: VOTask.Entity.self
                 )
             }
             task.resume()

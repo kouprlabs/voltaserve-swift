@@ -90,17 +90,18 @@ public struct VOTask {
         }
     }
 
-    public func dismiss() async throws {
+    public func dismiss() async throws -> DismissAllResult {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForDismiss())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: DismissAllResult.self
                 )
             }
             task.resume()
@@ -270,5 +271,24 @@ public struct VOTask {
         public let totalElements: Int
         public let page: Int
         public let size: Int
+
+        public init(
+            data: [Entity],
+            totalPages: Int,
+            totalElements: Int,
+            page: Int,
+            size: Int
+        ) {
+            self.data = data
+            self.totalPages = totalPages
+            self.totalElements = totalElements
+            self.page = page
+            self.size = size
+        }
+    }
+
+    public struct DismissAllResult: Codable {
+        public let succeeded: [String]
+        public let failed: [String]
     }
 }

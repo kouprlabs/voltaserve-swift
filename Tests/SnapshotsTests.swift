@@ -33,7 +33,7 @@ final class SnapshotsTests: XCTestCase {
         for index in 0 ..< 5 {
             _ = try await factory.client.file.patch(
                 file.id,
-                options: .init(data: Data("Another Test Content \(index)".utf8))
+                options: .init(data: Data("Another Test Content \(index)".utf8), name: file.name)
             )
         }
 
@@ -65,8 +65,19 @@ final class SnapshotsTests: XCTestCase {
             withExtension: "jpg",
             previewExtension: "jpg",
             thumbnailExtension: "jpg",
-            width: 640,
-            height: 800
+            width: 1920,
+            height: 1192
+        )
+    }
+
+    func testPNGFlow() async throws {
+        try await checkImageFlow(
+            forResource: "image",
+            withExtension: "png",
+            previewExtension: "png",
+            thumbnailExtension: "png",
+            width: 1920,
+            height: 1192
         )
     }
 
@@ -76,8 +87,8 @@ final class SnapshotsTests: XCTestCase {
             withExtension: "tiff",
             previewExtension: "jpg",
             thumbnailExtension: "jpg",
-            width: 650,
-            height: 434
+            width: 1920,
+            height: 1192
         )
     }
 
@@ -87,8 +98,8 @@ final class SnapshotsTests: XCTestCase {
             withExtension: "webp",
             previewExtension: "webp",
             thumbnailExtension: "webp",
-            width: 550,
-            height: 368
+            width: 1920,
+            height: 1192
         )
     }
 
