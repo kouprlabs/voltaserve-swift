@@ -118,7 +118,7 @@ final class MosaicTests: XCTestCase {
         _ = try await factory.client.task.wait(task.id)
 
         let info = try await client.fetchInfo(file.id)
-        checkMetadata(info, fileExtension: ".webp")
+        checkMetadata(info, fileExtension: ".jpg")
     }
 
     func checkMetadata(_ info: VOMosaic.Info, fileExtension: String) {
