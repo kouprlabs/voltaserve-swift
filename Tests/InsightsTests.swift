@@ -71,7 +71,17 @@ final class InsightsTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(entityList.totalElements, 0)
     }
 
-    func testFetchLanguages() async throws {}
+    func testFetchLanguages() async throws {
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+        self.factory = factory
+        let client = factory.client.insights
+
+        let languages = try await client.fetchLanguages()
+        XCTAssertFalse(languages.isEmpty)
+    }
 
     override func tearDown() async throws {
         try await super.tearDown()
