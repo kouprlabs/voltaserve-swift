@@ -830,7 +830,7 @@ public struct VOFile {
         case owner
     }
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let workspaceID: String
         public let name: String
@@ -880,7 +880,7 @@ public struct VOFile {
         }
     }
 
-    public struct List: Codable {
+    public struct List: Codable, Equatable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int
@@ -905,7 +905,7 @@ public struct VOFile {
         }
     }
 
-    public struct UserPermission: Codable {
+    public struct UserPermission: Codable, Equatable {
         public let id: String
         public let user: VOUser.Entity
         public let permission: VOPermission.Value
@@ -917,7 +917,7 @@ public struct VOFile {
         }
     }
 
-    public struct GroupPermission: Codable {
+    public struct GroupPermission: Codable, Equatable {
         public let id: String
         public let group: VOGroup.Entity
         public let permission: VOPermission.Value
@@ -929,7 +929,7 @@ public struct VOFile {
         }
     }
 
-    public struct Query: Codable {
+    public struct Query: Codable, Equatable {
         public let text: String
         public let type: FileType?
         public let createTimeAfter: Int?
@@ -967,7 +967,7 @@ public struct VOFile {
         }
     }
 
-    public struct CopyResult: Codable {
+    public struct CopyResult: Codable, Equatable {
         public let new: [String]
         public let succeeded: [String]
         public let failed: [String]
@@ -979,7 +979,7 @@ public struct VOFile {
         }
     }
 
-    public struct MoveResult: Codable {
+    public struct MoveResult: Codable, Equatable {
         public let succeeded: [String]
         public let failed: [String]
 

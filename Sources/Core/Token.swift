@@ -104,7 +104,7 @@ public struct VOToken {
 
     // MARK: - Types
 
-    public struct Value: Codable {
+    public struct Value: Codable, Equatable {
         public var accessToken: String
         public var expiresIn: Int
         public var tokenType: String

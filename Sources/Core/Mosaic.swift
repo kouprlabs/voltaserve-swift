@@ -129,7 +129,7 @@ public struct VOMosaic {
 
     // MARK: - Types
 
-    public struct Info: Codable {
+    public struct Info: Codable, Equatable {
         public var metadata: Metadata
 
         public init(metadata: Metadata) {
@@ -137,7 +137,7 @@ public struct VOMosaic {
         }
     }
 
-    public struct Metadata: Codable {
+    public struct Metadata: Codable, Equatable {
         public let width: Int
         public let height: Int
         public let fileExtension: String
@@ -158,7 +158,7 @@ public struct VOMosaic {
         }
     }
 
-    public struct ZoomLevel: Codable {
+    public struct ZoomLevel: Codable, Equatable {
         public let index: Int
         public let width: Int
         public let height: Int
@@ -186,7 +186,7 @@ public struct VOMosaic {
         }
     }
 
-    public struct Tile: Codable {
+    public struct Tile: Codable, Equatable {
         public let width: Int
         public let height: Int
         public let lastColWidth: Int

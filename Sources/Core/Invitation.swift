@@ -336,7 +336,7 @@ public struct VOInvitation {
         case declined
     }
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let owner: VOUser.Entity?
         public let email: String
@@ -364,7 +364,7 @@ public struct VOInvitation {
         }
     }
 
-    public struct List: Codable {
+    public struct List: Codable, Equatable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int

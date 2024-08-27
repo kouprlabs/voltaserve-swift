@@ -262,7 +262,7 @@ public struct VOWorkspace {
 
     // MARK: - Types
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let name: String
         public let permission: VOPermission.Value
@@ -304,7 +304,7 @@ public struct VOWorkspace {
         }
     }
 
-    public struct List: Codable {
+    public struct List: Codable, Equatable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int

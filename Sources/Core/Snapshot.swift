@@ -210,7 +210,7 @@ public struct VOSnapshot {
 
     // MARK: - Types
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let version: Int
         public let status: Status
@@ -265,7 +265,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct List: Codable {
+    public struct List: Codable, Equatable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int
@@ -288,7 +288,7 @@ public struct VOSnapshot {
         case error
     }
 
-    public struct TaskInfo: Codable {
+    public struct TaskInfo: Codable, Equatable {
         public let id: String
         public let isPending: Bool
 
@@ -298,7 +298,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct Download: Codable {
+    public struct Download: Codable, Equatable {
         public let fileExtension: String?
         public let size: Int?
         public let image: ImageProps?
@@ -324,7 +324,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct ImageProps: Codable {
+    public struct ImageProps: Codable, Equatable {
         public let width: Int
         public let height: Int
         public let zoomLevels: [ZoomLevel]?
@@ -336,7 +336,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct DocumentProps: Codable {
+    public struct DocumentProps: Codable, Equatable {
         public let pages: PagesProps?
         public let thumbnails: ThumbnailsProps?
 
@@ -346,7 +346,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct PagesProps: Codable {
+    public struct PagesProps: Codable, Equatable {
         public let count: Int
         public let fileExtension: String
 
@@ -361,7 +361,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct ThumbnailsProps: Codable {
+    public struct ThumbnailsProps: Codable, Equatable {
         public let fileExtension: String
 
         public init(fileExtension: String) {
@@ -373,7 +373,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct Tile: Codable {
+    public struct Tile: Codable, Equatable {
         public let width: Int
         public let height: Int
         public let lastColWidth: Int
@@ -387,7 +387,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct ZoomLevel: Codable {
+    public struct ZoomLevel: Codable, Equatable {
         public let index: Int
         public let width: Int
         public let height: Int

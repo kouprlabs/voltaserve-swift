@@ -136,7 +136,7 @@ public struct VOUser {
 
     // MARK: - Types
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let username: String
         public let email: String
@@ -449,7 +449,7 @@ public struct VOAuthUser {
 
     // MARK: - Types
 
-    public struct Entity: Codable {
+    public struct Entity: Codable, Equatable {
         public let id: String
         public let username: String
         public let email: String
