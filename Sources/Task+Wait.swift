@@ -19,7 +19,7 @@ public extension VOTask {
                     }
                 }
             } catch let error as VOErrorResponse {
-                if error.code == "task_not_found" {
+                if error.code == .taskNotFound {
                     return nil
                 } else {
                     throw error

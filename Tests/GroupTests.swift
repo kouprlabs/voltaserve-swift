@@ -73,7 +73,7 @@ final class GroupTests: XCTestCase {
                 _ = try await client.fetch(group.id)
                 expectedToFail()
             } catch let error as VOErrorResponse {
-                XCTAssertEqual(error.code, "group_not_found")
+                XCTAssertEqual(error.code, .groupNotFound)
             } catch {
                 invalidError(error)
             }

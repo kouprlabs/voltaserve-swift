@@ -89,7 +89,7 @@ final class WorkspaceTests: XCTestCase {
                 _ = try await client.fetch(workspace.id)
                 expectedToFail()
             } catch let error as VOErrorResponse {
-                XCTAssertEqual(error.code, "workspace_not_found")
+                XCTAssertEqual(error.code, .workspaceNotFound)
             } catch {
                 invalidError(error)
             }

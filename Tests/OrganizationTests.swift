@@ -66,7 +66,7 @@ final class OrganizationTests: XCTestCase {
             try await client.leave(organization.id)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "cannot_remove_last_owner_of_organization")
+            XCTAssertEqual(error.code, .cannotRemoveLastOwnerOfOrganization)
         } catch {
             invalidError(error)
         }
@@ -80,7 +80,7 @@ final class OrganizationTests: XCTestCase {
                 _ = try await client.fetch(organization.id)
                 expectedToFail()
             } catch let error as VOErrorResponse {
-                XCTAssertEqual(error.code, "organization_not_found")
+                XCTAssertEqual(error.code, .organizationNotFound)
             } catch {
                 invalidError(error)
             }
@@ -118,7 +118,7 @@ final class OrganizationTests: XCTestCase {
         do {
             _ = try await client.fetch(organizationAgain.id)
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "organization_not_found")
+            XCTAssertEqual(error.code, .organizationNotFound)
         } catch {
             invalidError(error)
         }
