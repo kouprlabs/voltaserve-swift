@@ -13,6 +13,7 @@ public struct VOErrorResponse: Decodable, Error {
     public let moreInfo: String
 
     public enum Code: String, Codable, CaseIterable {
+        /* API */
         case groupNotFound = "group_not_found"
         case fileNotFound = "file_not_found"
         case invalidPath = "invalid_path"
@@ -29,7 +30,6 @@ public struct VOErrorResponse: Decodable, Error {
         case snapshotHasPendingTask = "snapshot_has_pending_task"
         case taskIsRunning = "task_is_running"
         case taskBelongsToAnotherUser = "task_belongs_to_another_user"
-        case internalServerError = "internal_server_error"
         case missingOrganizationPermission = "missing_organization_permission"
         case cannotRemoveLastOwnerOfOrganization = "cannot_remove_last_owner_of_organization"
         case cannotRemoveLastOwnerOfGroup = "cannot_remove_last_owner_of_group"
@@ -42,7 +42,6 @@ public struct VOErrorResponse: Decodable, Error {
         case invalidQueryParam = "invalid_query_param"
         case storageLimitExceeded = "storage_limit_exceeded"
         case insufficientStorageCapacity = "insufficient_storage_capacity"
-        case requestValidationError = "request_validation_error"
         case fileAlreadyChildOfDestination = "file_already_child_of_destination"
         case fileCannotBeMovedIntoItself = "file_cannot_be_moved_into_itself"
         case fileIsNotAFolder = "file_is_not_a_folder"
@@ -63,6 +62,21 @@ public struct VOErrorResponse: Decodable, Error {
         case userAlreadyMemberOfOrganization = "user_already_member_of_organization"
         case invalidApiKey = "invalid_api_key"
         case pathVariablesAndBodyParametersNotConsistent = "path_variables_and_body_parameters_not_consistent"
+        /* IdP */
+        case usernameUnavailable = "username_unavailable"
+        case resourceNotFound = "resource_not_found"
+        case invalidUsernameOrPassword = "invalid_username_or_password"
+        case invalidPassword = "invalid_password"
+        case invalidJwt = "invalid_jwt"
+        case emailNotConfimed = "email_not_confirmed"
+        case refreshTokenExpired = "refresh_token_expired"
+        case invalidRequest = "invalid_request"
+        case unsupportedGrantType = "unsupported_grant_type"
+        case passwordValidationFailed = "password_validation_failed"
+        /* Common */
+        case internalServerError = "internal_server_error"
+        case requestValidationError = "request_validation_error"
+        /* Unexpected */
         case unknown
 
         public init(rawValue: String) {
