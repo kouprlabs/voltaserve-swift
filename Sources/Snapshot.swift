@@ -393,7 +393,7 @@ public struct VOSnapshot {
         public let height: Int
         public let rows: Int
         public let cols: Int
-        public let scaleDownPercentage: Int
+        public let scaleDownPercentage: Float
         public let tile: Tile
 
         public init(
@@ -402,7 +402,7 @@ public struct VOSnapshot {
             height: Int,
             rows: Int,
             cols: Int,
-            scaleDownPercentage: Int,
+            scaleDownPercentage: Float,
             tile: Tile
         ) {
             self.index = index
