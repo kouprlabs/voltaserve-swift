@@ -62,6 +62,7 @@ public struct VOErrorResponse: Decodable, Error {
         case userAlreadyMemberOfOrganization = "user_already_member_of_organization"
         case invalidApiKey = "invalid_api_key"
         case pathVariablesAndBodyParametersNotConsistent = "path_variables_and_body_parameters_not_consistent"
+
         /* IdP */
         case usernameUnavailable = "username_unavailable"
         case resourceNotFound = "resource_not_found"
@@ -73,9 +74,11 @@ public struct VOErrorResponse: Decodable, Error {
         case invalidRequest = "invalid_request"
         case unsupportedGrantType = "unsupported_grant_type"
         case passwordValidationFailed = "password_validation_failed"
+
         /* Common */
         case internalServerError = "internal_server_error"
         case requestValidationError = "request_validation_error"
+
         /* Unexpected */
         case unknown
 
