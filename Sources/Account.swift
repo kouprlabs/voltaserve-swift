@@ -10,11 +10,9 @@ import Foundation
 
 public struct VOAccount {
     let baseURL: String
-    let accessToken: String
 
-    public init(baseURL: String, accessToken: String) {
+    public init(baseURL: String) {
         self.baseURL = baseURL
-        self.accessToken = accessToken
     }
 
     // MARK: - Requests
@@ -40,7 +38,6 @@ public struct VOAccount {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
             request.httpMethod = "POST"
-            request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleJSONResponse(
@@ -59,7 +56,6 @@ public struct VOAccount {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForSendPasswordEmail())
             request.httpMethod = "POST"
-            request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
@@ -77,7 +73,6 @@ public struct VOAccount {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForResetPassword())
             request.httpMethod = "POST"
-            request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
@@ -95,7 +90,6 @@ public struct VOAccount {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForConfirmEmail())
             request.httpMethod = "POST"
-            request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
