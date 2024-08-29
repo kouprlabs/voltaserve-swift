@@ -86,7 +86,7 @@ final class FileTests: XCTestCase {
                 _ = try await client.fetch(file.id)
                 expectedToFail()
             } catch let error as VOErrorResponse {
-                XCTAssertEqual(error.code, "file_not_found")
+                XCTAssertEqual(error.code, .fileNotFound)
             } catch {
                 invalidError(error)
             }
@@ -151,7 +151,7 @@ final class FileTests: XCTestCase {
             _ = try await otherClient.fetch(folder.id)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "file_not_found")
+            XCTAssertEqual(error.code, .fileNotFound)
         } catch {
             invalidError(error)
         }
@@ -219,7 +219,7 @@ final class FileTests: XCTestCase {
             _ = try await otherClient.fetch(folder.id)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "file_not_found")
+            XCTAssertEqual(error.code, .fileNotFound)
         } catch {
             invalidError(error)
         }
@@ -309,7 +309,7 @@ final class FileTests: XCTestCase {
                 _ = try await client.fetch(id)
                 expectedToFail()
             } catch let error as VOErrorResponse {
-                XCTAssertEqual(error.code, "file_not_found")
+                XCTAssertEqual(error.code, .fileNotFound)
             } catch {
                 invalidError(error)
             }
@@ -415,7 +415,7 @@ final class FileTests: XCTestCase {
             _ = try await client.move(file.id, to: workspace.rootID)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "file_with_similar_name_exists")
+            XCTAssertEqual(error.code, .fileWithSimilarNameExists)
         } catch {
             invalidError(error)
         }

@@ -125,7 +125,7 @@ final class TaskTests: XCTestCase {
             _ = try await client.fetch(task.id)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, "task_not_found")
+            XCTAssertEqual(error.code, .taskNotFound)
         } catch {
             invalidError(error)
         }

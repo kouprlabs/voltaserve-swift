@@ -148,10 +148,7 @@ class ClientFactory {
 
     var account: VOAccount {
         if _account == nil {
-            _account = .init(
-                baseURL: config.idpURL,
-                accessToken: token.accessToken
-            )
+            _account = .init(baseURL: config.idpURL)
         }
         return _account!
     }
