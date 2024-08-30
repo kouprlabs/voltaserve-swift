@@ -311,7 +311,7 @@ public struct VOGroup {
         public let id: String
         public let name: String
         public let organization: VOOrganization.Entity
-        public let permission: String
+        public let permission: VOPermission.Value
         public let createTime: String
         public let updateTime: String?
 
@@ -319,7 +319,7 @@ public struct VOGroup {
             id: String,
             name: String,
             organization: VOOrganization.Entity,
-            permission: String,
+            permission: VOPermission.Value,
             createTime: String,
             updateTime: String? = nil
         ) {
