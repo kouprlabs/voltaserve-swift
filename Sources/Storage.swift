@@ -97,7 +97,7 @@ public struct VOStorage {
 
     // MARK: - Types
 
-    public struct Usage: Codable, Equatable {
+    public struct Usage: Codable, Equatable, Hashable {
         public let bytes: Int
         public let maxBytes: Int
         public let percentage: Int

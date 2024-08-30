@@ -228,7 +228,7 @@ public struct VOInsights {
 
     // MARK: - Types
 
-    public struct Language: Codable, Equatable {
+    public struct Language: Codable, Equatable, Hashable {
         public let id: String
         public let iso6393: String
         public let name: String
@@ -240,7 +240,7 @@ public struct VOInsights {
         }
     }
 
-    public struct Info: Codable, Equatable {
+    public struct Info: Codable, Equatable, Hashable {
         public let isAvailable: Bool
         public let isOutdated: Bool
         public let snapshot: VOSnapshot.Entity?
@@ -252,7 +252,7 @@ public struct VOInsights {
         }
     }
 
-    public struct Entity: Codable, Equatable {
+    public struct Entity: Codable, Equatable, Hashable {
         public let text: String
         public let label: String
         public let frequency: Int
@@ -264,7 +264,7 @@ public struct VOInsights {
         }
     }
 
-    public struct EntityList: Codable, Equatable {
+    public struct EntityList: Codable, Equatable, Hashable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int

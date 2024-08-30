@@ -208,7 +208,7 @@ public struct VOTask {
 
     // MARK: - Types
 
-    public struct Entity: Codable, Equatable {
+    public struct Entity: Codable, Equatable, Hashable {
         public let id: String
         public let name: String
         public let error: String?
@@ -257,7 +257,7 @@ public struct VOTask {
         case error
     }
 
-    public struct Payload: Codable, Equatable {
+    public struct Payload: Codable, Equatable, Hashable {
         public let taskObject: String?
 
         enum CodingKeys: String, CodingKey {
@@ -265,7 +265,7 @@ public struct VOTask {
         }
     }
 
-    public struct List: Codable, Equatable {
+    public struct List: Codable, Equatable, Hashable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int
@@ -287,7 +287,7 @@ public struct VOTask {
         }
     }
 
-    public struct DismissAllResult: Codable, Equatable {
+    public struct DismissAllResult: Codable, Equatable, Hashable {
         public let succeeded: [String]
         public let failed: [String]
     }
