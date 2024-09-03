@@ -68,8 +68,8 @@ public struct VOUser {
             organizationID: String? = nil,
             groupID: String? = nil,
             excludeGroupMembers: Bool? = nil,
-            size: Int? = nil,
             page: Int? = nil,
+            size: Int? = nil,
             sortBy: SortBy? = nil,
             sortOrder: SortOrder? = nil
         ) {
@@ -77,8 +77,8 @@ public struct VOUser {
             self.organizationID = organizationID
             self.groupID = groupID
             self.excludeGroupMembers = excludeGroupMembers
-            self.size = size
             self.page = page
+            self.size = size
             self.sortBy = sortBy
             self.sortOrder = sortOrder
         }
