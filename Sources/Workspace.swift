@@ -201,9 +201,7 @@ public struct VOWorkspace {
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = []
-            if let base64Query = query,
-               let data = Data(base64Encoded: base64Query),
-               let query = String(data: data, encoding: .utf8) {
+            if let query {
                 items.append(.init(name: "query", value: query))
             }
             if let size {
