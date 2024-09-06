@@ -101,7 +101,6 @@ public struct VOSnapshot {
 
     public struct ListOptions {
         public let fileID: String
-        public let query: String?
         public let organizationID: String?
         public let page: Int?
         public let size: Int?
@@ -110,7 +109,6 @@ public struct VOSnapshot {
 
         public init(
             fileID: String,
-            query: String? = nil,
             organizationID: String? = nil,
             page: Int? = nil,
             size: Int? = nil,
@@ -118,7 +116,6 @@ public struct VOSnapshot {
             sortOrder: SortOrder? = nil
         ) {
             self.fileID = fileID
-            self.query = query
             self.organizationID = organizationID
             self.size = size
             self.page = page
@@ -128,9 +125,6 @@ public struct VOSnapshot {
 
         public var urlQuery: String? {
             var items: [URLQueryItem] = [.init(name: "file_id", value: fileID)]
-            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                items.append(.init(name: "query", value: base64Query))
-            }
             if let organizationID {
                 items.append(.init(name: "organization_id", value: organizationID))
             }
