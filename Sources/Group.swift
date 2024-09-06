@@ -200,8 +200,8 @@ public struct VOGroup {
 
         var urlQuery: String? {
             var items: [URLQueryItem] = []
-            if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
-                items.append(.init(name: "query", value: base64Query))
+            if let query {
+                items.append(.init(name: "query", value: query))
             }
             if let organizationID {
                 items.append(.init(name: "organization_id", value: organizationID))
