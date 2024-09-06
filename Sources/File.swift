@@ -577,27 +577,27 @@ public struct VOFile {
     }
 
     public struct ListOptions {
+        public let query: Query?
         public let page: Int?
         public let size: Int?
         public let type: FileType?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
-        public let query: Query?
 
         public init(
+            query: Query? = nil,
             page: Int? = nil,
             size: Int? = nil,
             type: FileType? = nil,
             sortBy: SortBy? = nil,
-            sortOrder: SortOrder? = nil,
-            query: Query? = nil
+            sortOrder: SortOrder? = nil
         ) {
+            self.query = query
             self.size = size
             self.page = page
             self.type = type
             self.sortBy = sortBy
             self.sortOrder = sortOrder
-            self.query = query
         }
 
         var urlQuery: String? {
