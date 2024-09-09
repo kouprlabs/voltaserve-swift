@@ -12,7 +12,7 @@ extension XCTestCase {
             URL(fileURLWithPath: "Tests/Resources/\(resource).\(fileExtension)")
         #else
             Bundle(url: Bundle(for: type(of: self)).url(
-                forResource: "Voltaserve_VoltaserveTests",
+                forResource: "VoltaserveCore_VoltaserveTests",
                 withExtension: "bundle"
             )!)!.url(forResource: resource, withExtension: fileExtension)
         #endif
