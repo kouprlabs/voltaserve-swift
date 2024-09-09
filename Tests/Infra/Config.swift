@@ -4,7 +4,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 struct Config {
     let apiURL = "http://\(ProcessInfo.processInfo.environment["API_HOST"] ?? "localhost"):8080/v2"

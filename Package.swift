@@ -3,25 +3,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "Voltaserve",
+    name: "VoltaserveCore",
     platforms: [
         .iOS(.v13),
         .macOS(.v12)
     ],
     products: [
         .library(
-            name: "Voltaserve",
-            targets: ["Voltaserve"]
+            name: "VoltaserveCore",
+            targets: ["VoltaserveCore"]
         )
     ],
     targets: [
         .target(
-            name: "Voltaserve",
+            name: "VoltaserveCore",
             path: "Sources"
         ),
         .testTarget(
             name: "VoltaserveTests",
-            dependencies: ["Voltaserve"],
+            dependencies: ["VoltaserveCore"],
             path: "Tests",
             resources: [.process("Resources")]
         )
