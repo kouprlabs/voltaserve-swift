@@ -824,19 +824,13 @@ public struct VOFile {
         case folder
     }
 
-    public enum PermissionType: String, Codable {
-        case viewer
-        case editor
-        case owner
-    }
-
     public struct Entity: Codable, Equatable, Hashable {
         public let id: String
         public let workspaceID: String
         public let name: String
         public let type: FileType
         public let parentID: String?
-        public let permission: PermissionType
+        public let permission: VOPermission.Value
         public let isShared: Bool?
         public let snapshot: VOSnapshot.Entity?
         public let createTime: String
@@ -848,7 +842,7 @@ public struct VOFile {
             name: String,
             type: FileType,
             parentID: String?,
-            permission: PermissionType,
+            permission: VOPermission.Value,
             isShared: Bool? = nil,
             snapshot: VOSnapshot.Entity? = nil,
             createTime: String,
