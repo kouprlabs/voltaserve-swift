@@ -528,6 +528,11 @@ public struct VOFile {
             "access_token=\(accessToken)")!
     }
 
+    public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
+        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" +
+            "access_token=\(accessToken)")!
+    }
+
     public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" +
             "access_token=\(accessToken)")!
