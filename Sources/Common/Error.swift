@@ -12,7 +12,7 @@ public struct VOErrorResponse: Decodable, Error {
     public let userMessage: String
     public let moreInfo: String
     
-    init(code: Code, status: Int, message: String, userMessage: String, moreInfo: String) {
+    public init(code: Code, status: Int, message: String, userMessage: String, moreInfo: String) {
         self.code = code
         self.status = status
         self.message = message
