@@ -11,6 +11,14 @@ public struct VOErrorResponse: Decodable, Error {
     public let message: String
     public let userMessage: String
     public let moreInfo: String
+    
+    init(code: Code, status: Int, message: String, userMessage: String, moreInfo: String) {
+        self.code = code
+        self.status = status
+        self.message = message
+        self.userMessage = userMessage
+        self.moreInfo = moreInfo
+    }
 
     public enum Code: String, Codable, CaseIterable {
         /* API */
