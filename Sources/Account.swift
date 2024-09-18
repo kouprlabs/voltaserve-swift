@@ -34,7 +34,7 @@ public struct VOAccount {
         }
     }
 
-    public func create(_ options: CreateOptions) async throws -> VOAuthUser.Entity {
+    public func create(_ options: CreateOptions) async throws -> VOIdentityUser.Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
             request.httpMethod = "POST"
@@ -45,7 +45,7 @@ public struct VOAccount {
                     response: response,
                     data: data,
                     error: error,
-                    type: VOAuthUser.Entity.self
+                    type: VOIdentityUser.Entity.self
                 )
             }
             task.resume()

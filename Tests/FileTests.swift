@@ -118,7 +118,7 @@ final class FileTests: XCTestCase {
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
         let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]
@@ -183,7 +183,7 @@ final class FileTests: XCTestCase {
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
         let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
             emails: [otherUser.email]

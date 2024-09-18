@@ -19,7 +19,7 @@ class ClientFactory {
     private var _insights: VOInsights?
     private var _mosaic: VOMosaic?
     private var _user: VOUser?
-    private var _authUser: VOAuthUser?
+    private var _identityUser: VOIdentityUser?
     private var _account: VOAccount?
 
     init(_ token: TokenFactory) async throws {
@@ -136,14 +136,14 @@ class ClientFactory {
         return _user!
     }
 
-    var authUser: VOAuthUser {
-        if _authUser == nil {
-            _authUser = .init(
+    var identityUser: VOIdentityUser {
+        if _identityUser == nil {
+            _identityUser = .init(
                 baseURL: config.idpURL,
                 accessToken: token.accessToken
             )
         }
-        return _authUser!
+        return _identityUser!
     }
 
     var account: VOAccount {

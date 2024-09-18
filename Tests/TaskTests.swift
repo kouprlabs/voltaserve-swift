@@ -31,7 +31,7 @@ final class TaskTests: XCTestCase {
             data: Data("Test Content".utf8)
         ))
 
-        let user = try await factory.client.authUser.fetch()
+        let user = try await factory.client.identityUser.fetch()
 
         let task = try await client.fetch(file.snapshot!.task!.id)
         XCTAssertEqual(task.userID, user.id)

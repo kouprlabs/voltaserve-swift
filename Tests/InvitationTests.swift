@@ -27,7 +27,7 @@ final class InvitationTests: XCTestCase {
         let otherClient = otherFactory.client.invitation
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
 
@@ -51,7 +51,7 @@ final class InvitationTests: XCTestCase {
         let client = factory.client.invitation
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
 
@@ -76,7 +76,7 @@ final class InvitationTests: XCTestCase {
         let otherClient = factory.client.invitation
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         let invitations = try await client.create(.init(
             organizationID: organization.id,
@@ -104,7 +104,7 @@ final class InvitationTests: XCTestCase {
         let otherClient = otherFactory.client.invitation
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         let invitations = try await client.create(.init(
             organizationID: organization.id,
@@ -139,7 +139,7 @@ final class InvitationTests: XCTestCase {
         let otherClient = otherFactory.client.invitation
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         let invitations = try await client.create(.init(
             organizationID: organization.id,

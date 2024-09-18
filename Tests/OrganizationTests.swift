@@ -104,7 +104,7 @@ final class OrganizationTests: XCTestCase {
         let otherClient = otherFactory.client.organization
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let otherUser = try await otherFactory.client.authUser.fetch()
+        let otherUser = try await otherFactory.client.identityUser.fetch()
 
         let invitations = try await factory.client.invitation.create(.init(
             organizationID: organization.id,
