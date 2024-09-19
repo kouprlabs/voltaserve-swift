@@ -280,18 +280,19 @@ public struct VOFile {
         }
     }
 
-    public func delete(_ options: DeleteOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+    public func delete(_ options: DeleteOptions) async throws -> DeleteResult {
+        try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
             request.httpMethod = "DELETE"
             request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleEmptyResponse(
+                handleJSONResponse(
                     continuation: continuation,
                     response: response,
                     data: data,
-                    error: error
+                    error: error,
+                    type: DeleteResult.self
                 )
             }
             task.resume()
@@ -979,6 +980,16 @@ public struct VOFile {
     }
 
     public struct MoveResult: Codable, Equatable, Hashable {
+        public let succeeded: [String]
+        public let failed: [String]
+
+        public init(succeeded: [String], failed: [String]) {
+            self.succeeded = succeeded
+            self.failed = failed
+        }
+    }
+
+    public struct DeleteResult: Codable, Equatable, Hashable {
         public let succeeded: [String]
         public let failed: [String]
 
