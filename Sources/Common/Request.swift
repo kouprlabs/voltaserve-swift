@@ -29,17 +29,25 @@ func handleJSONResponse<T: Decodable>(
             continuation.resume(throwing: VONoDataError())
             return
         }
-        let stringData = String(decoding: data, as: UTF8.self)
+        let stringData = String(data: data, encoding: .utf8)
         if (200 ... 299).contains(httpResponse.statusCode) {
             do {
                 let result = try JSONDecoder().decode(T.self, from: data)
                 continuation.resume(returning: result)
             } catch {
-                print("Failed to decode JSON: \(stringData), error: \(error.localizedDescription)")
+                if let stringData {
+                    print("Failed to decode JSON: \(stringData), error: \(error.localizedDescription)")
+                } else {
+                    print("Failed to decode JSON with error: \(error.localizedDescription)")
+                }
                 continuation.resume(throwing: error)
             }
         } else {
-            print("Request failed with status code: \(httpResponse.statusCode), data: \(stringData)")
+            if let stringData {
+                print("Request failed with status code: \(httpResponse.statusCode), data: \(stringData)")
+            } else {
+                print("Request failed with status code: \(httpResponse.statusCode)")
+            }
             handleErrorResponse(continuation: continuation, data: data)
         }
     }

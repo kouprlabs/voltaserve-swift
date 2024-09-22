@@ -963,7 +963,7 @@ public struct VOFile {
             guard !value.isEmpty, let data = Data(base64Encoded: value) else {
                 return nil
             }
-            return String(decoding: data, as: UTF8.self)
+            return String(data: data, encoding: .utf8)
         }
     }
 
