@@ -37,6 +37,24 @@ public struct VOInvitation {
         }
     }
 
+    public func fetchIncomingCount() async throws -> Int {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForIncomingCount())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Int.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func fetchOutgoing(_ options: ListOutgoingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
@@ -154,6 +172,10 @@ public struct VOInvitation {
 
     public func urlForIncoming() -> URL {
         URL(string: "\(url())/incoming")!
+    }
+
+    public func urlForIncomingCount() -> URL {
+        URL(string: "\(url())/incoming/count")!
     }
 
     public func urlForOutgoing() -> URL {
