@@ -258,14 +258,10 @@ public struct VOTask {
     }
 
     public struct Payload: Codable, Equatable, Hashable {
-        public let taskObject: String?
+        public let object: String?
 
-        init(taskObject: String? = nil) {
-            self.taskObject = taskObject
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case taskObject = "object"
+        public init(object: String? = nil) {
+            self.object = object
         }
     }
 
