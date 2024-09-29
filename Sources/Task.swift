@@ -259,7 +259,7 @@ public struct VOTask {
 
     public struct Payload: Codable, Equatable, Hashable {
         public let taskObject: String?
-        
+
         init(taskObject: String? = nil) {
             self.taskObject = taskObject
         }
