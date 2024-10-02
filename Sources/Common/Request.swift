@@ -44,9 +44,9 @@ func handleJSONResponse<T: Decodable>(
             }
         } else {
             if let stringData {
-                print("Request failed with status code: \(httpResponse.statusCode), data: \(stringData)")
+                print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode), data: \(stringData)")
             } else {
-                print("Request failed with status code: \(httpResponse.statusCode)")
+                print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode)")
             }
             handleErrorResponse(continuation: continuation, data: data)
         }
