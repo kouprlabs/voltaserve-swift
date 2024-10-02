@@ -44,6 +44,7 @@ func handleJSONResponse<T: Decodable>(
             }
         } else {
             if let stringData {
+                // swiftlint:disable:next line_length
                 print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode), data: \(stringData)")
             } else {
                 print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode)")
