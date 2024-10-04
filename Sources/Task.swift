@@ -119,7 +119,7 @@ public struct VOTask {
     }
 
     public func urlForList(_ options: ListOptions) -> URL {
-        if let query = options.query {
+        if let query = options.urlQuery {
             URL(string: "\(url())?\(query)")!
         } else {
             url()
