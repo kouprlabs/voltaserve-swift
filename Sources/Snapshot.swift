@@ -36,7 +36,7 @@ public struct VOSnapshot {
             task.resume()
         }
     }
-    
+
     public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForList(options))
