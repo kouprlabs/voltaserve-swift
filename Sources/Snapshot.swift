@@ -19,6 +19,24 @@ public struct VOSnapshot {
 
     // MARK: - Requests
 
+    public func fetch(_ id: String) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForID(id))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Entity.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func fetchList(_ options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForList(options))
