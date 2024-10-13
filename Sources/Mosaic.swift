@@ -130,9 +130,15 @@ public struct VOMosaic {
     // MARK: - Types
 
     public struct Info: Codable, Equatable, Hashable {
+        public var isAvailable: Bool
+        public var isOutdated: Bool
+        public var snapshot: VOSnapshot.Entity?
         public var metadata: Metadata
 
-        public init(metadata: Metadata) {
+        public init(isAvailable: Bool, isOutdated: Bool, snapshot: VOSnapshot.Entity?, metadata: Metadata) {
+            self.isAvailable = isAvailable
+            self.isOutdated = isOutdated
+            self.snapshot = snapshot
             self.metadata = metadata
         }
     }
