@@ -252,7 +252,8 @@ public struct VOInsights {
         }
     }
 
-    public struct Entity: Codable, Equatable, Hashable {
+    public struct Entity: Codable, Equatable, Hashable, Identifiable {
+        public var id: String { text }
         public let text: String
         public let label: String
         public let frequency: Int
