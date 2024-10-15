@@ -223,7 +223,7 @@ public struct VOInsights {
 
     public enum SortOrder: String, Codable {
         case asc
-        case sesc
+        case desc
     }
 
     // MARK: - Types
