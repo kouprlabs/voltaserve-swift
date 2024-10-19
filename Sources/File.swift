@@ -91,6 +91,24 @@ public struct VOFile {
         }
     }
 
+    public func fetchProbe(_ id: String, options: ProbeOptions) async throws -> Probe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForProbe(id, options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Probe.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
@@ -491,6 +509,14 @@ public struct VOFile {
         }
     }
 
+    public func urlForProbe(_ id: String, options: ProbeOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(urlForID(id))/list?\(query)")!
+        } else {
+            urlForID(id)
+        }
+    }
+
     public func urlForCreateFile(_ options: CreateFileOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
@@ -579,6 +605,24 @@ public struct VOFile {
             self.data = data
             self.name = name
             self.onProgress = onProgress
+        }
+    }
+
+    public struct ProbeOptions {
+        public let size: Int?
+
+        public init(size: Int? = nil) {
+            self.size = size
+        }
+
+        var urlQuery: String? {
+            var items: [URLQueryItem] = []
+            if let size {
+                items.append(.init(name: "size", value: String(size)))
+            }
+            var components = URLComponents()
+            components.queryItems = items
+            return components.url?.query
         }
     }
 
@@ -902,6 +946,16 @@ public struct VOFile {
             self.page = page
             self.size = size
             self.query = query
+        }
+    }
+
+    public struct Probe: Codable, Equatable, Hashable {
+        public let totalPages: Int
+        public let totalElements: Int
+
+        public init(totalPages: Int, totalElements: Int) {
+            self.totalPages = totalPages
+            self.totalElements = totalElements
         }
     }
 
