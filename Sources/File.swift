@@ -16,7 +16,7 @@ public struct VOFile {
         self.baseURL = URL(string: baseURL)!.appendingPathComponent("v2").absoluteString
         self.accessToken = accessToken
     }
-    
+
     enum BaseURLError: Error {
         case invalid
     }
