@@ -93,7 +93,7 @@ public struct VOFile {
 
     public func fetchProbe(_ id: String, options: ListOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForList(id, options: options))
+            var request = URLRequest(url: urlForProbe(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -504,6 +504,14 @@ public struct VOFile {
     public func urlForList(_ id: String, options: ListOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(urlForID(id))/list?\(query)")!
+        } else {
+            urlForID(id)
+        }
+    }
+
+    public func urlForProbe(_ id: String, options: ListOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(urlForID(id))/probe?\(query)")!
         } else {
             urlForID(id)
         }

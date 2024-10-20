@@ -39,7 +39,7 @@ public struct VOInsights {
 
     public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForEntities(id, options: options))
+            var request = URLRequest(url: urlForListEntities(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -57,7 +57,7 @@ public struct VOInsights {
 
     public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws -> EntityProbe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForEntities(id, options: options))
+            var request = URLRequest(url: urlForProbeEntities(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -168,11 +168,19 @@ public struct VOInsights {
         URL(string: "\(url())/languages")!
     }
 
-    public func urlForEntities(_ id: String, options: ListEntitiesOptions) -> URL {
+    public func urlForListEntities(_ id: String, options: ListEntitiesOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(urlForEntities(id))?\(query)")!
         } else {
             urlForEntities(id)
+        }
+    }
+
+    public func urlForProbeEntities(_ id: String, options: ListEntitiesOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(urlForEntities(id))/probe?\(query)")!
+        } else {
+            URL(string: "\(urlForEntities(id))/probe")!
         }
     }
 
