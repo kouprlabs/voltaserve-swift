@@ -57,7 +57,7 @@ public struct VOWorkspace {
 
     public func fetchProbe(_ options: ListOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForList(options))
+            var request = URLRequest(url: urlForProbe(options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -162,6 +162,14 @@ public struct VOWorkspace {
             URL(string: "\(url())?\(query)")!
         } else {
             url()
+        }
+    }
+
+    public func urlForProbe(_ options: ListOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url())/probe?\(query)")!
+        } else {
+            URL(string: "\(url())/probe")!
         }
     }
 

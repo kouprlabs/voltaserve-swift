@@ -39,7 +39,7 @@ public struct VOInvitation {
 
     public func fetchIncomingProbe(_ options: ListIncomingOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForListIncoming(urlForIncoming(), options: options))
+            var request = URLRequest(url: urlForProbeIncoming(urlForIncoming(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -75,7 +75,7 @@ public struct VOInvitation {
 
     public func fetchOutgoingList(_ options: ListOutgoingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
+            var request = URLRequest(url: urlForProbeOutgoing(urlForOutgoing(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -238,11 +238,27 @@ public struct VOInvitation {
         }
     }
 
+    public func urlForProbeIncoming(_ url: URL, options: ListIncomingOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url)/probe?\(query)")!
+        } else {
+            URL(string: "\(url)/probe")!
+        }
+    }
+
     public func urlForListOutgoing(_ url: URL, options: ListOutgoingOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(url)?\(query)")!
         } else {
             url
+        }
+    }
+
+    public func urlForProbeOutgoing(_ url: URL, options: ListOutgoingOptions) -> URL {
+        if let query = options.urlQuery {
+            URL(string: "\(url)/probe?\(query)")!
+        } else {
+            URL(string: "\(url)/probe")!
         }
     }
 
