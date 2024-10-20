@@ -513,7 +513,7 @@ public struct VOFile {
         if let query = options.urlQuery {
             URL(string: "\(urlForID(id))/probe?\(query)")!
         } else {
-            urlForID(id)
+            URL(string: "\(urlForID(id))/probe")!
         }
     }
 
