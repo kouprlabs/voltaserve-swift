@@ -37,6 +37,24 @@ public struct VOUser {
         }
     }
 
+    public func fetchProbe(_ options: ListOptions) async throws -> Probe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForList(options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Probe.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     // MARK: - URLs
 
     public func url() -> URL {
@@ -183,6 +201,16 @@ public struct VOUser {
             self.totalElements = totalElements
             self.page = page
             self.size = size
+        }
+    }
+
+    public struct Probe: Codable {
+        public let totalPages: Int
+        public let totalElements: Int
+
+        public init(totalPages: Int, totalElements: Int) {
+            self.totalPages = totalPages
+            self.totalElements = totalElements
         }
     }
 }

@@ -55,6 +55,24 @@ public struct VOSnapshot {
         }
     }
 
+    public func fetchProbe(_ options: ListOptions) async throws -> Probe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForList(options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Probe.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func activate(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForActivate(id))
@@ -290,6 +308,16 @@ public struct VOSnapshot {
             self.totalElements = totalElements
             self.page = page
             self.size = size
+        }
+    }
+
+    public struct Probe: Codable, Equatable, Hashable {
+        public let totalPages: Int
+        public let totalElements: Int
+
+        public init(totalPages: Int, totalElements: Int) {
+            self.totalPages = totalPages
+            self.totalElements = totalElements
         }
     }
 
