@@ -13,7 +13,7 @@ public struct VOInvitation {
     let accessToken: String
 
     public init(baseURL: String, accessToken: String) {
-        self.baseURL = baseURL
+        self.baseURL = URL(string: baseURL)!.appendingPathComponent("v2").absoluteString
         self.accessToken = accessToken
     }
 
@@ -75,7 +75,7 @@ public struct VOInvitation {
 
     public func fetchOutgoingList(_ options: ListOutgoingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForProbeOutgoing(urlForOutgoing(), options: options))
+            var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -93,7 +93,7 @@ public struct VOInvitation {
 
     public func fetchOutgoingProbe(_ options: ListOutgoingOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
+            var request = URLRequest(url: urlForProbeOutgoing(urlForOutgoing(), options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in

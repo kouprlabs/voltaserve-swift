@@ -12,7 +12,7 @@ public struct VOAccount {
     let baseURL: String
 
     public init(baseURL: String) {
-        self.baseURL = baseURL
+        self.baseURL = URL(string: baseURL)!.appendingPathComponent("v2").absoluteString
     }
 
     // MARK: - Requests

@@ -5,7 +5,7 @@ public struct VOIdentityUser {
     let accessToken: String
 
     public init(baseURL: String, accessToken: String) {
-        self.baseURL = baseURL
+        self.baseURL = URL(string: baseURL)!.appendingPathComponent("v2").absoluteString
         self.accessToken = accessToken
     }
 
