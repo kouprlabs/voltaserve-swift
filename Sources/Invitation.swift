@@ -19,7 +19,7 @@ public struct VOInvitation {
 
     // MARK: - Requests
 
-    public func fetchIncoming(_ options: ListIncomingOptions) async throws -> List {
+    public func fetchIncomingList(_ options: ListIncomingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForListIncoming(urlForIncoming(), options: options))
             request.httpMethod = "GET"
@@ -31,6 +31,24 @@ public struct VOInvitation {
                     data: data,
                     error: error,
                     type: List.self
+                )
+            }
+            task.resume()
+        }
+    }
+
+    public func fetchIncomingProbe(_ options: ListIncomingOptions) async throws -> Probe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForListIncoming(urlForIncoming(), options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Probe.self
                 )
             }
             task.resume()
@@ -55,7 +73,7 @@ public struct VOInvitation {
         }
     }
 
-    public func fetchOutgoing(_ options: ListOutgoingOptions) async throws -> List {
+    public func fetchOutgoingList(_ options: ListOutgoingOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
             request.httpMethod = "GET"
@@ -67,6 +85,24 @@ public struct VOInvitation {
                     data: data,
                     error: error,
                     type: List.self
+                )
+            }
+            task.resume()
+        }
+    }
+
+    public func fetchOutgoingProbe(_ options: ListOutgoingOptions) async throws -> Probe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForListOutgoing(urlForOutgoing(), options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: Probe.self
                 )
             }
             task.resume()
@@ -399,6 +435,16 @@ public struct VOInvitation {
             self.totalElements = totalElements
             self.page = page
             self.size = size
+        }
+    }
+
+    public struct Probe: Codable, Equatable, Hashable {
+        public let totalPages: Int
+        public let totalElements: Int
+
+        public init(totalPages: Int, totalElements: Int) {
+            self.totalPages = totalPages
+            self.totalElements = totalElements
         }
     }
 }

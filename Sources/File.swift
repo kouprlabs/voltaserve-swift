@@ -91,9 +91,9 @@ public struct VOFile {
         }
     }
 
-    public func fetchProbe(_ id: String, options: ProbeOptions) async throws -> Probe {
+    public func fetchProbe(_ id: String, options: ListOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForProbe(id, options: options))
+            var request = URLRequest(url: urlForList(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -509,14 +509,6 @@ public struct VOFile {
         }
     }
 
-    public func urlForProbe(_ id: String, options: ProbeOptions) -> URL {
-        if let query = options.urlQuery {
-            URL(string: "\(urlForID(id))/list?\(query)")!
-        } else {
-            urlForID(id)
-        }
-    }
-
     public func urlForCreateFile(_ options: CreateFileOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
@@ -605,24 +597,6 @@ public struct VOFile {
             self.data = data
             self.name = name
             self.onProgress = onProgress
-        }
-    }
-
-    public struct ProbeOptions {
-        public let size: Int?
-
-        public init(size: Int? = nil) {
-            self.size = size
-        }
-
-        var urlQuery: String? {
-            var items: [URLQueryItem] = []
-            if let size {
-                items.append(.init(name: "size", value: String(size)))
-            }
-            var components = URLComponents()
-            components.queryItems = items
-            return components.url?.query
         }
     }
 

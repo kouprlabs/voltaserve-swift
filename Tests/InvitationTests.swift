@@ -31,7 +31,7 @@ final class InvitationTests: XCTestCase {
 
         _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
 
-        let incoming = try await otherClient.fetchIncoming(.init(organizationID: organization.id))
+        let incoming = try await otherClient.fetchIncomingList(.init(organizationID: organization.id))
         XCTAssertEqual(incoming.totalElements, 1)
     }
 
@@ -55,7 +55,7 @@ final class InvitationTests: XCTestCase {
 
         _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
 
-        let outgoing = try await client.fetchOutgoing(.init(organizationID: organization.id))
+        let outgoing = try await client.fetchOutgoingList(.init(organizationID: organization.id))
         XCTAssertEqual(outgoing.totalElements, 1)
     }
 
@@ -83,7 +83,7 @@ final class InvitationTests: XCTestCase {
             emails: [otherUser.email]
         ))
         try await client.delete(invitations[0].id)
-        let outgoing = try await otherClient.fetchIncoming(.init())
+        let outgoing = try await otherClient.fetchIncomingList(.init())
         XCTAssertEqual(outgoing.totalElements, 0)
     }
 
@@ -147,10 +147,10 @@ final class InvitationTests: XCTestCase {
         ))
         try await otherClient.decline(invitations[0].id)
 
-        let incoming = try await otherClient.fetchIncoming(.init())
+        let incoming = try await otherClient.fetchIncomingList(.init())
         XCTAssertEqual(incoming.totalElements, 0)
 
-        let outgoing = try await client.fetchOutgoing(.init(organizationID: organization.id))
+        let outgoing = try await client.fetchOutgoingList(.init(organizationID: organization.id))
         XCTAssertEqual(outgoing.totalElements, 1)
     }
 

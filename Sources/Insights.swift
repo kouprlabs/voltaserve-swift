@@ -55,6 +55,24 @@ public struct VOInsights {
         }
     }
 
+    public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws -> EntityProbe {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForEntities(id, options: options))
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: EntityProbe.self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func fetchLanguages() async throws -> [Language] {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForLanguages())
@@ -278,6 +296,16 @@ public struct VOInsights {
             self.totalElements = totalElements
             self.page = page
             self.size = size
+        }
+    }
+
+    public struct EntityProbe: Codable, Equatable, Hashable {
+        public let totalPages: Int
+        public let totalElements: Int
+
+        public init(totalPages: Int, totalElements: Int) {
+            self.totalPages = totalPages
+            self.totalElements = totalElements
         }
     }
 }
