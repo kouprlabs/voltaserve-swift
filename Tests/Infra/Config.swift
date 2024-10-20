@@ -7,8 +7,8 @@ import Foundation
 import VoltaserveCore
 
 struct Config {
-    let apiURL = "http://\(ProcessInfo.processInfo.environment["API_HOST"] ?? "localhost"):8080/v2"
-    let idpURL = "http://\(ProcessInfo.processInfo.environment["IDP_HOST"] ?? "localhost"):8081/v2"
+    let apiURL = "http://\(ProcessInfo.processInfo.environment["API_HOST"] ?? "localhost"):8080"
+    let idpURL = "http://\(ProcessInfo.processInfo.environment["IDP_HOST"] ?? "localhost"):8081"
     let username = ProcessInfo.processInfo.environment["USERNAME"] ?? "test@koupr.com"
     let password = ProcessInfo.processInfo.environment["PASSWORD"] ?? "Passw0rd!"
     let otherUsername = ProcessInfo.processInfo.environment["OTHER_USERNAME"] ?? "test+1@koupr.com"
