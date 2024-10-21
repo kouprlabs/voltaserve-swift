@@ -267,7 +267,7 @@ public struct VOIdentityUser {
         public let username: String
         public let email: String
         public let fullName: String
-        public let picture: String?
+        public let picture: Picture?
         public let pendingEmail: String?
 
         public init(
@@ -275,7 +275,7 @@ public struct VOIdentityUser {
             username: String,
             email: String,
             fullName: String,
-            picture: String? = nil,
+            picture: Picture? = nil,
             pendingEmail: String? = nil
         ) {
             self.id = id
@@ -284,6 +284,18 @@ public struct VOIdentityUser {
             self.fullName = fullName
             self.picture = picture
             self.pendingEmail = pendingEmail
+        }
+    }
+
+    public struct Picture: Codable, Equatable, Hashable {
+        public let fileExtension: String
+
+        public init(fileExtension: String) {
+            self.fileExtension = fileExtension
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case fileExtension = "extension"
         }
     }
 }

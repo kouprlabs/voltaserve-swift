@@ -167,7 +167,7 @@ public struct VOUser {
         public let username: String
         public let email: String
         public let fullName: String
-        public let picture: String?
+        public let picture: Picture?
         public let createTime: String
         public let updateTime: String?
 
@@ -176,7 +176,7 @@ public struct VOUser {
             username: String,
             email: String,
             fullName: String,
-            picture: String? = nil,
+            picture: Picture? = nil,
             createTime: String,
             updateTime: String? = nil
         ) {
@@ -187,6 +187,18 @@ public struct VOUser {
             self.picture = picture
             self.createTime = createTime
             self.updateTime = updateTime
+        }
+    }
+
+    public struct Picture: Codable, Equatable, Hashable {
+        public let fileExtension: String
+
+        public init(fileExtension: String) {
+            self.fileExtension = fileExtension
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case fileExtension = "extension"
         }
     }
 
