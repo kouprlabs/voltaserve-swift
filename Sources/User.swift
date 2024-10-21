@@ -98,7 +98,7 @@ public struct VOUser {
         var components = URLComponents()
         components.queryItems = items
         let query = components.url!.query!
-        return URL(string: "\(urlForID(id))/picture.\(fileExtension)?\(query)")!
+        return URL(string: "\(urlForID(id))/picture\(fileExtension)?\(query)")!
     }
 
     // MARK: - Payloads
