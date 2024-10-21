@@ -216,6 +216,10 @@ public struct VOIdentityUser {
         URL(string: "\(url())/delete_picture")!
     }
 
+    public func urlForPicture(_: String, fileExtension: String) -> URL {
+        URL(string: "\(url())/picture.\(fileExtension)?access_token=\(accessToken)")!
+    }
+
     // MARK: - Payloads
 
     public struct UpdateFullNameOptions: Codable {

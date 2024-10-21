@@ -61,6 +61,10 @@ public struct VOUser {
         URL(string: "\(baseURL)/users")!
     }
 
+    public func urlForID(_ id: String) -> URL {
+        URL(string: "\(url())/\(id)")!
+    }
+
     public func urlForList(_ options: ListOptions) -> URL {
         if let query = options.urlQuery {
             URL(string: "\(url())?\(query)")!
@@ -75,6 +79,26 @@ public struct VOUser {
         } else {
             URL(string: "\(url())/probe")!
         }
+    }
+
+    public func urlForPicture(
+        _ id: String,
+        fileExtension: String,
+        organizationID: String? = nil,
+        groupID: String? = nil
+    ) -> URL {
+        var items: [URLQueryItem] = []
+        items.append(.init(name: "access_token", value: accessToken))
+        if let organizationID {
+            items.append(.init(name: "organization_id", value: organizationID))
+        }
+        if let groupID {
+            items.append(.init(name: "group_id", value: groupID))
+        }
+        var components = URLComponents()
+        components.queryItems = items
+        let query = components.url!.query!
+        return URL(string: "\(urlForID(id))/picture.\(fileExtension)?\(query)")!
     }
 
     // MARK: - Payloads
