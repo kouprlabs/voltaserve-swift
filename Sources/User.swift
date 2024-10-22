@@ -85,7 +85,8 @@ public struct VOUser {
         _ id: String,
         fileExtension: String,
         organizationID: String? = nil,
-        groupID: String? = nil
+        groupID: String? = nil,
+        invitationID: String? = nil
     ) -> URL {
         var items: [URLQueryItem] = []
         items.append(.init(name: "access_token", value: accessToken))
@@ -94,6 +95,9 @@ public struct VOUser {
         }
         if let groupID {
             items.append(.init(name: "group_id", value: groupID))
+        }
+        if let invitationID {
+            items.append(.init(name: "invitation_id", value: invitationID))
         }
         var components = URLComponents()
         components.queryItems = items
