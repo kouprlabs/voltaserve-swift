@@ -12,7 +12,7 @@ public struct VOToken {
     let baseURL: String
 
     public init(baseURL: String) {
-        self.baseURL = URL(string: baseURL)!.appendingPathComponent("v2").absoluteString
+        self.baseURL = URL(string: baseURL)!.appendingPathComponent("v3").absoluteString
     }
 
     // MARK: - Requests
