@@ -191,7 +191,7 @@ public struct VOIdentityUser {
     public func url() -> URL {
         URL(string: "\(baseURL)/users")!
     }
-    
+
     public func urlForMe() -> URL {
         URL(string: "\(url())/me")!
     }
