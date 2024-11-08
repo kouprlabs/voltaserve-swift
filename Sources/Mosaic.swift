@@ -40,7 +40,7 @@ public struct VOMosaic {
     public func fetchData(
         _ id: String,
         zoomLevel: ZoomLevel,
-        forCellAtRow row: Int, col: Int,
+        forCellAtRow row: Int, column: Int,
         fileExtension: String
     ) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
@@ -48,7 +48,7 @@ public struct VOMosaic {
                 id,
                 zoomLevel: zoomLevel,
                 row: row,
-                col: col,
+                column: column,
                 fileExtension: fileExtension
             ))
             request.httpMethod = "GET"
@@ -119,11 +119,11 @@ public struct VOMosaic {
         _ id: String,
         zoomLevel: ZoomLevel,
         row: Int,
-        col: Int,
+        column: Int,
         fileExtension: String
     ) -> URL {
         URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)" +
-            "/row/\(row)/col/\(col)/ext/\(fileExtension)?" +
+            "/row/\(row)/column/\(column)/extension/\(fileExtension)?" +
             "access_token=\(accessToken)")!
     }
 
