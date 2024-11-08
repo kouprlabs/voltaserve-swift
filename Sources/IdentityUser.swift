@@ -13,7 +13,7 @@ public struct VOIdentityUser {
 
     public func fetch() async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: url())
+            var request = URLRequest(url: urlForMe())
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -189,35 +189,39 @@ public struct VOIdentityUser {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/user")!
+        URL(string: "\(baseURL)/users")!
+    }
+    
+    public func urlForMe() -> URL {
+        URL(string: "\(url())/me")!
     }
 
     public func urlForPatchFullName() -> URL {
-        URL(string: "\(url())/update_full_name")!
+        URL(string: "\(urlForMe())/update_full_name")!
     }
 
     public func urlForUpdateEmailRequest() -> URL {
-        URL(string: "\(url())/update_email_request")!
+        URL(string: "\(urlForMe())/update_email_request")!
     }
 
     public func urlForUpdateEmailConfirmation() -> URL {
-        URL(string: "\(url())/update_email_confirmation")!
+        URL(string: "\(urlForMe())/update_email_confirmation")!
     }
 
     public func urlForUpdatePassword() -> URL {
-        URL(string: "\(url())/update_password")!
+        URL(string: "\(urlForMe())/update_password")!
     }
 
     public func urlForUpdatePicture() -> URL {
-        URL(string: "\(url())/update_picture")!
+        URL(string: "\(urlForMe())/update_picture")!
     }
 
     public func urlForDeletePicture() -> URL {
-        URL(string: "\(url())/delete_picture")!
+        URL(string: "\(urlForMe())/delete_picture")!
     }
 
     public func urlForPicture(_: String, fileExtension: String) -> URL {
-        URL(string: "\(url())/picture\(fileExtension)?access_token=\(accessToken)")!
+        URL(string: "\(urlForMe())/picture\(fileExtension)?access_token=\(accessToken)")!
     }
 
     // MARK: - Payloads
