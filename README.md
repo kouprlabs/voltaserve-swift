@@ -53,3 +53,7 @@ In Linux you should replace `host.docker.internal` with the host IP address, it 
 ```shell
 ip route | grep default | awk '{print $3}'
 ```
+
+## Licensing
+
+Voltaserve Swift is released under the [MIT License](LICENSE).
