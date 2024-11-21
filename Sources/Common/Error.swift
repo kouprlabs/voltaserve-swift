@@ -1,7 +1,9 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
-// This source code is licensed under the MIT license found in the
-// LICENSE file in the root directory of this source tree.
+// This software is licensed under the MIT License.
+// You can find a copy of the license in the LICENSE file
+// included in the root of this repository or at
+// https://opensource.org/licenses/MIT.
 
 import Foundation
 
