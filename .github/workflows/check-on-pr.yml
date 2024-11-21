@@ -1,3 +1,8 @@
+# Copyright (c) 2024 Anass Bouassaba.
+#
+# Use of this software is governed by the MIT License
+# included in the file LICENSE in the root of this repository.
+
 name: Lint
 
 on:
@@ -15,7 +20,7 @@ jobs:
       image: swift:5.10-noble
     steps:
       - uses: actions/checkout@v2
-      - name: Set up swiftlint
+      - name: Set Up swiftlint
         run: |
           sudo apt-get update && sudo apt-get install -y unzip curl
           unzip ci/swiftlint.zip -d /usr/local/bin/
@@ -29,7 +34,7 @@ jobs:
       image: swift:5.10-noble
     steps:
       - uses: actions/checkout@v2
-      - name: Set up swiftformat
+      - name: Set Up swiftformat
         run: |
           sudo apt-get update && sudo apt-get install -y unzip curl
           unzip ci/swiftformat.zip -d /usr/local/bin/
