@@ -25,7 +25,8 @@ public struct VOToken {
             var request = URLRequest(url: url())
             request.httpMethod = "POST"
             request.setValue(
-                "application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                "application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type"
+            )
             request.httpBody = Data(options.urlEncodedString.utf8)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleJSONResponse(
@@ -96,8 +97,8 @@ public struct VOToken {
             var percentEncodedQuery = components.percentEncodedQuery ?? ""
             percentEncodedQuery =
                 percentEncodedQuery
-                .replacingOccurrences(of: "+", with: "%2B")
-                .replacingOccurrences(of: "%20", with: "+")
+                    .replacingOccurrences(of: "+", with: "%2B")
+                    .replacingOccurrences(of: "%20", with: "+")
             return percentEncodedQuery
         }
     }

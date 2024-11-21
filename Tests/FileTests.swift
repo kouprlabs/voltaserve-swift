@@ -31,7 +31,7 @@ final class FileTests: XCTestCase {
 
         /* Create files */
         var options: [VOFile.CreateFileOptions] = []
-        for index in 0..<6 {
+        for index in 0 ..< 6 {
             options.append(
                 .init(
                     workspaceID: workspace.id,
@@ -40,12 +40,12 @@ final class FileTests: XCTestCase {
                 ))
         }
         var files: [VOFile.Entity] = []
-        for index in 0..<options.count {
+        for index in 0 ..< options.count {
             try await files.append(factory.file(options[index]))
         }
 
         /* Test creation */
-        for index in 0..<files.count {
+        for index in 0 ..< files.count {
             XCTAssertEqual(files[index].name, options[index].name)
             XCTAssertEqual(files[index].workspaceID, options[index].workspaceID)
             XCTAssertEqual(files[index].permission, .owner)
@@ -291,7 +291,7 @@ final class FileTests: XCTestCase {
                 storageCapacity: 100_000_000
             ))
 
-        for index in 0..<3 {
+        for index in 0 ..< 3 {
             _ = try await factory.folder(
                 .init(workspaceID: workspace.id, name: "Test Folder \(index)"))
         }
@@ -317,7 +317,7 @@ final class FileTests: XCTestCase {
             ))
 
         var ids = [String]()
-        for index in 0..<3 {
+        for index in 0 ..< 3 {
             let folder = try await factory.folder(
                 .init(workspaceID: workspace.id, name: "Test Folder \(index)"))
             ids.append(folder.id)
@@ -389,7 +389,7 @@ final class FileTests: XCTestCase {
             ))
 
         var files: [VOFile.Entity] = []
-        for index in 0..<3 {
+        for index in 0 ..< 3 {
             try await files.append(
                 factory.file(
                     .init(
@@ -467,7 +467,7 @@ final class FileTests: XCTestCase {
             ))
 
         var files: [VOFile.Entity] = []
-        for index in 0..<3 {
+        for index in 0 ..< 3 {
             try await files.append(
                 factory.file(
                     .init(

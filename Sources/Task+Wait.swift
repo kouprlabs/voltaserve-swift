@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension VOTask {
-    public func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity? {
+public extension VOTask {
+    func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity? {
         var task: Entity?
         repeat {
             do {
@@ -32,7 +32,7 @@ extension VOTask {
         return task
     }
 
-    public enum RuntimeError: Error {
+    enum RuntimeError: Error {
         case message(String)
     }
 }

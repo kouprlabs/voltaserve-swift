@@ -24,7 +24,7 @@ final class WorkspaceTests: XCTestCase {
 
         /* Create workspaces */
         var options: [VOWorkspace.CreateOptions] = []
-        for index in 0..<6 {
+        for index in 0 ..< 6 {
             options.append(
                 .init(
                     name: "Test Workspace \(index)",
@@ -33,12 +33,12 @@ final class WorkspaceTests: XCTestCase {
                 ))
         }
         var workspaces: [VOWorkspace.Entity] = []
-        for index in 0..<options.count {
+        for index in 0 ..< options.count {
             try await workspaces.append(factory.workspace(options[index]))
         }
 
         /* Test creation */
-        for index in 0..<workspaces.count {
+        for index in 0 ..< workspaces.count {
             XCTAssertEqual(workspaces[index].name, options[index].name)
             XCTAssertEqual(workspaces[index].organization.id, options[index].organizationID)
             XCTAssertEqual(workspaces[index].storageCapacity, options[index].storageCapacity)

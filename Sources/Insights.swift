@@ -41,8 +41,7 @@ public struct VOInsights {
     }
 
     public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws
-        -> EntityList
-    {
+        -> EntityList {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForListEntities(id, options: options))
             request.httpMethod = "GET"
@@ -61,8 +60,7 @@ public struct VOInsights {
     }
 
     public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws
-        -> EntityProbe
-    {
+        -> EntityProbe {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForProbeEntities(id, options: options))
             request.httpMethod = "GET"

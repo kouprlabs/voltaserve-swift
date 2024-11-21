@@ -92,8 +92,7 @@ public struct VOIdentityUser {
     }
 
     public func updateEmailConfirmation(_ options: UpdateEmailConfirmationOptions) async throws
-        -> Entity
-    {
+        -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUpdateEmailConfirmation())
             request.httpMethod = "POST"
@@ -132,8 +131,7 @@ public struct VOIdentityUser {
     }
 
     public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws
-        -> Entity
-    {
+        -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUpdatePicture())
             request.httpMethod = "POST"

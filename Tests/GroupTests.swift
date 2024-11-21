@@ -24,16 +24,16 @@ final class GroupTests: XCTestCase {
 
         /* Create groups */
         var options: [VOGroup.CreateOptions] = []
-        for index in 0..<6 {
+        for index in 0 ..< 6 {
             options.append(.init(name: "Test Group \(index)", organizationID: organization.id))
         }
         var groups: [VOGroup.Entity] = []
-        for index in 0..<options.count {
+        for index in 0 ..< options.count {
             try await groups.append(factory.group(options[index]))
         }
 
         /* Test creation */
-        for index in 0..<groups.count {
+        for index in 0 ..< groups.count {
             XCTAssertEqual(groups[index].name, options[index].name)
             XCTAssertEqual(groups[index].organization.id, options[index].organizationID)
         }

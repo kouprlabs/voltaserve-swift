@@ -115,8 +115,7 @@ public struct VOWorkspace {
     }
 
     public func patchStorageCapacity(_ id: String, options: PatchStorageCapacityOptions)
-        async throws -> Entity
-    {
+        async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForStorageCapacity(id))
             request.httpMethod = "PATCH"

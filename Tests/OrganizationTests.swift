@@ -23,16 +23,16 @@ final class OrganizationTests: XCTestCase {
 
         /* Create organizations */
         var options: [VOOrganization.CreateOptions] = []
-        for index in 0..<6 {
+        for index in 0 ..< 6 {
             options.append(.init(name: "Test Organization \(index)"))
         }
         var organizations: [VOOrganization.Entity] = []
-        for index in 0..<options.count {
+        for index in 0 ..< options.count {
             try await organizations.append(factory.organization(options[index]))
         }
 
         /* Test creation */
-        for index in 0..<organizations.count {
+        for index in 0 ..< organizations.count {
             XCTAssertEqual(organizations[index].name, options[index].name)
         }
 

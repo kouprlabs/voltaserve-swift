@@ -117,8 +117,7 @@ public struct VOFile {
     }
 
     public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws
-        -> Data
-    {
+        -> Data {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(
                 url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
@@ -137,8 +136,7 @@ public struct VOFile {
     }
 
     public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws
-        -> Data
-    {
+        -> Data {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(
                 url: urlForSegmentedThumbnail(
@@ -198,7 +196,8 @@ public struct VOFile {
 
     public func createFile(_ options: CreateFileOptions) async throws -> Entity {
         try await upload(
-            urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name)
+            urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name
+        )
     }
 
     public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
@@ -544,7 +543,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.file.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name),
+            .init(name: "name", value: options.name)
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(.init(name: "parent_id", value: parentID))
@@ -558,7 +557,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.folder.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name),
+            .init(name: "name", value: options.name)
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(URLQueryItem(name: "parent_id", value: parentID))

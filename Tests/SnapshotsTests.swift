@@ -35,7 +35,7 @@ final class SnapshotsTests: XCTestCase {
             ))
 
         /* Create snapshots by patching the existing file */
-        for index in 0..<5 {
+        for index in 0 ..< 5 {
             _ = try await factory.client.file.patch(
                 file.id,
                 options: .init(data: Data("Another Test Content \(index)".utf8), name: file.name)
@@ -43,7 +43,7 @@ final class SnapshotsTests: XCTestCase {
         }
 
         /* Test we receive a snapshot list */
-        for index in 1..<3 {
+        for index in 1 ..< 3 {
             let page = try await client.fetchList(.init(fileID: file.id, page: index, size: 3))
             XCTAssertEqual(page.page, index)
             XCTAssertEqual(page.size, 3)
@@ -213,8 +213,7 @@ final class SnapshotsTests: XCTestCase {
     }
 
     func checkDocumentFlow(forResource resource: String, withExtension fileExtension: String)
-        async throws
-    {
+        async throws {
         guard let factory = try? await DisposableFactory.withCredentials() else {
             failedToCreateFactory()
             return
