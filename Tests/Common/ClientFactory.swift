@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Anass Bouassaba.
 //
-// This software is licensed under the MIT License.
-// See the LICENSE file in the root of this repository for details,
-// or visit <https://opensource.org/licenses/MIT>.
+// Use of this software is governed by the MIT License
+// included in the file LICENSE in the root of this repository.
 
 import VoltaserveCore
 
