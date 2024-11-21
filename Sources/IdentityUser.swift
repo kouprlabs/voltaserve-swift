@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -91,7 +91,9 @@ public struct VOIdentityUser {
         }
     }
 
-    public func updateEmailConfirmation(_ options: UpdateEmailConfirmationOptions) async throws -> Entity {
+    public func updateEmailConfirmation(_ options: UpdateEmailConfirmationOptions) async throws
+        -> Entity
+    {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUpdateEmailConfirmation())
             request.httpMethod = "POST"
@@ -129,7 +131,9 @@ public struct VOIdentityUser {
         }
     }
 
-    public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws -> Entity {
+    public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws
+        -> Entity
+    {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUpdatePicture())
             request.httpMethod = "POST"
@@ -143,13 +147,15 @@ public struct VOIdentityUser {
 
             var httpBody = Data()
             httpBody.append(Data("--\(boundary)\r\n".utf8))
-            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n".utf8))
+            httpBody.append(
+                Data("Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n".utf8))
             httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
 
             httpBody.append(data)
             httpBody.append(Data("\r\n--\(boundary)--\r\n".utf8))
 
-            let task = URLSession.shared.uploadTask(with: request, from: httpBody) { responseData, response, error in
+            let task = URLSession.shared.uploadTask(with: request, from: httpBody) {
+                responseData, response, error in
                 handleJSONResponse(
                     continuation: continuation,
                     response: response,

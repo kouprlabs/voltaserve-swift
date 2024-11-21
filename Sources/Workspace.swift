@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -113,7 +114,9 @@ public struct VOWorkspace {
         }
     }
 
-    public func patchStorageCapacity(_ id: String, options: PatchStorageCapacityOptions) async throws -> Entity {
+    public func patchStorageCapacity(_ id: String, options: PatchStorageCapacityOptions)
+        async throws -> Entity
+    {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForStorageCapacity(id))
             request.httpMethod = "PATCH"
@@ -191,7 +194,9 @@ public struct VOWorkspace {
         public let organizationID: String
         public let storageCapacity: Int
 
-        public init(name: String, image: String? = nil, organizationID: String, storageCapacity: Int) {
+        public init(
+            name: String, image: String? = nil, organizationID: String, storageCapacity: Int
+        ) {
             self.name = name
             self.image = image
             self.organizationID = organizationID

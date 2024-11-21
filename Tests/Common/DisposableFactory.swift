@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -26,7 +26,8 @@ class DisposableFactory {
         self.client = client
     }
 
-    func organization(_ options: VOOrganization.CreateOptions) async throws -> VOOrganization.Entity {
+    func organization(_ options: VOOrganization.CreateOptions) async throws -> VOOrganization.Entity
+    {
         let organization = try await client.organization.create(options)
         organizations.append(organization)
         return organization

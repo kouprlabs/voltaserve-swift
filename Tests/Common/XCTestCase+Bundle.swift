@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -13,10 +13,11 @@ extension XCTestCase {
         #if os(Linux)
             URL(fileURLWithPath: "Tests/Resources/\(resource).\(fileExtension)")
         #else
-            Bundle(url: Bundle(for: type(of: self)).url(
-                forResource: "VoltaserveCore_VoltaserveTests",
-                withExtension: "bundle"
-            )!)!.url(forResource: resource, withExtension: fileExtension)
+            Bundle(
+                url: Bundle(for: type(of: self)).url(
+                    forResource: "VoltaserveCore_VoltaserveTests",
+                    withExtension: "bundle"
+                )!)!.url(forResource: resource, withExtension: fileExtension)
         #endif
     }
 }

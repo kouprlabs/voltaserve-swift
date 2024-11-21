@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -23,7 +24,8 @@ public struct VOToken {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: url())
             request.httpMethod = "POST"
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            request.setValue(
+                "application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             request.httpBody = Data(options.urlEncodedString.utf8)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleJSONResponse(
@@ -92,7 +94,8 @@ public struct VOToken {
 
             // Explicitly replace spaces with + and encode & characters
             var percentEncodedQuery = components.percentEncodedQuery ?? ""
-            percentEncodedQuery = percentEncodedQuery
+            percentEncodedQuery =
+                percentEncodedQuery
                 .replacingOccurrences(of: "+", with: "%2B")
                 .replacingOccurrences(of: "%20", with: "+")
             return percentEncodedQuery

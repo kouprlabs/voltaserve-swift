@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -16,12 +16,13 @@ class TokenFactory {
     }
 
     init(_ credentials: Config.Credentials) async throws {
-        value = try await VOToken(baseURL: config.idpURL).exchange(.init(
-            grantType: .password,
-            username: credentials.username,
-            password: credentials.password,
-            refreshToken: nil,
-            locale: nil
-        ))
+        value = try await VOToken(baseURL: config.idpURL).exchange(
+            .init(
+                grantType: .password,
+                username: credentials.username,
+                password: credentials.password,
+                refreshToken: nil,
+                locale: nil
+            ))
     }
 }

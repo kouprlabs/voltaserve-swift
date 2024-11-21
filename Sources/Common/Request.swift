@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -32,13 +33,15 @@ func handleJSONResponse<T: Decodable>(
             return
         }
         let stringData = String(data: data, encoding: .utf8)
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             do {
                 let result = try JSONDecoder().decode(T.self, from: data)
                 continuation.resume(returning: result)
             } catch {
                 if let stringData {
-                    print("Failed to decode JSON: \(stringData), error: \(error.localizedDescription)")
+                    print(
+                        "Failed to decode JSON: \(stringData), error: \(error.localizedDescription)"
+                    )
                 } else {
                     print("Failed to decode JSON with error: \(error.localizedDescription)")
                 }
@@ -47,9 +50,13 @@ func handleJSONResponse<T: Decodable>(
         } else {
             if let stringData {
                 // swiftlint:disable:next line_length
-                print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode), data: \(stringData)")
+                print(
+                    "Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode), data: \(stringData)"
+                )
             } else {
-                print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode)")
+                print(
+                    "Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode)"
+                )
             }
             handleErrorResponse(continuation: continuation, data: data)
         }
@@ -73,7 +80,7 @@ func handleDataResponse(
             continuation.resume(throwing: VONoDataError())
             return
         }
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             continuation.resume(returning: data)
         } else {
             handleErrorResponse(continuation: continuation, data: data)
@@ -98,7 +105,7 @@ func handleEmptyResponse(
             continuation.resume(throwing: VONoDataError())
             return
         }
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             continuation.resume()
         } else {
             handleErrorResponse(continuation: continuation, data: data)

@@ -1,12 +1,13 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
 // included in the root of this repository or at
 // https://opensource.org/licenses/MIT.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class MosaicTests: XCTestCase {
     var factory: DisposableFactory?
@@ -20,16 +21,18 @@ final class MosaicTests: XCTestCase {
         let client = factory.client.mosaic
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "image.jpg",
-            data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "jpg")!)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "image.jpg",
+                data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "jpg")!)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id)
@@ -48,16 +51,18 @@ final class MosaicTests: XCTestCase {
         let client = factory.client.mosaic
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "image.png",
-            data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "png")!)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "image.png",
+                data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "png")!)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id)
@@ -76,16 +81,18 @@ final class MosaicTests: XCTestCase {
         let client = factory.client.mosaic
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "image.tiff",
-            data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "tiff")!)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "image.tiff",
+                data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "tiff")!)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id)
@@ -104,16 +111,18 @@ final class MosaicTests: XCTestCase {
         let client = factory.client.mosaic
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "image.webp",
-            data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "webp")!)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "image.webp",
+                data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "webp")!)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id)

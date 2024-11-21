@@ -1,12 +1,13 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
 // included in the root of this repository or at
 // https://opensource.org/licenses/MIT.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class InvitationTests: XCTestCase {
     var factory: DisposableFactory?
@@ -31,9 +32,11 @@ final class InvitationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
+        _ = try await client.create(
+            .init(organizationID: organization.id, emails: [otherUser.email]))
 
-        let incoming = try await otherClient.fetchIncomingList(.init(organizationID: organization.id))
+        let incoming = try await otherClient.fetchIncomingList(
+            .init(organizationID: organization.id))
         XCTAssertEqual(incoming.totalElements, 1)
     }
 
@@ -55,7 +58,8 @@ final class InvitationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        _ = try await client.create(.init(organizationID: organization.id, emails: [otherUser.email]))
+        _ = try await client.create(
+            .init(organizationID: organization.id, emails: [otherUser.email]))
 
         let outgoing = try await client.fetchOutgoingList(.init(organizationID: organization.id))
         XCTAssertEqual(outgoing.totalElements, 1)
@@ -80,10 +84,11 @@ final class InvitationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        let invitations = try await client.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await client.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
         try await client.delete(invitations[0].id)
         let outgoing = try await otherClient.fetchIncomingList(.init())
         XCTAssertEqual(outgoing.totalElements, 0)
@@ -108,13 +113,15 @@ final class InvitationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        let invitations = try await client.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await client.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
 
         try await otherClient.accept(invitations.first!.id)
-        let organizationMembers = try await factory.client.user.fetchList(.init(organizationID: organization.id))
+        let organizationMembers = try await factory.client.user.fetchList(
+            .init(organizationID: organization.id))
         XCTAssertTrue(organizationMembers.data.contains(where: { $0.id == otherUser.id }))
 
         let otherOrganizations = try await otherFactory.client.organization.fetchList(.init())
@@ -143,10 +150,11 @@ final class InvitationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        let invitations = try await client.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await client.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
         try await otherClient.decline(invitations[0].id)
 
         let incoming = try await otherClient.fetchIncomingList(.init())

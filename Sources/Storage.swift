@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif

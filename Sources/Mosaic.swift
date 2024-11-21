@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -46,13 +47,14 @@ public struct VOMosaic {
         fileExtension: String
     ) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForTile(
-                id,
-                zoomLevel: zoomLevel,
-                row: row,
-                column: column,
-                fileExtension: fileExtension
-            ))
+            var request = URLRequest(
+                url: urlForTile(
+                    id,
+                    zoomLevel: zoomLevel,
+                    row: row,
+                    column: column,
+                    fileExtension: fileExtension
+                ))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -124,9 +126,10 @@ public struct VOMosaic {
         column: Int,
         fileExtension: String
     ) -> URL {
-        URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)" +
-            "/row/\(row)/column/\(column)/extension/\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(
+            string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)"
+                + "/row/\(row)/column/\(column)/extension/\(fileExtension)?"
+                + "access_token=\(accessToken)")!
     }
 
     // MARK: - Types
@@ -137,7 +140,9 @@ public struct VOMosaic {
         public var snapshot: VOSnapshot.Entity?
         public var metadata: Metadata
 
-        public init(isAvailable: Bool, isOutdated: Bool, snapshot: VOSnapshot.Entity?, metadata: Metadata) {
+        public init(
+            isAvailable: Bool, isOutdated: Bool, snapshot: VOSnapshot.Entity?, metadata: Metadata
+        ) {
             self.isAvailable = isAvailable
             self.isOutdated = isOutdated
             self.snapshot = snapshot

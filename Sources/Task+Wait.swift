@@ -1,4 +1,4 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
@@ -7,8 +7,8 @@
 
 import Foundation
 
-public extension VOTask {
-    func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity? {
+extension VOTask {
+    public func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity? {
         var task: Entity?
         repeat {
             do {
@@ -32,7 +32,7 @@ public extension VOTask {
         return task
     }
 
-    enum RuntimeError: Error {
+    public enum RuntimeError: Error {
         case message(String)
     }
 }

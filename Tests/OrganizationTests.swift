@@ -1,12 +1,13 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
 // included in the root of this repository or at
 // https://opensource.org/licenses/MIT.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class OrganizationTests: XCTestCase {
     var factory: DisposableFactory?
@@ -22,16 +23,16 @@ final class OrganizationTests: XCTestCase {
 
         /* Create organizations */
         var options: [VOOrganization.CreateOptions] = []
-        for index in 0 ..< 6 {
+        for index in 0..<6 {
             options.append(.init(name: "Test Organization \(index)"))
         }
         var organizations: [VOOrganization.Entity] = []
-        for index in 0 ..< options.count {
+        for index in 0..<options.count {
             try await organizations.append(factory.organization(options[index]))
         }
 
         /* Test creation */
-        for index in 0 ..< organizations.count {
+        for index in 0..<organizations.count {
             XCTAssertEqual(organizations[index].name, options[index].name)
         }
 
@@ -108,10 +109,11 @@ final class OrganizationTests: XCTestCase {
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let otherUser = try await otherFactory.client.identityUser.fetch()
 
-        let invitations = try await factory.client.invitation.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await factory.client.invitation.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
         try await otherFactory.client.invitation.accept(invitations.first!.id)
         let organizationAgain = try await otherClient.fetch(organization.id)
         XCTAssertEqual(organizationAgain.id, organization.id)

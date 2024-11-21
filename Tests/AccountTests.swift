@@ -1,12 +1,13 @@
-// Copyright 2024 Anass Bouassaba.
+// Copyright (c) 2024 Anass Bouassaba.
 //
 // This software is licensed under the MIT License.
 // You can find a copy of the license in the LICENSE file
 // included in the root of this repository or at
 // https://opensource.org/licenses/MIT.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class AccountTests: XCTestCase {
     var factory: DisposableFactory?
