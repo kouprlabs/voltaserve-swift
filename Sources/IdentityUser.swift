@@ -34,11 +34,12 @@ public struct VOIdentityUser {
         }
     }
 
-    public func delete(_: DeleteOptions) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+    public func delete(_ options: DeleteOptions) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForMe())
             request.httpMethod = "DELETE"
             request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
                     continuation: continuation,
