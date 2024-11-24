@@ -24,8 +24,7 @@ class DisposableFactory {
         self.client = client
     }
 
-    func organization(_ options: VOOrganization.CreateOptions) async throws -> VOOrganization.Entity
-    {
+    func organization(_ options: VOOrganization.CreateOptions) async throws -> VOOrganization.Entity {
         let organization = try await client.organization.create(options)
         organizations.append(organization)
         return organization

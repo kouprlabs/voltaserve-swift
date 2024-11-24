@@ -210,9 +210,7 @@ final class SnapshotsTests: XCTestCase {
                 || file.snapshot!.thumbnail!.image!.height == 512)
     }
 
-    func checkDocumentFlow(forResource resource: String, withExtension fileExtension: String)
-        async throws
-    {
+    func checkDocumentFlow(forResource resource: String, withExtension fileExtension: String) async throws {
         guard let factory = try? await DisposableFactory.withCredentials() else {
             failedToCreateFactory()
             return
