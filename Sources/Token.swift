@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -90,7 +91,8 @@ public struct VOToken {
 
             // Explicitly replace spaces with + and encode & characters
             var percentEncodedQuery = components.percentEncodedQuery ?? ""
-            percentEncodedQuery = percentEncodedQuery
+            percentEncodedQuery =
+                percentEncodedQuery
                 .replacingOccurrences(of: "+", with: "%2B")
                 .replacingOccurrences(of: "%20", with: "+")
             return percentEncodedQuery

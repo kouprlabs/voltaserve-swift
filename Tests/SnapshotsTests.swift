@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class SnapshotsTests: XCTestCase {
     var factory: DisposableFactory?
@@ -18,27 +19,29 @@ final class SnapshotsTests: XCTestCase {
         let client = factory.client.snapshot
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data("Test Content".utf8)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data("Test Content".utf8)
+            ))
 
-        /* Create snapshots by patching the existing file */
-        for index in 0 ..< 5 {
+        // Create snapshots by patching the existing file
+        for index in 0..<5 {
             _ = try await factory.client.file.patch(
                 file.id,
                 options: .init(data: Data("Another Test Content \(index)".utf8), name: file.name)
             )
         }
 
-        /* Test we receive a snapshot list */
-        for index in 1 ..< 3 {
+        // Test we receive a snapshot list
+        for index in 1..<3 {
             let page = try await client.fetchList(.init(fileID: file.id, page: index, size: 3))
             XCTAssertEqual(page.page, index)
             XCTAssertEqual(page.size, 3)
@@ -111,35 +114,37 @@ final class SnapshotsTests: XCTestCase {
         self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         let url = getResourceURL(forResource: "video", withExtension: "mp4")!
         let data = try Data(contentsOf: url)
-        var file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: url.lastPathComponent,
-            data: data
-        ))
+        var file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: url.lastPathComponent,
+                data: data
+            ))
 
-        /* Test original is valid */
+        // Test original is valid
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".mp4")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
         file = try await factory.client.file.wait(file.id)
 
-        /* Test preview is nil */
+        // Test preview is nil
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".mp4")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
         XCTAssertNil(file.snapshot!.preview!.image)
         XCTAssertNil(file.snapshot!.preview!.document)
 
-        /* Test thumbnail is valid */
+        // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
@@ -163,28 +168,30 @@ final class SnapshotsTests: XCTestCase {
         self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
-        var file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: url.lastPathComponent,
-            data: data
-        ))
+        var file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: url.lastPathComponent,
+                data: data
+            ))
 
-        /* Test original is valid */
+        // Test original is valid
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
         file = try await factory.client.file.wait(file.id)
 
-        /* Test preview is valid */
+        // Test preview is valid
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".\(previewExtension)")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
@@ -193,14 +200,13 @@ final class SnapshotsTests: XCTestCase {
         XCTAssertEqual(file.snapshot!.preview!.image!.height, height)
         XCTAssertNil(file.snapshot!.preview!.document)
 
-        /* Test thumbnail is valid */
+        // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
         XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".\(thumbnailExtension)")
         XCTAssertTrue(
-            file.snapshot!.thumbnail!.image!.width == 512 ||
-                file.snapshot!.thumbnail!.image!.height == 512)
+            file.snapshot!.thumbnail!.image!.width == 512 || file.snapshot!.thumbnail!.image!.height == 512)
     }
 
     func checkDocumentFlow(forResource resource: String, withExtension fileExtension: String) async throws {
@@ -211,28 +217,30 @@ final class SnapshotsTests: XCTestCase {
         self.factory = factory
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         let url = getResourceURL(forResource: resource, withExtension: fileExtension)!
         let data = try Data(contentsOf: url)
-        var file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: url.lastPathComponent,
-            data: data
-        ))
+        var file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: url.lastPathComponent,
+                data: data
+            ))
 
-        /* Test original is valid */
+        // Test original is valid
         XCTAssertNotNil(file.snapshot)
         XCTAssertEqual(file.snapshot!.original.fileExtension, ".\(fileExtension)")
         XCTAssertEqual(file.snapshot!.original.size, data.count)
 
         file = try await factory.client.file.wait(file.id)
 
-        /* Test preview is valid */
+        // Test preview is valid
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".pdf")
         XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
@@ -245,14 +253,13 @@ final class SnapshotsTests: XCTestCase {
         )
         XCTAssertNil(file.snapshot!.preview!.image)
 
-        /* Test thumbnail is valid */
+        // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
         XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".png")
         XCTAssertTrue(
-            file.snapshot!.thumbnail!.image!.width == 512 ||
-                file.snapshot!.thumbnail!.image!.height == 512)
+            file.snapshot!.thumbnail!.image!.width == 512 || file.snapshot!.thumbnail!.image!.height == 512)
     }
 
     override func tearDown() async throws {

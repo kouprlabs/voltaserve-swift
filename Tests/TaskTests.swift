@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class TaskTests: XCTestCase {
     var factory: DisposableFactory?
@@ -18,18 +19,20 @@ final class TaskTests: XCTestCase {
         let client = factory.client.task
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         // Here we intentionally create a file that fails the conversion so the task is not quickly deleted
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.jpg",
-            data: Data("Test Content".utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.jpg",
+                data: Data("Test Content".utf8)
+            ))
 
         let user = try await factory.client.identityUser.fetch()
 
@@ -46,16 +49,18 @@ final class TaskTests: XCTestCase {
         let client = factory.client.task
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        _ = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.jpg",
-            data: Data("Test Content".utf8)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        _ = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.jpg",
+                data: Data("Test Content".utf8)
+            ))
 
         let list = try await client.fetchList(.init())
 
@@ -73,16 +78,18 @@ final class TaskTests: XCTestCase {
         let client = factory.client.task
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        _ = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File",
-            data: Data("Test Content".utf8)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        _ = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File",
+                data: Data("Test Content".utf8)
+            ))
 
         let count = try await client.fetchCount()
 
@@ -100,20 +107,22 @@ final class TaskTests: XCTestCase {
         let client = factory.client.task
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.jpg",
-            data: Data("Test Content".utf8)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.jpg",
+                data: Data("Test Content".utf8)
+            ))
 
         var task = try await client.fetch(file.snapshot!.task!.id)
 
-        /* Wait for the task to stop so we can dismiss it */
+        // Wait for the task to stop so we can dismiss it
         repeat {
             task = try await client.fetch(task.id)
             sleep(1)

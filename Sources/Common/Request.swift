@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -30,7 +31,7 @@ func handleJSONResponse<T: Decodable>(
             return
         }
         let stringData = String(data: data, encoding: .utf8)
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             do {
                 let result = try JSONDecoder().decode(T.self, from: data)
                 continuation.resume(returning: result)
@@ -44,6 +45,7 @@ func handleJSONResponse<T: Decodable>(
             }
         } else {
             if let stringData {
+                // swift-format-ignore
                 // swiftlint:disable:next line_length
                 print("Request to URL: \(httpResponse.url!), failed with status code: \(httpResponse.statusCode), data: \(stringData)")
             } else {
@@ -71,7 +73,7 @@ func handleDataResponse(
             continuation.resume(throwing: VONoDataError())
             return
         }
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             continuation.resume(returning: data)
         } else {
             handleErrorResponse(continuation: continuation, data: data)
@@ -96,7 +98,7 @@ func handleEmptyResponse(
             continuation.resume(throwing: VONoDataError())
             return
         }
-        if (200 ... 299).contains(httpResponse.statusCode) {
+        if (200...299).contains(httpResponse.statusCode) {
             continuation.resume()
         } else {
             handleErrorResponse(continuation: continuation, data: data)

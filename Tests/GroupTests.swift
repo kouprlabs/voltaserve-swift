@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class GroupTests: XCTestCase {
     var factory: DisposableFactory?
@@ -19,25 +20,25 @@ final class GroupTests: XCTestCase {
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
 
-        /* Create groups */
+        // Create groups
         var options: [VOGroup.CreateOptions] = []
-        for index in 0 ..< 6 {
+        for index in 0..<6 {
             options.append(.init(name: "Test Group \(index)", organizationID: organization.id))
         }
         var groups: [VOGroup.Entity] = []
-        for index in 0 ..< options.count {
+        for index in 0..<options.count {
             try await groups.append(factory.group(options[index]))
         }
 
-        /* Test creation */
-        for index in 0 ..< groups.count {
+        // Test creation
+        for index in 0..<groups.count {
             XCTAssertEqual(groups[index].name, options[index].name)
             XCTAssertEqual(groups[index].organization.id, options[index].organizationID)
         }
 
-        /* Test list */
+        // Test list
 
-        /* Page 1 */
+        // Page 1
         let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertGreaterThanOrEqual(page1.totalPages, 2)
@@ -45,26 +46,26 @@ final class GroupTests: XCTestCase {
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
-        /* Page 2 */
+        // Page 2
         let page2 = try await client.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
-        /* Test fetch */
+        // Test fetch
         let group = try await client.fetch(groups[0].id)
         XCTAssertEqual(group.name, groups[0].name)
         XCTAssertEqual(group.organization.id, groups[0].organization.id)
 
-        /* Test patch name */
+        // Test patch name
         let newName = "New Group"
         let alpha = try await client.patchName(group.id, options: .init(name: newName))
         XCTAssertEqual(alpha.name, newName)
         let beta = try await client.fetch(group.id)
         XCTAssertEqual(beta.name, newName)
 
-        /* Test delete */
+        // Test delete
         for group in groups {
             try await client.delete(group.id)
         }
