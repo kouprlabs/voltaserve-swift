@@ -552,25 +552,23 @@ public struct VOFile {
     }
 
     public func urlForOriginal(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/original.\(fileExtension)?" + "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/original.\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForPreview(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" + "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/preview.\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" + "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
-        // swift-format-ignore
-        // swiftlint:disable:next line_length
-        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {

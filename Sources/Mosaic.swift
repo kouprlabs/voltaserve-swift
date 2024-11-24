@@ -124,9 +124,9 @@ public struct VOMosaic {
         column: Int,
         fileExtension: String
     ) -> URL {
-        URL(
-            string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)"
-                + "/row/\(row)/column/\(column)/extension/\(fileExtension)?" + "access_token=\(accessToken)")!
+        // swift-format-ignore
+        // swiftlint:disable:next line_length
+        URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)/row/\(row)/column/\(column)/extension/\(fileExtension)?access_token=\(accessToken)")!
     }
 
     // MARK: - Types
