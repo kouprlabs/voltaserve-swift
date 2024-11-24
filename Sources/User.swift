@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -149,7 +150,8 @@ public struct VOUser {
                 items.append(.init(name: "group_id", value: groupID))
             }
             if let excludeGroupMembers {
-                items.append(.init(name: "exclude_group_members", value: String(excludeGroupMembers)))
+                items.append(
+                    .init(name: "exclude_group_members", value: String(excludeGroupMembers)))
             }
             if let size {
                 items.append(.init(name: "size", value: String(size)))

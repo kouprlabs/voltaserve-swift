@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -53,7 +54,8 @@ public struct VOAccount {
     }
 
     public func sendResetPasswordEmail(_ options: SendResetPasswordEmailOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForSendPasswordEmail())
             request.httpMethod = "POST"
             request.setJSONBody(options, continuation: continuation)
@@ -70,7 +72,8 @@ public struct VOAccount {
     }
 
     public func resetPassword(_ options: ResetPasswordOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForResetPassword())
             request.httpMethod = "POST"
             request.setJSONBody(options, continuation: continuation)
@@ -87,7 +90,8 @@ public struct VOAccount {
     }
 
     public func confirmEmail(_ options: ConfirmEmailOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForConfirmEmail())
             request.httpMethod = "POST"
             request.setJSONBody(options, continuation: continuation)
@@ -174,7 +178,9 @@ public struct VOAccount {
         public let minNumbers: Int
         public let minSymbols: Int
 
-        public init(minLength: Int, minLowercase: Int, minUppercase: Int, minNumbers: Int, minSymbols: Int) {
+        public init(
+            minLength: Int, minLowercase: Int, minUppercase: Int, minNumbers: Int, minSymbols: Int
+        ) {
             self.minLength = minLength
             self.minLowercase = minLowercase
             self.minUppercase = minUppercase

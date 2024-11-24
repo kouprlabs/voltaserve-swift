@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -113,9 +114,12 @@ public struct VOFile {
         }
     }
 
-    public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
+    public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws
+        -> Data
+    {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
+            var request = URLRequest(
+                url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -130,13 +134,16 @@ public struct VOFile {
         }
     }
 
-    public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
+    public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws
+        -> Data
+    {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForSegmentedThumbnail(
-                id,
-                page: page,
-                fileExtension: String(fileExtension.dropFirst())
-            ))
+            var request = URLRequest(
+                url: urlForSegmentedThumbnail(
+                    id,
+                    page: page,
+                    fileExtension: String(fileExtension.dropFirst())
+                ))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -188,7 +195,8 @@ public struct VOFile {
     }
 
     public func createFile(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name)
+        try await upload(
+            urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name)
     }
 
     public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
@@ -234,13 +242,17 @@ public struct VOFile {
 
             var httpBody = Data()
             httpBody.append(Data("--\(boundary)\r\n".utf8))
-            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".utf8))
+            httpBody.append(
+                Data(
+                    "Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n"
+                        .utf8))
             httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
 
             httpBody.append(data)
             httpBody.append(Data("\r\n--\(boundary)--\r\n".utf8))
 
-            let task = URLSession.shared.uploadTask(with: request, from: httpBody) { responseData, response, error in
+            let task = URLSession.shared.uploadTask(with: request, from: httpBody) {
+                responseData, response, error in
                 handleJSONResponse(
                     continuation: continuation,
                     response: response,
@@ -396,7 +408,8 @@ public struct VOFile {
     }
 
     public func grantUserPermission(_ options: GrantUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForGrantUserPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -414,7 +427,8 @@ public struct VOFile {
     }
 
     public func revokeUserPermission(_ options: RevokeUserPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForRevokeUserPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -432,7 +446,8 @@ public struct VOFile {
     }
 
     public func grantGroupPermission(_ options: GrantGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForGrantGroupPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -450,7 +465,8 @@ public struct VOFile {
     }
 
     public func revokeGroupPermission(_ options: RevokeGroupPermissionOptions) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForRevokeGroupPermission())
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
@@ -526,7 +542,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.file.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name)
+            .init(name: "name", value: options.name),
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(.init(name: "parent_id", value: parentID))
@@ -540,7 +556,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.folder.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name)
+            .init(name: "name", value: options.name),
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(URLQueryItem(name: "parent_id", value: parentID))
@@ -550,28 +566,27 @@ public struct VOFile {
     }
 
     public func urlForOriginal(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/original.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/original.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForPreview(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(
+            string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?"
+                + "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(
+            string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?"
+                + "access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {

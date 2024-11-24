@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class WorkspaceTests: XCTestCase {
     var factory: DisposableFactory?
@@ -21,20 +22,21 @@ final class WorkspaceTests: XCTestCase {
 
         /* Create workspaces */
         var options: [VOWorkspace.CreateOptions] = []
-        for index in 0 ..< 6 {
-            options.append(.init(
-                name: "Test Workspace \(index)",
-                organizationID: organization.id,
-                storageCapacity: 100_000_000 + index
-            ))
+        for index in 0..<6 {
+            options.append(
+                .init(
+                    name: "Test Workspace \(index)",
+                    organizationID: organization.id,
+                    storageCapacity: 100_000_000 + index
+                ))
         }
         var workspaces: [VOWorkspace.Entity] = []
-        for index in 0 ..< options.count {
+        for index in 0..<options.count {
             try await workspaces.append(factory.workspace(options[index]))
         }
 
         /* Test creation */
-        for index in 0 ..< workspaces.count {
+        for index in 0..<workspaces.count {
             XCTAssertEqual(workspaces[index].name, options[index].name)
             XCTAssertEqual(workspaces[index].organization.id, options[index].organizationID)
             XCTAssertEqual(workspaces[index].storageCapacity, options[index].storageCapacity)

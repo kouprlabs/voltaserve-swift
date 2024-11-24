@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -37,7 +38,9 @@ public struct VOInsights {
         }
     }
 
-    public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
+    public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws
+        -> EntityList
+    {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForListEntities(id, options: options))
             request.httpMethod = "GET"
@@ -55,7 +58,9 @@ public struct VOInsights {
         }
     }
 
-    public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws -> EntityProbe {
+    public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws
+        -> EntityProbe
+    {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForProbeEntities(id, options: options))
             request.httpMethod = "GET"

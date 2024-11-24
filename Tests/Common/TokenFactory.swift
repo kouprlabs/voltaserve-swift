@@ -14,12 +14,13 @@ class TokenFactory {
     }
 
     init(_ credentials: Config.Credentials) async throws {
-        value = try await VOToken(baseURL: config.idpURL).exchange(.init(
-            grantType: .password,
-            username: credentials.username,
-            password: credentials.password,
-            refreshToken: nil,
-            locale: nil
-        ))
+        value = try await VOToken(baseURL: config.idpURL).exchange(
+            .init(
+                grantType: .password,
+                username: credentials.username,
+                password: credentials.password,
+                refreshToken: nil,
+                locale: nil
+            ))
     }
 }

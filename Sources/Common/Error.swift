@@ -69,7 +69,8 @@ public struct VOErrorResponse: Decodable, Error {
         case userNotAllowedToDeleteInvitation = "user_not_allowed_to_delete_invitation"
         case userAlreadyMemberOfOrganization = "user_already_member_of_organization"
         case invalidApiKey = "invalid_api_key"
-        case pathVariablesAndBodyParametersNotConsistent = "path_variables_and_body_parameters_not_consistent"
+        case pathVariablesAndBodyParametersNotConsistent =
+            "path_variables_and_body_parameters_not_consistent"
 
         /* IdP */
         case usernameUnavailable = "username_unavailable"

@@ -5,8 +5,8 @@
 
 import Foundation
 
-public extension VOFile {
-    func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity {
+extension VOFile {
+    public func wait(_ id: String, sleepSeconds: UInt32 = 1) async throws -> Entity {
         var file: Entity
         repeat {
             file = try await fetch(id)

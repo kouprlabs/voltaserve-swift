@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class FileTests: XCTestCase {
     var factory: DisposableFactory?
@@ -19,28 +20,30 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         /* Create files */
         var options: [VOFile.CreateFileOptions] = []
-        for index in 0 ..< 6 {
-            options.append(.init(
-                workspaceID: workspace.id,
-                name: "Test File \(index).txt",
-                data: Data("Test Content \(index)".utf8)
-            ))
+        for index in 0..<6 {
+            options.append(
+                .init(
+                    workspaceID: workspace.id,
+                    name: "Test File \(index).txt",
+                    data: Data("Test Content \(index)".utf8)
+                ))
         }
         var files: [VOFile.Entity] = []
-        for index in 0 ..< options.count {
+        for index in 0..<options.count {
             try await files.append(factory.file(options[index]))
         }
 
         /* Test creation */
-        for index in 0 ..< files.count {
+        for index in 0..<files.count {
             XCTAssertEqual(files[index].name, options[index].name)
             XCTAssertEqual(files[index].workspaceID, options[index].workspaceID)
             XCTAssertEqual(files[index].permission, .owner)
@@ -110,23 +113,26 @@ final class FileTests: XCTestCase {
         let otherClient = otherFactory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
         let otherUser = try await otherFactory.client.identityUser.fetch()
-        let invitations = try await factory.client.invitation.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await factory.client.invitation.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
         try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Grant permission to the other user */
-        try await client.grantUserPermission(.init(ids: [folder.id], userID: otherUser.id, permission: .editor))
+        try await client.grantUserPermission(
+            .init(ids: [folder.id], userID: otherUser.id, permission: .editor))
 
         /* Test the other user has the permission */
         let permissions = try await client.fetchUserPermissions(folder.id)
@@ -174,27 +180,31 @@ final class FileTests: XCTestCase {
         let otherClient = otherFactory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let group = try await factory.group(.init(name: "Test Group", organizationID: organization.id))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let group = try await factory.group(
+            .init(name: "Test Group", organizationID: organization.id))
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         /* Send invitation and accept it */
         let otherUser = try await otherFactory.client.identityUser.fetch()
-        let invitations = try await factory.client.invitation.create(.init(
-            organizationID: organization.id,
-            emails: [otherUser.email]
-        ))
+        let invitations = try await factory.client.invitation.create(
+            .init(
+                organizationID: organization.id,
+                emails: [otherUser.email]
+            ))
         try await otherFactory.client.invitation.accept(invitations[0].id)
 
         /* Add the other user to the group */
         try await factory.client.group.addMember(group.id, options: .init(userID: otherUser.id))
 
         /* Grant permission to the group */
-        try await client.grantGroupPermission(.init(ids: [folder.id], groupID: group.id, permission: .editor))
+        try await client.grantGroupPermission(
+            .init(ids: [folder.id], groupID: group.id, permission: .editor))
 
         /* Test the group has the permission */
         let permissions = try await client.fetchGroupPermissions(folder.id)
@@ -234,26 +244,30 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let folderA = try await factory.folder(.init(
-            workspaceID: workspace.id,
-            name: "Test Folder A"
-        ))
-        let folderB = try await factory.folder(.init(
-            workspaceID: workspace.id,
-            parentID: folderA.id,
-            name: "Test Folder B"
-        ))
-        let folderC = try await factory.folder(.init(
-            workspaceID: workspace.id,
-            parentID: folderB.id,
-            name: "Test Folder C"
-        ))
+        let folderA = try await factory.folder(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test Folder A"
+            ))
+        let folderB = try await factory.folder(
+            .init(
+                workspaceID: workspace.id,
+                parentID: folderA.id,
+                name: "Test Folder B"
+            ))
+        let folderC = try await factory.folder(
+            .init(
+                workspaceID: workspace.id,
+                parentID: folderB.id,
+                name: "Test Folder C"
+            ))
 
         let path = try await client.fetchPath(folderC.id)
         XCTAssertEqual(path.count, 4)
@@ -268,14 +282,16 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        for index in 0 ..< 3 {
-            _ = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder \(index)"))
+        for index in 0..<3 {
+            _ = try await factory.folder(
+                .init(workspaceID: workspace.id, name: "Test Folder \(index)"))
         }
 
         let count = try await client.fetchCount(workspace.rootID)
@@ -291,15 +307,17 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         var ids = [String]()
-        for index in 0 ..< 3 {
-            let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder \(index)"))
+        for index in 0..<3 {
+            let folder = try await factory.folder(
+                .init(workspaceID: workspace.id, name: "Test Folder \(index)"))
             ids.append(folder.id)
         }
 
@@ -325,17 +343,19 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data("Test Content".utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data("Test Content".utf8)
+            ))
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         let copiedFile = try await client.copy(file.id, to: folder.id)
@@ -359,23 +379,27 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         var files: [VOFile.Entity] = []
-        for index in 0 ..< 3 {
-            try await files.append(factory.file(.init(
-                workspaceID: workspace.id,
-                name: "Test File \(index).txt",
-                data: Data("Test Content \(index)".utf8)
-            )))
+        for index in 0..<3 {
+            try await files.append(
+                factory.file(
+                    .init(
+                        workspaceID: workspace.id,
+                        name: "Test File \(index).txt",
+                        data: Data("Test Content \(index)".utf8)
+                    )))
         }
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
-        let copyResult = try await client.copy(.init(sourceIDs: files.map(\.id), targetID: folder.id))
+        let copyResult = try await client.copy(
+            .init(sourceIDs: files.map(\.id), targetID: folder.id))
         XCTAssertEqual(copyResult.succeeded.count, files.count)
         XCTAssertEqual(copyResult.failed.count, 0)
         XCTAssertEqual(copyResult.new.count, files.count)
@@ -390,28 +414,31 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data("Test Content".utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data("Test Content".utf8)
+            ))
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
         let movedFile = try await client.move(file.id, to: folder.id)
         XCTAssertEqual(movedFile.parentID, folder.id)
 
         do {
-            _ = try await factory.file(.init(
-                workspaceID: workspace.id,
-                name: "Test File.txt",
-                data: Data("Test Content".utf8)
-            ))
+            _ = try await factory.file(
+                .init(
+                    workspaceID: workspace.id,
+                    name: "Test File.txt",
+                    data: Data("Test Content".utf8)
+                ))
             _ = try await client.move(file.id, to: workspace.rootID)
             expectedToFail()
         } catch let error as VOErrorResponse {
@@ -430,23 +457,27 @@ final class FileTests: XCTestCase {
         let client = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
         var files: [VOFile.Entity] = []
-        for index in 0 ..< 3 {
-            try await files.append(factory.file(.init(
-                workspaceID: workspace.id,
-                name: "Test File \(index).txt",
-                data: Data("Test Content \(index)".utf8)
-            )))
+        for index in 0..<3 {
+            try await files.append(
+                factory.file(
+                    .init(
+                        workspaceID: workspace.id,
+                        name: "Test File \(index).txt",
+                        data: Data("Test Content \(index)".utf8)
+                    )))
         }
         let folder = try await factory.folder(.init(workspaceID: workspace.id, name: "Test Folder"))
 
-        let moveResult = try await client.move(.init(sourceIDs: files.map(\.id), targetID: folder.id))
+        let moveResult = try await client.move(
+            .init(sourceIDs: files.map(\.id), targetID: folder.id))
         XCTAssertEqual(moveResult.succeeded.count, files.count)
         XCTAssertEqual(moveResult.failed.count, 0)
     }
