@@ -568,8 +568,9 @@ public struct VOFile {
     }
 
     public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(
-            string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
+        // swift-format-ignore
+        // swiftlint:disable:next line_length
+        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {
