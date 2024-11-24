@@ -11,10 +11,11 @@ extension XCTestCase {
         #if os(Linux)
             URL(fileURLWithPath: "Tests/Resources/\(resource).\(fileExtension)")
         #else
-            Bundle(url: Bundle(for: type(of: self)).url(
-                forResource: "VoltaserveCore_VoltaserveTests",
-                withExtension: "bundle"
-            )!)!.url(forResource: resource, withExtension: fileExtension)
+            Bundle(
+                url: Bundle(for: type(of: self)).url(
+                    forResource: "VoltaserveCore_VoltaserveTests",
+                    withExtension: "bundle"
+                )!)!.url(forResource: resource, withExtension: fileExtension)
         #endif
     }
 }

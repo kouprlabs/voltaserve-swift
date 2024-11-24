@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class AccountTests: XCTestCase {
     var factory: DisposableFactory?

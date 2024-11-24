@@ -3,8 +3,9 @@
 // Use of this software is governed by the MIT License
 // included in the file LICENSE in the root of this repository.
 
-@testable import VoltaserveCore
 import XCTest
+
+@testable import VoltaserveCore
 
 final class InsightsTests: XCTestCase {
     var factory: DisposableFactory?
@@ -18,17 +19,19 @@ final class InsightsTests: XCTestCase {
         let client = factory.client.insights
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data(Constants.text.utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data(Constants.text.utf8)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id, options: .init(languageID: "eng"))
@@ -48,17 +51,19 @@ final class InsightsTests: XCTestCase {
         let client = factory.client.insights
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data(Constants.text.utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data(Constants.text.utf8)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         let task = try await client.create(file.id, options: .init(languageID: "eng"))
@@ -92,17 +97,19 @@ final class InsightsTests: XCTestCase {
         let client = factory.client.insights
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
 
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data(Constants.text.utf8)
-        ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data(Constants.text.utf8)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         var task = try await client.create(file.id, options: .init(languageID: "eng"))
@@ -139,16 +146,18 @@ final class InsightsTests: XCTestCase {
         let client = factory.client.insights
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
-        let workspace = try await factory.workspace(.init(
-            name: "Test Workspace",
-            organizationID: organization.id,
-            storageCapacity: 100_000_000
-        ))
-        let file = try await factory.file(.init(
-            workspaceID: workspace.id,
-            name: "Test File.txt",
-            data: Data(Constants.text.utf8)
-        ))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        let file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "Test File.txt",
+                data: Data(Constants.text.utf8)
+            ))
         _ = try await factory.client.file.wait(file.id)
 
         var task = try await client.create(file.id, options: .init(languageID: "eng"))
@@ -172,8 +181,8 @@ final class InsightsTests: XCTestCase {
     enum Constants {
         // swiftlint:disable line_length
         static let text = """
-        William Shakespeare was an English playwright, poet and actor. He is widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist. He is often called England's national poet and the "Bard of Avon" (or simply "the Bard"). His extant works, including collaborations, consist of some 39 plays, 154 sonnets, three long narrative poems and a few other verses, some of uncertain authorship. His plays have been translated into every major living language and are performed more often than those of any other playwright. Shakespeare remains arguably the most influential writer in the English language, and his works continue to be studied and reinterpreted.
-        """
+            William Shakespeare was an English playwright, poet and actor. He is widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist. He is often called England's national poet and the "Bard of Avon" (or simply "the Bard"). His extant works, including collaborations, consist of some 39 plays, 154 sonnets, three long narrative poems and a few other verses, some of uncertain authorship. His plays have been translated into every major living language and are performed more often than those of any other playwright. Shakespeare remains arguably the most influential writer in the English language, and his works continue to be studied and reinterpreted.
+            """
         // swiftlint:enable line_length
     }
 }

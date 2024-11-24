@@ -6,7 +6,7 @@ let package = Package(
     name: "VoltaserveCore",
     platforms: [
         .iOS(.v13),
-        .macOS(.v12)
+        .macOS(.v12),
     ],
     products: [
         .library(
@@ -24,6 +24,6 @@ let package = Package(
             dependencies: ["VoltaserveCore"],
             path: "Tests",
             resources: [.process("Resources")]
-        )
+        ),
     ]
 )

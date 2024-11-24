@@ -4,6 +4,7 @@
 // included in the file LICENSE in the root of this repository.
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -132,11 +133,12 @@ public struct VOFile {
 
     public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForSegmentedThumbnail(
-                id,
-                page: page,
-                fileExtension: String(fileExtension.dropFirst())
-            ))
+            var request = URLRequest(
+                url: urlForSegmentedThumbnail(
+                    id,
+                    page: page,
+                    fileExtension: String(fileExtension.dropFirst())
+                ))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -526,7 +528,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.file.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name)
+            .init(name: "name", value: options.name),
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(.init(name: "parent_id", value: parentID))
@@ -540,7 +542,7 @@ public struct VOFile {
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.folder.rawValue),
             .init(name: "workspace_id", value: options.workspaceID),
-            .init(name: "name", value: options.name)
+            .init(name: "name", value: options.name),
         ]
         if let parentID = options.parentID {
             urlComponents.queryItems?.append(URLQueryItem(name: "parent_id", value: parentID))
@@ -550,28 +552,24 @@ public struct VOFile {
     }
 
     public func urlForOriginal(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/original.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/original.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForPreview(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/preview.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" +
-            "access_token=\(accessToken)")!
+        URL(
+            string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?" + "access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {
