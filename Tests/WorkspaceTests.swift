@@ -20,7 +20,7 @@ final class WorkspaceTests: XCTestCase {
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
 
-        /* Create workspaces */
+        // Create workspaces
         var options: [VOWorkspace.CreateOptions] = []
         for index in 0..<6 {
             options.append(
@@ -35,16 +35,16 @@ final class WorkspaceTests: XCTestCase {
             try await workspaces.append(factory.workspace(options[index]))
         }
 
-        /* Test creation */
+        // Test creation
         for index in 0..<workspaces.count {
             XCTAssertEqual(workspaces[index].name, options[index].name)
             XCTAssertEqual(workspaces[index].organization.id, options[index].organizationID)
             XCTAssertEqual(workspaces[index].storageCapacity, options[index].storageCapacity)
         }
 
-        /* Test list */
+        // Test list
 
-        /* Page 1 */
+        // Page 1
         let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertGreaterThanOrEqual(page1.totalPages, 2)
@@ -52,27 +52,27 @@ final class WorkspaceTests: XCTestCase {
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
-        /* Page 2 */
+        // Page 2
         let page2 = try await client.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
-        /* Test fetch */
+        // Test fetch
         let workspace = try await client.fetch(workspaces[0].id)
         XCTAssertEqual(workspace.name, workspaces[0].name)
         XCTAssertEqual(workspace.organization.id, workspaces[0].organization.id)
         XCTAssertEqual(workspace.storageCapacity, workspaces[0].storageCapacity)
 
-        /* Test patch name */
+        // Test patch name
         let newName = "New Workspace"
         let resultAlpha = try await client.patchName(workspace.id, options: .init(name: newName))
         XCTAssertEqual(resultAlpha.name, newName)
         let workspaceAlpha = try await client.fetch(workspace.id)
         XCTAssertEqual(workspaceAlpha.name, newName)
 
-        /* Test patch storage capacity */
+        // Test patch storage capacity
         let newStorageCapacity = 200_000_000
         let resultBeta = try await client.patchStorageCapacity(
             workspace.id,
@@ -82,7 +82,7 @@ final class WorkspaceTests: XCTestCase {
         let workspaceBeta = try await client.fetch(workspace.id)
         XCTAssertEqual(workspaceBeta.storageCapacity, newStorageCapacity)
 
-        /* Test delete */
+        // Test delete
         for workspace in workspaces {
             try await client.delete(workspace.id)
         }

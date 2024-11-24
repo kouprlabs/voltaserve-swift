@@ -19,7 +19,7 @@ final class OrganizationTests: XCTestCase {
         self.factory = factory
         let client = factory.client.organization
 
-        /* Create organizations */
+        // Create organizations
         var options: [VOOrganization.CreateOptions] = []
         for index in 0..<6 {
             options.append(.init(name: "Test Organization \(index)"))
@@ -29,14 +29,14 @@ final class OrganizationTests: XCTestCase {
             try await organizations.append(factory.organization(options[index]))
         }
 
-        /* Test creation */
+        // Test creation
         for index in 0..<organizations.count {
             XCTAssertEqual(organizations[index].name, options[index].name)
         }
 
-        /* Test list */
+        // Test list
 
-        /* Page 1 */
+        // Page 1
         let page1 = try await client.fetchList(.init(page: 1, size: 3))
         XCTAssertGreaterThanOrEqual(page1.totalElements, options.count)
         XCTAssertGreaterThanOrEqual(page1.totalPages, 2)
@@ -44,25 +44,25 @@ final class OrganizationTests: XCTestCase {
         XCTAssertEqual(page1.size, 3)
         XCTAssertEqual(page1.data.count, page1.size)
 
-        /* Page 2 */
+        // Page 2
         let page2 = try await client.fetchList(.init(page: 2, size: 3))
         XCTAssertGreaterThanOrEqual(page2.totalElements, options.count)
         XCTAssertEqual(page2.page, 2)
         XCTAssertEqual(page2.size, 3)
         XCTAssertEqual(page2.data.count, page2.size)
 
-        /* Test fetch */
+        // Test fetch
         let organization = try await client.fetch(organizations[0].id)
         XCTAssertEqual(organization.name, organizations[0].name)
 
-        /* Test patch name */
+        // Test patch name
         let newName = "New Organization"
         let alpha = try await client.patchName(organization.id, options: .init(name: newName))
         XCTAssertEqual(alpha.name, newName)
         let beta = try await factory.client.organization.fetch(organization.id)
         XCTAssertEqual(beta.name, newName)
 
-        /* Test leave */
+        // Test leave
         do {
             try await client.leave(organization.id)
             expectedToFail()
@@ -72,7 +72,7 @@ final class OrganizationTests: XCTestCase {
             invalidError(error)
         }
 
-        /* Test delete */
+        // Test delete
         for organization in organizations {
             try await client.delete(organization.id)
         }

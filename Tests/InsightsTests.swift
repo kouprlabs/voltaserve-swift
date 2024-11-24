@@ -118,7 +118,7 @@ final class InsightsTests: XCTestCase {
         var info = try await client.fetchInfo(file.id)
         XCTAssertFalse(info.isOutdated)
 
-        /* Patch file to get a new snapshot and make the insights "outdated" */
+        // Patch file to get a new snapshot and make the insights "outdated"
         _ = try await factory.client.file.patch(
             file.id,
             options: .init(data: Data(Constants.text.utf8), name: file.name)
@@ -128,11 +128,11 @@ final class InsightsTests: XCTestCase {
         info = try await client.fetchInfo(file.id)
         XCTAssertTrue(info.isOutdated)
 
-        /* Patch insights */
+        // Patch insights
         task = try await client.patch(file.id)
         _ = try await factory.client.task.wait(task.id)
 
-        /* Check if no longer "outdated" */
+        // Check if no longer "outdated"
         info = try await client.fetchInfo(file.id)
         XCTAssertFalse(info.isOutdated)
     }

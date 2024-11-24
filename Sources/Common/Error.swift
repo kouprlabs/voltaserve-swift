@@ -21,7 +21,7 @@ public struct VOErrorResponse: Decodable, Error {
     }
 
     public enum Code: String, Codable, CaseIterable {
-        /* API */
+        // API
         case groupNotFound = "group_not_found"
         case fileNotFound = "file_not_found"
         case invalidPath = "invalid_path"
@@ -71,7 +71,7 @@ public struct VOErrorResponse: Decodable, Error {
         case invalidApiKey = "invalid_api_key"
         case pathVariablesAndBodyParametersNotConsistent = "path_variables_and_body_parameters_not_consistent"
 
-        /* IdP */
+        // IdP
         case usernameUnavailable = "username_unavailable"
         case resourceNotFound = "resource_not_found"
         case invalidUsernameOrPassword = "invalid_username_or_password"
@@ -84,11 +84,11 @@ public struct VOErrorResponse: Decodable, Error {
         case unsupportedGrantType = "unsupported_grant_type"
         case passwordValidationFailed = "password_validation_failed"
 
-        /* Common */
+        // Common
         case internalServerError = "internal_server_error"
         case requestValidationError = "request_validation_error"
 
-        /* Unexpected */
+        // Unexpected
         case unknown
 
         public init(rawValue: String) {

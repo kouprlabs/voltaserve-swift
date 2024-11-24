@@ -122,7 +122,7 @@ final class TaskTests: XCTestCase {
 
         var task = try await client.fetch(file.snapshot!.task!.id)
 
-        /* Wait for the task to stop so we can dismiss it */
+        // Wait for the task to stop so we can dismiss it
         repeat {
             task = try await client.fetch(task.id)
             sleep(1)
