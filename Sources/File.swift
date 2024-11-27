@@ -961,7 +961,7 @@ public struct VOFile {
     }
 
     public struct Query: Codable, Equatable, Hashable {
-        public let text: String
+        public let text: String?
         public let type: FileType?
         public let createTimeAfter: Int?
         public let createTimeBefore: Int?
