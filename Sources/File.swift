@@ -969,7 +969,8 @@ public struct VOFile {
         public let updateTimeBefore: Int?
 
         public init(
-            text: String, type: FileType? = nil,
+            text: String? = nil,
+            type: FileType? = nil,
             createTimeAfter: Int? = nil,
             createTimeBefore: Int? = nil,
             updateTimeAfter: Int? = nil,
