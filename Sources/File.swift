@@ -613,7 +613,6 @@ public struct VOFile {
         public let query: Query?
         public let page: Int?
         public let size: Int?
-        public let type: FileType?
         public let sortBy: SortBy?
         public let sortOrder: SortOrder?
 
@@ -621,14 +620,12 @@ public struct VOFile {
             query: Query? = nil,
             page: Int? = nil,
             size: Int? = nil,
-            type: FileType? = nil,
             sortBy: SortBy? = nil,
             sortOrder: SortOrder? = nil
         ) {
             self.query = query
             self.size = size
             self.page = page
-            self.type = type
             self.sortBy = sortBy
             self.sortOrder = sortOrder
         }
@@ -646,9 +643,6 @@ public struct VOFile {
             }
             if let sortOrder {
                 items.append(.init(name: "sort_order", value: sortOrder.rawValue))
-            }
-            if let type {
-                items.append(.init(name: "type", value: type.rawValue))
             }
             if let query, let base64Query = try? JSONEncoder().encode(query).base64EncodedString() {
                 items.append(.init(name: "query", value: base64Query))
