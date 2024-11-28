@@ -180,7 +180,7 @@ public struct VOSnapshot {
                 items.append(.init(name: "page", value: String(page)))
             }
             if let sortBy {
-                items.append(.init(name: "sort_by", value: sortBy.rawValue))
+                items.append(.init(name: "sort_by", value: sortBy.description))
             }
             if let sortOrder {
                 items.append(.init(name: "sort_order", value: sortOrder.rawValue))
