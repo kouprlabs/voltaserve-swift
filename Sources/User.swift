@@ -113,6 +113,7 @@ public struct VOUser {
         public let organizationID: String?
         public let groupID: String?
         public let excludeGroupMembers: Bool?
+        public let excludeMe: Bool?
         public let size: Int?
         public let page: Int?
         public let sortBy: SortBy?
@@ -123,6 +124,7 @@ public struct VOUser {
             organizationID: String? = nil,
             groupID: String? = nil,
             excludeGroupMembers: Bool? = nil,
+            excludeMe: Bool? = nil,
             page: Int? = nil,
             size: Int? = nil,
             sortBy: SortBy? = nil,
@@ -132,6 +134,7 @@ public struct VOUser {
             self.organizationID = organizationID
             self.groupID = groupID
             self.excludeGroupMembers = excludeGroupMembers
+            self.excludeMe = excludeMe
             self.page = page
             self.size = size
             self.sortBy = sortBy
@@ -151,6 +154,9 @@ public struct VOUser {
             }
             if let excludeGroupMembers {
                 items.append(.init(name: "exclude_group_members", value: String(excludeGroupMembers)))
+            }
+            if let excludeMe {
+                items.append(.init(name: "exclude_me", value: String(excludeMe)))
             }
             if let size {
                 items.append(.init(name: "size", value: String(size)))
