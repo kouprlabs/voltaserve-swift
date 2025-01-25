@@ -213,6 +213,7 @@ public struct VOTask {
 
     public enum SortBy: String, Codable, CustomStringConvertible {
         case name
+        case status
         case dateCreated
         case dateModified
 
@@ -220,6 +221,8 @@ public struct VOTask {
             switch self {
             case .name:
                 "name"
+            case .status:
+                "status"
             case .dateCreated:
                 "date_created"
             case .dateModified:
