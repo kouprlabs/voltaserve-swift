@@ -39,7 +39,7 @@ public struct VOErrorResponse: Decodable, Error {
         case taskIsRunning = "task_is_running"
         case taskBelongsToAnotherUser = "task_belongs_to_another_user"
         case missingOrganizationPermission = "missing_organization_permission"
-        case cannotRemoveLastOwnerOfOrganization = "cannot_remove_last_owner_of_organization"
+        case cannotRemoveSoleOwnerOfOrganization = "cannot_remove_sole_owner_of_organization"
         case cannotRemoveLastOwnerOfGroup = "cannot_remove_last_owner_of_group"
         case missingGroupPermission = "missing_group_permission"
         case missingWorkspacePermission = "missing_workspace_permission"
