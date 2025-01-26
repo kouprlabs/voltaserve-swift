@@ -67,7 +67,7 @@ final class OrganizationTests: XCTestCase {
             try await client.leave(organization.id)
             expectedToFail()
         } catch let error as VOErrorResponse {
-            XCTAssertEqual(error.code, .cannotRemoveLastOwnerOfOrganization)
+            XCTAssertEqual(error.code, .cannotRemoveSoleOwnerOfOrganization)
         } catch {
             invalidError(error)
         }
