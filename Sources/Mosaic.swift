@@ -20,9 +20,9 @@ public struct VOMosaic {
 
     // MARK: - Requests
 
-    public func fetchInfo(_ id: String) async throws -> Info {
+    public func fetchMetadata(_ id: String) async throws -> Metadata {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForInfo(id))
+            var request = URLRequest(url: urlForMetadata(id))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -31,7 +31,7 @@ public struct VOMosaic {
                     response: response,
                     data: data,
                     error: error,
-                    type: Info.self
+                    type: Metadata.self
                 )
             }
             task.resume()
@@ -113,8 +113,8 @@ public struct VOMosaic {
         URL(string: "\(url())/\(id)")!
     }
 
-    public func urlForInfo(_ id: String) -> URL {
-        URL(string: "\(urlForFile(id))/info")!
+    public func urlForMetadata(_ id: String) -> URL {
+        URL(string: "\(urlForFile(id))/metadata")!
     }
 
     public func urlForTile(
@@ -130,20 +130,6 @@ public struct VOMosaic {
     }
 
     // MARK: - Types
-
-    public struct Info: Codable, Equatable, Hashable {
-        public var isAvailable: Bool
-        public var isOutdated: Bool
-        public var snapshot: VOSnapshot.Entity?
-        public var metadata: Metadata
-
-        public init(isAvailable: Bool, isOutdated: Bool, snapshot: VOSnapshot.Entity?, metadata: Metadata) {
-            self.isAvailable = isAvailable
-            self.isOutdated = isOutdated
-            self.snapshot = snapshot
-            self.metadata = metadata
-        }
-    }
 
     public struct Metadata: Codable, Equatable, Hashable {
         public let width: Int

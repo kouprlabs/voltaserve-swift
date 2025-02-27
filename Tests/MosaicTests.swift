@@ -17,6 +17,7 @@ final class MosaicTests: XCTestCase {
         }
         self.factory = factory
         let client = factory.client.mosaic
+        let fileClient = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(
@@ -25,7 +26,7 @@ final class MosaicTests: XCTestCase {
                 organizationID: organization.id,
                 storageCapacity: 100_000_000
             ))
-        let file = try await factory.file(
+        var file = try await factory.file(
             .init(
                 workspaceID: workspace.id,
                 name: "image.jpg",
@@ -36,8 +37,11 @@ final class MosaicTests: XCTestCase {
         let task = try await client.create(file.id)
         _ = try await factory.client.task.wait(task.id)
 
-        let info = try await client.fetchInfo(file.id)
-        checkMetadata(info, fileExtension: ".jpg")
+        file = try await fileClient.fetch(file.id)
+        XCTAssertTrue(file.snapshot!.capabilities.mosaic)
+
+        let metadata = try await client.fetchMetadata(file.id)
+        checkMetadata(metadata, fileExtension: ".jpg")
     }
 
     func testCreateForPNG() async throws {
@@ -47,6 +51,7 @@ final class MosaicTests: XCTestCase {
         }
         self.factory = factory
         let client = factory.client.mosaic
+        let fileClient = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(
@@ -55,7 +60,7 @@ final class MosaicTests: XCTestCase {
                 organizationID: organization.id,
                 storageCapacity: 100_000_000
             ))
-        let file = try await factory.file(
+        var file = try await factory.file(
             .init(
                 workspaceID: workspace.id,
                 name: "image.png",
@@ -66,8 +71,11 @@ final class MosaicTests: XCTestCase {
         let task = try await client.create(file.id)
         _ = try await factory.client.task.wait(task.id)
 
-        let info = try await client.fetchInfo(file.id)
-        checkMetadata(info, fileExtension: ".png")
+        file = try await fileClient.fetch(file.id)
+        XCTAssertTrue(file.snapshot!.capabilities.mosaic)
+
+        let metadata = try await client.fetchMetadata(file.id)
+        checkMetadata(metadata, fileExtension: ".png")
     }
 
     func testCreateForTIFF() async throws {
@@ -77,6 +85,7 @@ final class MosaicTests: XCTestCase {
         }
         self.factory = factory
         let client = factory.client.mosaic
+        let fileClient = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(
@@ -85,7 +94,7 @@ final class MosaicTests: XCTestCase {
                 organizationID: organization.id,
                 storageCapacity: 100_000_000
             ))
-        let file = try await factory.file(
+        var file = try await factory.file(
             .init(
                 workspaceID: workspace.id,
                 name: "image.tiff",
@@ -96,8 +105,11 @@ final class MosaicTests: XCTestCase {
         let task = try await client.create(file.id)
         _ = try await factory.client.task.wait(task.id)
 
-        let info = try await client.fetchInfo(file.id)
-        checkMetadata(info, fileExtension: ".jpg")
+        file = try await fileClient.fetch(file.id)
+        XCTAssertTrue(file.snapshot!.capabilities.mosaic)
+
+        let metadata = try await client.fetchMetadata(file.id)
+        checkMetadata(metadata, fileExtension: ".jpg")
     }
 
     func testCreateForWebP() async throws {
@@ -107,6 +119,7 @@ final class MosaicTests: XCTestCase {
         }
         self.factory = factory
         let client = factory.client.mosaic
+        let fileClient = factory.client.file
 
         let organization = try await factory.organization(.init(name: "Test Organization"))
         let workspace = try await factory.workspace(
@@ -115,7 +128,7 @@ final class MosaicTests: XCTestCase {
                 organizationID: organization.id,
                 storageCapacity: 100_000_000
             ))
-        let file = try await factory.file(
+        var file = try await factory.file(
             .init(
                 workspaceID: workspace.id,
                 name: "image.webp",
@@ -126,17 +139,57 @@ final class MosaicTests: XCTestCase {
         let task = try await client.create(file.id)
         _ = try await factory.client.task.wait(task.id)
 
-        let info = try await client.fetchInfo(file.id)
-        checkMetadata(info, fileExtension: ".jpg")
+        file = try await fileClient.fetch(file.id)
+        XCTAssertTrue(file.snapshot!.capabilities.mosaic)
+
+        let metadata = try await client.fetchMetadata(file.id)
+        checkMetadata(metadata, fileExtension: ".jpg")
     }
 
-    func checkMetadata(_ info: VOMosaic.Info, fileExtension: String) {
-        XCTAssertEqual(info.metadata.fileExtension, fileExtension)
-        XCTAssertEqual(info.metadata.width, 1920)
-        XCTAssertEqual(info.metadata.height, 1192)
-        XCTAssertEqual(info.metadata.zoomLevels.count, 3)
+    func testDelete() async throws {
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+        self.factory = factory
+        let client = factory.client.mosaic
+        let fileClient = factory.client.file
 
-        let zoomLevel0 = info.metadata.zoomLevels[0]
+        let organization = try await factory.organization(.init(name: "Test Organization"))
+        let workspace = try await factory.workspace(
+            .init(
+                name: "Test Workspace",
+                organizationID: organization.id,
+                storageCapacity: 100_000_000
+            ))
+        var file = try await factory.file(
+            .init(
+                workspaceID: workspace.id,
+                name: "image.jpg",
+                data: Data(contentsOf: getResourceURL(forResource: "image", withExtension: "jpg")!)
+            ))
+        _ = try await factory.client.file.wait(file.id)
+
+        var task = try await client.create(file.id)
+        _ = try await factory.client.task.wait(task.id)
+
+        file = try await fileClient.fetch(file.id)
+        XCTAssertTrue(file.snapshot!.capabilities.mosaic)
+
+        task = try await client.delete(file.id)
+        _ = try await factory.client.task.wait(task.id)
+
+        file = try await fileClient.fetch(file.id)
+        XCTAssertFalse(file.snapshot!.capabilities.mosaic)
+    }
+
+    func checkMetadata(_ metadata: VOMosaic.Metadata, fileExtension: String) {
+        XCTAssertEqual(metadata.fileExtension, fileExtension)
+        XCTAssertEqual(metadata.width, 1920)
+        XCTAssertEqual(metadata.height, 1192)
+        XCTAssertEqual(metadata.zoomLevels.count, 3)
+
+        let zoomLevel0 = metadata.zoomLevels[0]
         XCTAssertEqual(zoomLevel0.index, 0)
         XCTAssertEqual(zoomLevel0.width, 1920)
         XCTAssertEqual(zoomLevel0.height, 1192)
@@ -148,7 +201,7 @@ final class MosaicTests: XCTestCase {
         XCTAssertEqual(zoomLevel0.tile.lastColWidth, 120)
         XCTAssertEqual(zoomLevel0.tile.lastRowHeight, 292)
 
-        let zoomLevel1 = info.metadata.zoomLevels[1]
+        let zoomLevel1 = metadata.zoomLevels[1]
         XCTAssertEqual(zoomLevel1.index, 1)
         XCTAssertEqual(zoomLevel1.width, 1344)
         XCTAssertEqual(zoomLevel1.height, 834)
@@ -160,7 +213,7 @@ final class MosaicTests: XCTestCase {
         XCTAssertEqual(zoomLevel1.tile.lastColWidth, 144)
         XCTAssertEqual(zoomLevel1.tile.lastRowHeight, 234)
 
-        let zoomLevel2 = info.metadata.zoomLevels[2]
+        let zoomLevel2 = metadata.zoomLevels[2]
         XCTAssertEqual(zoomLevel2.index, 2)
         XCTAssertEqual(zoomLevel2.width, 940)
         XCTAssertEqual(zoomLevel2.height, 583)

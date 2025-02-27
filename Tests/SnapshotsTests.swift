@@ -50,6 +50,18 @@ final class SnapshotsTests: XCTestCase {
         }
     }
 
+    func testFetchLanguages() async throws {
+        guard let factory = try? await DisposableFactory.withCredentials() else {
+            failedToCreateFactory()
+            return
+        }
+        self.factory = factory
+        let client = factory.client.snapshot
+
+        let languages = try await client.fetchLanguages()
+        XCTAssertFalse(languages.isEmpty)
+    }
+
     func testTextFlow() async throws {
         try await checkDocumentFlow(forResource: "document", withExtension: "txt")
     }

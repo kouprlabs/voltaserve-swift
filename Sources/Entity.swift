@@ -9,7 +9,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
-public struct VOInsights {
+public struct VOEntity {
     let baseURL: String
     let accessToken: String
 
@@ -20,9 +20,9 @@ public struct VOInsights {
 
     // MARK: - Requests
 
-    public func fetchInfo(_ id: String) async throws -> Info {
+    public func fetchList(_ id: String, options: ListOptions) async throws -> List {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForInfo(id))
+            var request = URLRequest(url: urlForList(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -31,16 +31,16 @@ public struct VOInsights {
                     response: response,
                     data: data,
                     error: error,
-                    type: Info.self
+                    type: List.self
                 )
             }
             task.resume()
         }
     }
 
-    public func fetchEntityList(_ id: String, options: ListEntitiesOptions) async throws -> EntityList {
+    public func fetchProbe(_ id: String, options: ListOptions) async throws -> Probe {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForListEntities(id, options: options))
+            var request = URLRequest(url: urlForProbe(id, options: options))
             request.httpMethod = "GET"
             request.appendAuthorizationHeader(accessToken)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -49,43 +49,7 @@ public struct VOInsights {
                     response: response,
                     data: data,
                     error: error,
-                    type: EntityList.self
-                )
-            }
-            task.resume()
-        }
-    }
-
-    public func fetchEntityProbe(_ id: String, options: ListEntitiesOptions) async throws -> EntityProbe {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForProbeEntities(id, options: options))
-            request.httpMethod = "GET"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleJSONResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error,
-                    type: EntityProbe.self
-                )
-            }
-            task.resume()
-        }
-    }
-
-    public func fetchLanguages() async throws -> [Language] {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForLanguages())
-            request.httpMethod = "GET"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleJSONResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error,
-                    type: [Language].self
+                    type: Probe.self
                 )
             }
             task.resume()
@@ -150,56 +114,40 @@ public struct VOInsights {
     // MARK: - URLs
 
     public func url() -> URL {
-        URL(string: "\(baseURL)/insights")!
+        URL(string: "\(baseURL)/entities")!
     }
 
     public func urlForFile(_ id: String) -> URL {
         URL(string: "\(url())/\(id)")!
     }
 
-    public func urlForInfo(_ id: String) -> URL {
-        URL(string: "\(urlForFile(id))/info")!
-    }
-
-    public func urlForEntities(_ id: String) -> URL {
-        URL(string: "\(urlForFile(id))/entities")!
-    }
-
-    public func urlForLanguages() -> URL {
-        URL(string: "\(url())/languages")!
-    }
-
-    public func urlForListEntities(_ id: String, options: ListEntitiesOptions) -> URL {
+    public func urlForList(_ id: String, options: ListOptions) -> URL {
         if let query = options.urlQuery {
-            URL(string: "\(urlForEntities(id))?\(query)")!
+            URL(string: "\(urlForFile(id))?\(query)")!
         } else {
-            urlForEntities(id)
+            urlForFile(id)
         }
     }
 
-    public func urlForProbeEntities(_ id: String, options: ListEntitiesOptions) -> URL {
+    public func urlForProbe(_ id: String, options: ListOptions) -> URL {
         if let query = options.urlQuery {
-            URL(string: "\(urlForEntities(id))/probe?\(query)")!
+            URL(string: "\(urlForFile(id))/probe?\(query)")!
         } else {
-            URL(string: "\(urlForEntities(id))/probe")!
+            URL(string: "\(urlForFile(id))/probe")!
         }
     }
 
     // MARK: - Payloads
 
     public struct CreateOptions: Codable {
-        public let languageID: String
+        public let language: String
 
-        public init(languageID: String) {
-            self.languageID = languageID
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case languageID = "languageId"
+        public init(language: String) {
+            self.language = language
         }
     }
 
-    public struct ListEntitiesOptions {
+    public struct ListOptions {
         public let query: String?
         public let page: Int?
         public let size: Int?
@@ -255,30 +203,6 @@ public struct VOInsights {
 
     // MARK: - Types
 
-    public struct Language: Codable, Equatable, Hashable {
-        public let id: String
-        public let iso6393: String
-        public let name: String
-
-        public init(id: String, iso6393: String, name: String) {
-            self.id = id
-            self.iso6393 = iso6393
-            self.name = name
-        }
-    }
-
-    public struct Info: Codable, Equatable, Hashable {
-        public let isAvailable: Bool
-        public let isOutdated: Bool
-        public let snapshot: VOSnapshot.Entity?
-
-        public init(isAvailable: Bool, isOutdated: Bool, snapshot: VOSnapshot.Entity? = nil) {
-            self.isAvailable = isAvailable
-            self.isOutdated = isOutdated
-            self.snapshot = snapshot
-        }
-    }
-
     public struct Entity: Codable, Equatable, Hashable, Identifiable {
         public var id: String { text }
         public let text: String
@@ -292,7 +216,7 @@ public struct VOInsights {
         }
     }
 
-    public struct EntityList: Codable, Equatable, Hashable {
+    public struct List: Codable, Equatable, Hashable {
         public let data: [Entity]
         public let totalPages: Int
         public let totalElements: Int
@@ -308,7 +232,7 @@ public struct VOInsights {
         }
     }
 
-    public struct EntityProbe: Codable, Equatable, Hashable {
+    public struct Probe: Codable, Equatable, Hashable {
         public let totalPages: Int
         public let totalElements: Int
 

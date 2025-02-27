@@ -16,7 +16,7 @@ class ClientFactory {
     private var _group: VOGroup?
     private var _invitation: VOInvitation?
     private var _storage: VOStorage?
-    private var _insights: VOInsights?
+    private var _insights: VOEntity?
     private var _mosaic: VOMosaic?
     private var _user: VOUser?
     private var _identityUser: VOIdentityUser?
@@ -106,7 +106,7 @@ class ClientFactory {
         return _storage!
     }
 
-    var insights: VOInsights {
+    var entity: VOEntity {
         if _insights == nil {
             _insights = .init(
                 baseURL: config.apiURL,
