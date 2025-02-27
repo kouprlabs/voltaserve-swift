@@ -74,6 +74,24 @@ public struct VOSnapshot {
         }
     }
 
+    public func fetchLanguages() async throws -> [Language] {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForLanguages())
+            request.httpMethod = "GET"
+            request.appendAuthorizationHeader(accessToken)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [Language].self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func activate(_ id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForActivate(id))
@@ -140,6 +158,10 @@ public struct VOSnapshot {
 
     public func urlForDetach(_ id: String) -> URL {
         URL(string: "\(urlForID(id))/detach")!
+    }
+
+    public func urlForLanguages() -> URL {
+        URL(string: "\(url())/languages")!
     }
 
     // MARK: - Payloads
@@ -257,11 +279,11 @@ public struct VOSnapshot {
         public let preview: Download?
         public let ocr: Download?
         public let text: Download?
-        public let entities: Download?
-        public let mosaic: Download?
-        public let segmentation: Download?
         public let thumbnail: Download?
         public let language: String?
+        public let summary: String?
+        public let intent: String?
+        public let capabilities: Capabilities
         public let isActive: Bool
         public let task: TaskInfo?
         public let createTime: String
@@ -275,11 +297,11 @@ public struct VOSnapshot {
             preview: Download? = nil,
             ocr: Download? = nil,
             text: Download? = nil,
-            entities: Download? = nil,
-            mosaic: Download? = nil,
-            segmentation: Download? = nil,
             thumbnail: Download? = nil,
             language: String? = nil,
+            summary: String? = nil,
+            intent: String? = nil,
+            capabilities: Capabilities,
             isActive: Bool,
             task: TaskInfo? = nil,
             createTime: String,
@@ -292,11 +314,11 @@ public struct VOSnapshot {
             self.preview = preview
             self.ocr = ocr
             self.text = text
-            self.entities = entities
-            self.mosaic = mosaic
-            self.segmentation = segmentation
             self.thumbnail = thumbnail
             self.language = language
+            self.summary = summary
+            self.intent = intent
+            self.capabilities = capabilities
             self.isActive = isActive
             self.task = task
             self.createTime = createTime
@@ -344,6 +366,37 @@ public struct VOSnapshot {
         public init(id: String, isPending: Bool) {
             self.id = id
             self.isPending = isPending
+        }
+    }
+
+    public struct Capabilities: Codable, Equatable, Hashable {
+        public let original: Bool
+        public let preview: Bool
+        public let ocr: Bool
+        public let text: Bool
+        public let summary: Bool
+        public let entities: Bool
+        public let mosaic: Bool
+        public let thumbnail: Bool
+
+        public init(
+            original: Bool,
+            preview: Bool,
+            ocr: Bool,
+            text: Bool,
+            summary: Bool,
+            entities: Bool,
+            mosaic: Bool,
+            thumbnail: Bool
+        ) {
+            self.original = original
+            self.preview = preview
+            self.ocr = ocr
+            self.text = text
+            self.summary = summary
+            self.entities = entities
+            self.mosaic = mosaic
+            self.thumbnail = thumbnail
         }
     }
 
@@ -461,6 +514,18 @@ public struct VOSnapshot {
             self.cols = cols
             self.scaleDownPercentage = scaleDownPercentage
             self.tile = tile
+        }
+    }
+
+    public struct Language: Codable, Equatable, Hashable {
+        public let id: String
+        public let iso6393: String
+        public let name: String
+
+        public init(id: String, iso6393: String, name: String) {
+            self.id = id
+            self.iso6393 = iso6393
+            self.name = name
         }
     }
 }
