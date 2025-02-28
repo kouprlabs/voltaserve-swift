@@ -275,11 +275,11 @@ public struct VOSnapshot {
         public let id: String
         public let version: Int
         public let status: Status
-        public let original: Download
-        public let preview: Download?
-        public let ocr: Download?
-        public let text: Download?
-        public let thumbnail: Download?
+        public let original: Downloadable
+        public let preview: Downloadable?
+        public let ocr: Downloadable?
+        public let text: Downloadable?
+        public let thumbnail: Downloadable?
         public let language: String?
         public let summary: String?
         public let intent: String?
@@ -293,11 +293,11 @@ public struct VOSnapshot {
             id: String,
             version: Int,
             status: Status,
-            original: Download,
-            preview: Download? = nil,
-            ocr: Download? = nil,
-            text: Download? = nil,
-            thumbnail: Download? = nil,
+            original: Downloadable,
+            preview: Downloadable? = nil,
+            ocr: Downloadable? = nil,
+            text: Downloadable? = nil,
+            thumbnail: Downloadable? = nil,
             language: String? = nil,
             summary: String? = nil,
             intent: String? = nil,
@@ -400,7 +400,7 @@ public struct VOSnapshot {
         }
     }
 
-    public struct Download: Codable, Equatable, Hashable {
+    public struct Downloadable: Codable, Equatable, Hashable {
         public let fileExtension: String?
         public let size: Int?
         public let image: ImageProps?
@@ -429,12 +429,10 @@ public struct VOSnapshot {
     public struct ImageProps: Codable, Equatable, Hashable {
         public let width: Int
         public let height: Int
-        public let zoomLevels: [ZoomLevel]?
 
-        public init(width: Int, height: Int, zoomLevels: [ZoomLevel]? = nil) {
+        public init(width: Int, height: Int) {
             self.width = width
             self.height = height
-            self.zoomLevels = zoomLevels
         }
     }
 
@@ -472,48 +470,6 @@ public struct VOSnapshot {
 
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
-        }
-    }
-
-    public struct Tile: Codable, Equatable, Hashable {
-        public let width: Int
-        public let height: Int
-        public let lastColWidth: Int
-        public let lastRowHeight: Int
-
-        public init(width: Int, height: Int, lastColWidth: Int, lastRowHeight: Int) {
-            self.width = width
-            self.height = height
-            self.lastColWidth = lastColWidth
-            self.lastRowHeight = lastRowHeight
-        }
-    }
-
-    public struct ZoomLevel: Codable, Equatable, Hashable {
-        public let index: Int
-        public let width: Int
-        public let height: Int
-        public let rows: Int
-        public let cols: Int
-        public let scaleDownPercentage: Float
-        public let tile: Tile
-
-        public init(
-            index: Int,
-            width: Int,
-            height: Int,
-            rows: Int,
-            cols: Int,
-            scaleDownPercentage: Float,
-            tile: Tile
-        ) {
-            self.index = index
-            self.width = width
-            self.height = height
-            self.rows = rows
-            self.cols = cols
-            self.scaleDownPercentage = scaleDownPercentage
-            self.tile = tile
         }
     }
 
