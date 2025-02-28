@@ -247,6 +247,8 @@ public struct VOTask {
         public let userID: String
         public let status: Status
         public let payload: Payload?
+        public let createTime: String
+        public let updateTime: String?
 
         public init(
             id: String,
@@ -256,7 +258,9 @@ public struct VOTask {
             isIndeterminate: Bool,
             userID: String,
             status: Status,
-            payload: Payload? = nil
+            payload: Payload? = nil,
+            createTime: String,
+            updateTime: String? = nil
         ) {
             self.id = id
             self.name = name
@@ -266,6 +270,8 @@ public struct VOTask {
             self.userID = userID
             self.status = status
             self.payload = payload
+            self.createTime = createTime
+            self.updateTime = updateTime
         }
 
         enum CodingKeys: String, CodingKey {
@@ -277,6 +283,8 @@ public struct VOTask {
             case userID = "userId"
             case status
             case payload
+            case createTime
+            case updateTime
         }
     }
 
