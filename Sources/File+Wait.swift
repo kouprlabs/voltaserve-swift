@@ -10,7 +10,7 @@ extension VOFile {
         var file: Entity
         repeat {
             file = try await fetch(id)
-            if file.snapshot!.status == .error {
+            if let task = file.snapshot?.task, task.status != .waiting, task.status != .running {
                 return file
             }
             sleep(sleepSeconds)

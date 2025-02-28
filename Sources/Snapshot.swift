@@ -274,7 +274,6 @@ public struct VOSnapshot {
     public struct Entity: Codable, Equatable, Hashable {
         public let id: String
         public let version: Int
-        public let status: Status
         public let original: Downloadable
         public let preview: Downloadable?
         public let ocr: Downloadable?
@@ -285,14 +284,13 @@ public struct VOSnapshot {
         public let intent: String?
         public let capabilities: Capabilities
         public let isActive: Bool
-        public let task: TaskInfo?
+        public let task: VOTask.Entity?
         public let createTime: String
         public let updateTime: String?
 
         public init(
             id: String,
             version: Int,
-            status: Status,
             original: Downloadable,
             preview: Downloadable? = nil,
             ocr: Downloadable? = nil,
@@ -303,13 +301,12 @@ public struct VOSnapshot {
             intent: String? = nil,
             capabilities: Capabilities,
             isActive: Bool,
-            task: TaskInfo? = nil,
+            task: VOTask.Entity? = nil,
             createTime: String,
             updateTime: String? = nil
         ) {
             self.id = id
             self.version = version
-            self.status = status
             self.original = original
             self.preview = preview
             self.ocr = ocr
@@ -352,23 +349,6 @@ public struct VOSnapshot {
         }
     }
 
-    public enum Status: String, Codable {
-        case waiting
-        case processing
-        case ready
-        case error
-    }
-
-    public struct TaskInfo: Codable, Equatable, Hashable {
-        public let id: String
-        public let isPending: Bool
-
-        public init(id: String, isPending: Bool) {
-            self.id = id
-            self.isPending = isPending
-        }
-    }
-
     public struct Capabilities: Codable, Equatable, Hashable {
         public let original: Bool
         public let preview: Bool
@@ -402,13 +382,13 @@ public struct VOSnapshot {
 
     public struct Downloadable: Codable, Equatable, Hashable {
         public let fileExtension: String?
-        public let size: Int?
+        public let size: Int
         public let image: ImageProps?
         public let document: DocumentProps?
 
         public init(
             fileExtension: String? = nil,
-            size: Int? = nil,
+            size: Int,
             image: ImageProps? = nil,
             document: DocumentProps? = nil
         ) {
