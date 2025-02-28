@@ -152,14 +152,14 @@ final class SnapshotsTests: XCTestCase {
         // Test preview is nil
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".mp4")
-        XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.preview!.size, 0)
         XCTAssertNil(file.snapshot!.preview!.image)
         XCTAssertNil(file.snapshot!.preview!.document)
 
         // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
-        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size, 0)
         XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".png")
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.image!.width, 0)
         XCTAssertGreaterThan(file.snapshot!.thumbnail!.image!.height, 0)
@@ -206,7 +206,7 @@ final class SnapshotsTests: XCTestCase {
         // Test preview is valid
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".\(previewExtension)")
-        XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.preview!.size, 0)
         XCTAssertNotNil(file.snapshot!.preview!.image)
         XCTAssertEqual(file.snapshot!.preview!.image!.width, width)
         XCTAssertEqual(file.snapshot!.preview!.image!.height, height)
@@ -215,7 +215,7 @@ final class SnapshotsTests: XCTestCase {
         // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
-        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size, 0)
         XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".\(thumbnailExtension)")
         XCTAssertTrue(
             file.snapshot!.thumbnail!.image!.width == 512 || file.snapshot!.thumbnail!.image!.height == 512)
@@ -255,7 +255,7 @@ final class SnapshotsTests: XCTestCase {
         // Test preview is valid
         XCTAssertNotNil(file.snapshot!.preview)
         XCTAssertNotNil(file.snapshot!.preview?.fileExtension, ".pdf")
-        XCTAssertGreaterThan(file.snapshot!.preview!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.preview!.size, 0)
         XCTAssertNotNil(file.snapshot!.preview!.document)
         XCTAssertNotNil(file.snapshot!.preview!.document!.pages)
         XCTAssertEqual(file.snapshot!.preview!.document!.pages!.count, 1)
@@ -268,7 +268,7 @@ final class SnapshotsTests: XCTestCase {
         // Test thumbnail is valid
         XCTAssertNotNil(file.snapshot!.thumbnail)
         XCTAssertNotNil(file.snapshot!.thumbnail!.image)
-        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size!, 0)
+        XCTAssertGreaterThan(file.snapshot!.thumbnail!.size, 0)
         XCTAssertEqual(file.snapshot!.thumbnail!.fileExtension, ".png")
         XCTAssertTrue(
             file.snapshot!.thumbnail!.image!.width == 512 || file.snapshot!.thumbnail!.image!.height == 512)

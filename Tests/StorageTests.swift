@@ -37,7 +37,7 @@ final class StorageTests: XCTestCase {
             ))
         let usageAgain = try await client.fetchAccountUsage()
         XCTAssertGreaterThanOrEqual(usageAgain.percentage, 0)
-        XCTAssertGreaterThanOrEqual(usageAgain.bytes, file.snapshot!.original.size!)
+        XCTAssertGreaterThanOrEqual(usageAgain.bytes, file.snapshot!.original.size)
     }
 
     func testFetchWorkspaceUsage() async throws {
@@ -68,7 +68,7 @@ final class StorageTests: XCTestCase {
                 data: Data("Test Content".utf8)
             ))
         let usageAgain = try await client.fetchWorkspaceUsage(workspace.id)
-        XCTAssertEqual(usageAgain.bytes, file.snapshot!.original.size!)
+        XCTAssertEqual(usageAgain.bytes, file.snapshot!.original.size)
     }
 
     func testFetchFileUsage() async throws {
@@ -94,7 +94,7 @@ final class StorageTests: XCTestCase {
             ))
 
         let usage = try await client.fetchFileUsage(file.id)
-        XCTAssertEqual(usage.bytes, file.snapshot!.original.size!)
+        XCTAssertEqual(usage.bytes, file.snapshot!.original.size)
     }
 
     override func tearDown() async throws {
