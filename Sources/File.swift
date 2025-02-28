@@ -114,45 +114,6 @@ public struct VOFile {
         }
     }
 
-    public func fetchSegmentedPage(_ id: String, page: Int, fileExtension: String) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForSegmentedPage(id, page: page, fileExtension: fileExtension))
-            request.httpMethod = "GET"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleDataResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error
-                )
-            }
-            task.resume()
-        }
-    }
-
-    public func fetchSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(
-                url: urlForSegmentedThumbnail(
-                    id,
-                    page: page,
-                    fileExtension: String(fileExtension.dropFirst())
-                ))
-            request.httpMethod = "GET"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleDataResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error
-                )
-            }
-            task.resume()
-        }
-    }
-
     public func fetchUserPermissions(_ id: String) async throws -> [UserPermission] {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUserPermissions(id))
@@ -559,16 +520,16 @@ public struct VOFile {
         URL(string: "\(urlForID(id))/preview.\(fileExtension)?access_token=\(accessToken)")!
     }
 
+    public func urlForText(_ id: String, fileExtension: String) -> URL {
+        URL(string: "\(urlForID(id))/text.\(fileExtension)?access_token=\(accessToken)")!
+    }
+
+    public func urlForOCR(_ id: String, fileExtension: String) -> URL {
+        URL(string: "\(urlForID(id))/ocr.\(fileExtension)?access_token=\(accessToken)")!
+    }
+
     public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
         URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?access_token=\(accessToken)")!
-    }
-
-    public func urlForSegmentedPage(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/pages/\(page).\(fileExtension)?access_token=\(accessToken)")!
-    }
-
-    public func urlForSegmentedThumbnail(_ id: String, page: Int, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/segmentation/thumbnails/\(page).\(fileExtension)?access_token=\(accessToken)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {
