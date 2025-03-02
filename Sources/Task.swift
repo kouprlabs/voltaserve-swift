@@ -246,6 +246,7 @@ public struct VOTask {
         public let isIndeterminate: Bool
         public let userID: String
         public let status: Status
+        public let isDismissible: Bool
         public let payload: Payload?
         public let createTime: String
         public let updateTime: String?
@@ -258,6 +259,7 @@ public struct VOTask {
             isIndeterminate: Bool,
             userID: String,
             status: Status,
+            isDismissible: Bool,
             payload: Payload? = nil,
             createTime: String,
             updateTime: String? = nil
@@ -269,6 +271,7 @@ public struct VOTask {
             self.isIndeterminate = isIndeterminate
             self.userID = userID
             self.status = status
+            self.isDismissible = isDismissible
             self.payload = payload
             self.createTime = createTime
             self.updateTime = updateTime
@@ -282,6 +285,7 @@ public struct VOTask {
             case isIndeterminate
             case userID = "userId"
             case status
+            case isDismissible
             case payload
             case createTime
             case updateTime
