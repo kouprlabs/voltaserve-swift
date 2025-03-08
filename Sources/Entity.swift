@@ -75,24 +75,6 @@ public struct VOEntity {
         }
     }
 
-    public func patch(_ id: String) async throws -> VOTask.Entity {
-        try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForFile(id))
-            request.httpMethod = "PATCH"
-            request.appendAuthorizationHeader(accessToken)
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                handleJSONResponse(
-                    continuation: continuation,
-                    response: response,
-                    data: data,
-                    error: error,
-                    type: VOTask.Entity.self
-                )
-            }
-            task.resume()
-        }
-    }
-
     public func delete(_ id: String) async throws -> VOTask.Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForFile(id))
