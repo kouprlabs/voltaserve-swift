@@ -281,7 +281,7 @@ public struct VOSnapshot {
         public let thumbnail: Downloadable?
         public let language: String?
         public let summary: String?
-        public let intent: String?
+        public let intent: Intent?
         public let capabilities: Capabilities
         public let isActive: Bool
         public let task: VOTask.Entity?
@@ -298,7 +298,7 @@ public struct VOSnapshot {
             thumbnail: Downloadable? = nil,
             language: String? = nil,
             summary: String? = nil,
-            intent: String? = nil,
+            intent: Intent? = nil,
             capabilities: Capabilities,
             isActive: Bool,
             task: VOTask.Entity? = nil,
@@ -321,6 +321,14 @@ public struct VOSnapshot {
             self.createTime = createTime
             self.updateTime = updateTime
         }
+    }
+
+    public enum Intent: String, Codable {
+        case document
+        case image
+        case video
+        case audio
+        case _3d = "3d"
     }
 
     public struct List: Codable, Equatable {

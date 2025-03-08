@@ -807,11 +807,6 @@ public struct VOFile {
 
     // MARK: - Types
 
-    public enum FileType: String, Codable {
-        case file
-        case folder
-    }
-
     public struct Entity: Codable, Equatable, Hashable {
         public let id: String
         public let workspaceID: String
@@ -860,6 +855,11 @@ public struct VOFile {
             case createTime
             case updateTime
         }
+    }
+
+    public enum FileType: String, Codable {
+        case file
+        case folder
     }
 
     public struct List: Codable, Equatable, Hashable {
